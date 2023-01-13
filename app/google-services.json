@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "933958525015",
+    "project_id": "book-shelf-lynne",
+    "storage_bucket": "book-shelf-lynne.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933958525015:android:ab1409c258d2a2c92f8312",
+        "android_client_info": {
+          "package_name": "com.grayseal.bookshelf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "933958525015-bnh1tb41uhtalcbgedqftmgi3cq8t4gl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI1HZXyR45amS8NX7FGRQ3ArDbnMv1SYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "933958525015-bnh1tb41uhtalcbgedqftmgi3cq8t4gl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
