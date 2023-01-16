@@ -1,15 +1,10 @@
 package com.grayseal.bookshelf.screens.login
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,25 +18,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.EmailInput
 import com.grayseal.bookshelf.components.PasswordInput
 import com.grayseal.bookshelf.components.SubmitButton
-import com.grayseal.bookshelf.navigation.BookShelfNavigation
-import com.grayseal.bookshelf.ui.theme.BookShelfTheme
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
@@ -51,7 +39,9 @@ fun LoginScreen(navController: NavHostController) {
         mutableStateOf(true)
     }
     Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -77,15 +67,20 @@ fun LoginScreen(navController: NavHostController) {
             modifier = Modifier.padding(15.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            val text = if (showLoginForm.value) "Sign Up" else "Login"
+            val text = if (showLoginForm.value) "Sign Up" else "Log in"
             val desc =
                 if (showLoginForm.value) "Don't have an account?" else "Already have an account?"
-            Text(text = desc, fontFamily = poppinsFamily)
-            Text(text, fontFamily = poppinsFamily, color = Pink500, modifier = Modifier
-                .clickable {
-                    showLoginForm.value = !showLoginForm.value
-                }
-                .padding(start = 5.dp), fontWeight = FontWeight.Bold)
+            Text(text = desc, fontFamily = poppinsFamily, fontSize = 14.sp)
+            Text(text,
+                fontFamily = poppinsFamily,
+                fontSize = 14.sp,
+                color = Pink500,
+                modifier = Modifier
+                    .clickable {
+                        showLoginForm.value = !showLoginForm.value
+                    }
+                    .padding(start = 5.dp),
+                fontWeight = FontWeight.Bold)
         }
         if (!showLoginForm.value) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -143,6 +138,12 @@ fun LoginScreen(navController: NavHostController) {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun UserFormWrapper() {
+    UserForm(textIntro = "Welcome Back,", textDesc = "Log in to continue")
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserForm(
@@ -173,13 +174,13 @@ fun UserForm(
         Text(
             textIntro,
             fontFamily = poppinsFamily,
-            fontSize = 26.sp,
+            fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
             textDesc,
             fontFamily = poppinsFamily,
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             color = Color.LightGray
         )
         Image(
@@ -190,6 +191,7 @@ fun UserForm(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
+                keyboardController?.hide()
             })
             PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
                 passwordState = password,
@@ -202,12 +204,11 @@ fun UserForm(
                     keyboardController?.hide()
                 })
             SubmitButton(
-                textId = if (isCreateAccount) "Create Account" else "Login",
+                textId = if (isCreateAccount) "Create Account" else "Log in",
                 loading = loading,
                 validInputs = valid
             ) {
                 onDone(email.value.trim(), password.value.trim())
-                keyboardController?.hide()
             }
 
         }
