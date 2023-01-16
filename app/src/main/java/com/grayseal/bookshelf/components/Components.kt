@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.grayseal.bookshelf.ui.theme.Pink500
+import com.grayseal.bookshelf.ui.theme.Purple700
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
@@ -158,7 +159,7 @@ fun InputField(
 @Composable
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 10.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {

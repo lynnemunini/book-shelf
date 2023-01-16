@@ -41,12 +41,12 @@ fun LoginScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(top = 10.dp, start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         if (showLoginForm.value) UserForm(
-            textIntro = "Welcome Back",
+            textIntro = "Welcome Back,",
             textDesc = "Log in to continue",
             loading = false,
             isCreateAccount = false
@@ -64,7 +64,7 @@ fun LoginScreen(navController: NavHostController) {
             }
         }
         Row(
-            modifier = Modifier.padding(15.dp),
+            modifier = Modifier.padding(top = 15.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             val text = if (showLoginForm.value) "Sign Up" else "Log in"
@@ -174,19 +174,18 @@ fun UserForm(
         Text(
             textIntro,
             fontFamily = poppinsFamily,
-            fontSize = 28.sp,
+            fontSize = 27.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
             textDesc,
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
-            color = Color.LightGray
+            color = Color.DarkGray
         )
         Image(
-            painter = painterResource(id = R.drawable.reading_book),
-            contentDescription = "Login Illustration",
-            modifier = Modifier.scale(0.8f)
+            painter = painterResource(id = R.drawable.loginillustration),
+            contentDescription = "Login Illustration"
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {

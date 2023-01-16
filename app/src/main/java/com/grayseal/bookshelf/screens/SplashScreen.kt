@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
-import com.grayseal.bookshelf.ui.theme.Purple500
+import com.grayseal.bookshelf.ui.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
@@ -40,7 +40,7 @@ fun SplashScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Purple500),
+                .background(color = Pink700),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

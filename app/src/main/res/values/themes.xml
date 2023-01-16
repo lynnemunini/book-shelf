@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.BookShelf" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/pink</item>
+        <item name="android:navigationBarColor">@color/pink</item>
     </style>
 </resources>

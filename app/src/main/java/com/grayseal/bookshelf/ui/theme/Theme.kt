@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    background = Color.Black,
-    onBackground = Color.White
+    background = Color.White,
+    onBackground = Color.Black
 )
 
 private val LightColorPalette = lightColors(
@@ -26,7 +26,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun BookShelfTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        LightColorPalette
     } else {
         LightColorPalette
     }
