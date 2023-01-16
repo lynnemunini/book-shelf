@@ -2,12 +2,11 @@ package com.grayseal.bookshelf.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -65,7 +64,7 @@ fun PasswordInput(
             color = MaterialTheme.colors.onBackground
         ),
         modifier = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth(),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(
@@ -75,7 +74,9 @@ fun PasswordInput(
         visualTransformation = visualTransformation,
         trailingIcon = {
             PasswordVisibility(passwordVisibility = passwordVisibility)
-        })
+        },
+        keyboardActions = onAction
+    )
 
 }
 
@@ -84,11 +85,8 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     val visible = passwordVisibility.value
     IconButton(onClick = { passwordVisibility.value = !visible }) {
         Icons.Default.Close
-
     }
-
 }
-
 
 @Composable
 fun InputField(
@@ -112,10 +110,22 @@ fun InputField(
             color = MaterialTheme.colors.onBackground
         ),
         modifier = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth(),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction)
     )
+}
 
+@Composable
+fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
+    Button(onClick = onClick, modifier = Modifier
+        .padding(3.dp)
+        .fillMaxWidth(),
+        enabled = !loading && validInputs, shape = CircleShape
+    ) {
+        if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp)) else
+            Text(text = textId,  fontFamily = poppinsFamily, modifier = Modifier.padding(5.dp))
+
+    }
 }
