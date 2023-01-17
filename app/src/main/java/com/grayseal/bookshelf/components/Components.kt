@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Purple700
 import com.grayseal.bookshelf.ui.theme.Yellow
@@ -190,7 +191,20 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
                         color = Color.Black
                     )
                 }
-
         }
     }
+}
+
+fun googleSignIn(){
+    signInRequest = BeginSignInRequest.builder()
+        .setGoogleIdTokenRequestOptions(
+            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                .setSupported(true)
+                // Your server's client ID, not your Android client ID.
+                .setServerClientId(getString(R.string.your_web_client_id))
+                // Only show accounts previously used to sign in.
+                .setFilterByAuthorizedAccounts(true)
+                .build())
+        .build()
+
 }

@@ -80,6 +80,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     // Add Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx'
+    // Add the dependency for the Google Play services library and specify its version
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+
+
 
 
     // Navigation

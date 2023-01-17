@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Book Shelf</string>
+    <string translatable="false" name="server_client_id">933958525015-bnh1tb41uhtalcbgedqftmgi3cq8t4gl.apps.googleusercontent.com</string>
 </resources>
