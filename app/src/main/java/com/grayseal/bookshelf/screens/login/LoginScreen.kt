@@ -1,7 +1,9 @@
 package com.grayseal.bookshelf.screens.login
 
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
@@ -12,41 +14,45 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.ContinueGoogle
 import com.grayseal.bookshelf.components.EmailInput
 import com.grayseal.bookshelf.components.PasswordInput
 import com.grayseal.bookshelf.components.SubmitButton
-import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         if (showLoginForm.value) UserForm(
+            launcher = launcher,
             textIntro = "Welcome Back,",
             textDesc = "Log in to continue",
             loading = false,
@@ -56,6 +62,7 @@ fun LoginScreen() {
         }
         else {
             UserForm(
+                launcher = launcher,
                 textIntro = "Create Your Account",
                 textDesc = "Sign up and get started",
                 loading = false,
@@ -139,15 +146,10 @@ fun LoginScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun UserFormWrapper() {
-    UserForm(textIntro = "Welcome Back,", textDesc = "Log in to continue")
-}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserForm(
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     textIntro: String,
     textDesc: String,
     loading: Boolean = false,
@@ -168,6 +170,9 @@ fun UserForm(
     val valid = remember(email.value, password.value) {
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
     }
+
+    val token = stringResource(id = R.string.default_web_client_id)
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background), verticalArrangement = Arrangement.Center
@@ -213,7 +218,14 @@ fun UserForm(
             ) {
                 onDone(email.value.trim(), password.value.trim())
             }
-            ContinueGoogle()
+            ContinueGoogle(onClick = {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(token)
+                    .requestEmail()
+                    .build()
+                val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                launcher.launch(googleSignInClient.signInIntent)
+            })
         }
     }
 }

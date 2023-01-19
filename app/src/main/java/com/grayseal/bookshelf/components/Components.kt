@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.common.io.Resources.getResource
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
+import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 
 @Composable
 fun EmailInput(
@@ -198,9 +199,8 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun ContinueGoogle(/*onClick: () -> Unit*/) {
+fun ContinueGoogle(onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth().height(72.dp)
@@ -209,7 +209,7 @@ fun ContinueGoogle(/*onClick: () -> Unit*/) {
         elevation = 5.dp
     ) {
         androidx.compose.material3.TextButton(
-            onClick = {  }, modifier = Modifier
+            onClick = onClick, modifier = Modifier
                 .fillMaxWidth(),
             enabled = true,
             border = BorderStroke(1.dp, color = Pink200),
