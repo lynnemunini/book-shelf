@@ -205,13 +205,14 @@ fun ContinueGoogle(/*onClick: () -> Unit*/) {
         modifier = Modifier
             .fillMaxWidth().height(72.dp)
             .padding(top = 10.dp, bottom = 10.dp),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        elevation = 5.dp
     ) {
         androidx.compose.material3.TextButton(
             onClick = {  }, modifier = Modifier
                 .fillMaxWidth(),
             enabled = true,
-            border = BorderStroke(1.dp, color = Pink500),
+            border = BorderStroke(1.dp, color = Pink200),
             shape = RoundedCornerShape(10.dp),
             colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                 containerColor = Color.White

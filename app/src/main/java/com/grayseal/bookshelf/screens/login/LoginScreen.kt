@@ -31,6 +31,7 @@ import com.grayseal.bookshelf.components.ContinueGoogle
 import com.grayseal.bookshelf.components.EmailInput
 import com.grayseal.bookshelf.components.PasswordInput
 import com.grayseal.bookshelf.components.SubmitButton
+import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
@@ -39,9 +40,8 @@ fun LoginScreen() {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
-    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -187,7 +187,7 @@ fun UserForm(
         Image(
             painter = painterResource(id = R.drawable.loginillustration),
             contentDescription = "Login Illustration",
-            modifier =  Modifier.scale(0.9f)
+            // modifier =  Modifier.scale(0.9f)
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
