@@ -1,8 +1,9 @@
 package com.grayseal.bookshelf.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import android.content.Context
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,20 +13,23 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.grayseal.bookshelf.ui.theme.Pink500
-import com.grayseal.bookshelf.ui.theme.Purple700
-import com.grayseal.bookshelf.ui.theme.Yellow
-import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import com.google.common.io.Resources.getResource
+import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.ui.theme.*
 
 @Composable
 fun EmailInput(
@@ -106,8 +110,7 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
                 contentDescription = "Visibility Icon",
                 tint = Yellow
             )
-        }
-        else{
+        } else {
             Icon(
                 imageVector = Icons.Outlined.VisibilityOff,
                 contentDescription = "Visibility Icon",
@@ -160,9 +163,10 @@ fun InputField(
 @Composable
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-        shape = RoundedCornerShape(10.dp),
-        elevation = 20.dp
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp, bottom = 10.dp),
+        shape = RoundedCornerShape(10.dp)
     ) {
         androidx.compose.material3.Button(
             onClick = onClick, modifier = Modifier
@@ -173,7 +177,7 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
             )
         ) {
             if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp)) else
-                if(validInputs) {
+                if (validInputs) {
                     Text(
                         text = textId,
                         fontFamily = poppinsFamily,
@@ -181,8 +185,7 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
                         fontSize = 14.sp,
                         color = Color.White
                     )
-                }
-            else{
+                } else {
                     Text(
                         text = textId,
                         fontFamily = poppinsFamily,
@@ -195,16 +198,52 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
     }
 }
 
-fun googleSignIn(){
-    signInRequest = BeginSignInRequest.builder()
+@Preview(showBackground = true)
+@Composable
+fun ContinueGoogle(/*onClick: () -> Unit*/) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth().height(72.dp)
+            .padding(top = 10.dp, bottom = 10.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        androidx.compose.material3.TextButton(
+            onClick = {  }, modifier = Modifier
+                .fillMaxWidth(),
+            enabled = true,
+            border = BorderStroke(1.dp, color = Pink500),
+            shape = RoundedCornerShape(10.dp),
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor = Color.White
+            )
+        ) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Continue with",
+                    fontFamily = poppinsFamily,
+                    fontSize = 14.sp,
+                    color = Color.DarkGray,
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.google),
+                    contentDescription = "Google Icon",
+                    modifier = Modifier.scale(0.6f)
+                )
+            }
+        }
+    }
+}
+
+fun googleSignIn(context: Context) {
+    var signInRequest = BeginSignInRequest.builder()
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
                 // Your server's client ID, not your Android client ID.
-                .setServerClientId(getString(R.string.your_web_client_id))
+                .setServerClientId(context.getString(com.grayseal.bookshelf.R.string.server_client_id))
                 // Only show accounts previously used to sign in.
                 .setFilterByAuthorizedAccounts(true)
-                .build())
+                .build()
+        )
         .build()
-
 }

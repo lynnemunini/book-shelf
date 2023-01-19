@@ -34,7 +34,7 @@ fun SplashScreen(navController: NavHostController) {
         startAnimation = true
         delay(4000L)
         navController.popBackStack()
-        navController.navigate(route = BookShelfScreens.LoginScreen.name)
+        navController.navigate(route = BookShelfScreens.HomeScreen.name)
     }
     Surface {
         Column(

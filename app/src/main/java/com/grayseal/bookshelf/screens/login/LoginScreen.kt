@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.screens.login
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -24,8 +26,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.components.ContinueGoogle
 import com.grayseal.bookshelf.components.EmailInput
 import com.grayseal.bookshelf.components.PasswordInput
 import com.grayseal.bookshelf.components.SubmitButton
@@ -33,14 +35,14 @@ import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen() {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
+    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 10.dp, start = 20.dp, end = 20.dp),
+        modifier = Modifier.fillMaxSize()
+            .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -168,12 +170,12 @@ fun UserForm(
     }
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colors.background),
+            .background(MaterialTheme.colors.background), verticalArrangement = Arrangement.Center
     ) {
         Text(
             textIntro,
             fontFamily = poppinsFamily,
-            fontSize = 27.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
@@ -184,9 +186,12 @@ fun UserForm(
         )
         Image(
             painter = painterResource(id = R.drawable.loginillustration),
-            contentDescription = "Login Illustration"
+            contentDescription = "Login Illustration",
+            modifier =  Modifier.scale(0.9f)
         )
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
                 keyboardController?.hide()
@@ -208,7 +213,7 @@ fun UserForm(
             ) {
                 onDone(email.value.trim(), password.value.trim())
             }
-
+            ContinueGoogle()
         }
     }
 }

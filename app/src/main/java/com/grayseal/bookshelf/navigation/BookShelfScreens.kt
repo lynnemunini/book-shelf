@@ -2,8 +2,6 @@ package com.grayseal.bookshelf.navigation
 
 enum class BookShelfScreens {
     SplashScreen,
-    LoginScreen,
-    CreateAccountScreen,
     HomeScreen,
     SearchScreen,
     ShelfScreen,
@@ -13,8 +11,6 @@ enum class BookShelfScreens {
         fun fromRoute(route: String): BookShelfScreens
         = when(route.substringBefore("/")){
             SplashScreen.name -> SplashScreen
-            LoginScreen.name -> LoginScreen
-            CreateAccountScreen.name -> CreateAccountScreen
             SearchScreen.name -> SearchScreen
             HomeScreen.name -> HomeScreen
             ShelfScreen.name -> ShelfScreen

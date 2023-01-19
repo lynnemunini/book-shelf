@@ -18,9 +18,6 @@ fun BookShelfNavigation(){
         composable(BookShelfScreens.SplashScreen.name){
             SplashScreen(navController = navController)
         }
-        composable(BookShelfScreens.LoginScreen.name){
-            LoginScreen(navController = navController)
-        }
         composable(BookShelfScreens.HomeScreen.name){
             HomeScreen(navController = navController)
         }
