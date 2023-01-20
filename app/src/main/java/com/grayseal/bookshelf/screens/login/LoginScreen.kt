@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -126,7 +127,7 @@ fun UserForm(
         Text(
             textIntro,
             fontFamily = poppinsFamily,
-            fontSize = 25.sp,
+            fontSize = 27.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
@@ -135,14 +136,14 @@ fun UserForm(
             fontSize = 13.sp,
             color = Gray500
         )
-        Image(
-            painter = painterResource(id = R.drawable.loginillustration),
-            contentDescription = "Login Illustration",
-            // modifier =  Modifier.scale(0.9f)
-        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.loginillustration),
+                contentDescription = "Login Illustration",
+                modifier =  Modifier.size(250.dp)
+            )
             EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
                 keyboardController?.hide()
@@ -168,7 +169,7 @@ fun UserForm(
                                     fontFamily = poppinsFamily
                                 )
                             ) {
-                                append("By using this app, you agree to our ")
+                                append("By signing up, you agree to our ")
                             }
                             withStyle(
                                 style = SpanStyle(
