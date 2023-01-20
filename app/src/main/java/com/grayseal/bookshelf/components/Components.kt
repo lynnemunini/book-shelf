@@ -3,6 +3,7 @@ package com.grayseal.bookshelf.components
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -166,7 +168,7 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp),
+            .padding(top = 20.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
         androidx.compose.material3.Button(
@@ -183,16 +185,18 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
                         text = textId,
                         fontFamily = poppinsFamily,
                         modifier = Modifier.padding(5.dp),
-                        fontSize = 14.sp,
-                        color = Color.White
+                        fontSize = 15.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold
                     )
                 } else {
                     Text(
                         text = textId,
                         fontFamily = poppinsFamily,
                         modifier = Modifier.padding(5.dp),
-                        fontSize = 14.sp,
-                        color = Color.Black
+                        fontSize = 15.sp,
+                        color = Gray500,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
         }
@@ -201,50 +205,18 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
 
 @Composable
 fun ContinueGoogle(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth().height(72.dp)
-            .padding(top = 10.dp, bottom = 10.dp),
-        shape = RoundedCornerShape(10.dp),
-        elevation = 5.dp
-    ) {
-        androidx.compose.material3.TextButton(
-            onClick = onClick, modifier = Modifier
-                .fillMaxWidth(),
-            enabled = true,
-            border = BorderStroke(1.dp, color = Pink200),
-            shape = RoundedCornerShape(10.dp),
-            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                containerColor = Color.White
-            )
-        ) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    "Continue with",
-                    fontFamily = poppinsFamily,
-                    fontSize = 14.sp,
-                    color = Color.DarkGray,
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google Icon",
-                    modifier = Modifier.scale(0.6f)
-                )
-            }
-        }
-    }
+    Image(
+        painter = painterResource(id = R.drawable.google),
+        contentDescription = "Google Icon",
+        modifier = Modifier.height(28.dp).clickable { }
+    )
 }
 
-fun googleSignIn(context: Context) {
-    var signInRequest = BeginSignInRequest.builder()
-        .setGoogleIdTokenRequestOptions(
-            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                .setSupported(true)
-                // Your server's client ID, not your Android client ID.
-                .setServerClientId(context.getString(com.grayseal.bookshelf.R.string.server_client_id))
-                // Only show accounts previously used to sign in.
-                .setFilterByAuthorizedAccounts(true)
-                .build()
-        )
-        .build()
+@Composable
+fun ContinueGitHub(onClick: () -> Unit) {
+    Image(
+        painter = painterResource(id = R.drawable.github),
+        contentDescription = "Google Icon",
+        modifier = Modifier.height(28.dp).clickable { }
+    )
 }

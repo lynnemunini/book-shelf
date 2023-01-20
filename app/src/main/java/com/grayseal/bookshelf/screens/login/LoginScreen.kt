@@ -31,10 +31,8 @@ import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.grayseal.bookshelf.R
-import com.grayseal.bookshelf.components.ContinueGoogle
-import com.grayseal.bookshelf.components.EmailInput
-import com.grayseal.bookshelf.components.PasswordInput
-import com.grayseal.bookshelf.components.SubmitButton
+import com.grayseal.bookshelf.components.*
+import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
@@ -78,7 +76,7 @@ fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>)
             val text = if (showLoginForm.value) "Sign Up" else "Log in"
             val desc =
                 if (showLoginForm.value) "Don't have an account?" else "Already have an account?"
-            Text(text = desc, fontFamily = poppinsFamily, fontSize = 14.sp)
+            Text(text = desc, fontFamily = poppinsFamily, fontSize = 14.sp, color = Gray500)
             Text(text,
                 fontFamily = poppinsFamily,
                 fontSize = 14.sp,
@@ -187,7 +185,7 @@ fun UserForm(
             textDesc,
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
-            color = Color.DarkGray
+            color = Gray500
         )
         Image(
             painter = painterResource(id = R.drawable.loginillustration),
@@ -218,14 +216,31 @@ fun UserForm(
             ) {
                 onDone(email.value.trim(), password.value.trim())
             }
-            ContinueGoogle(onClick = {
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(token)
-                    .requestEmail()
-                    .build()
-                val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                launcher.launch(googleSignInClient.signInIntent)
-            })
+            Column(
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Continue with",
+                    fontFamily = poppinsFamily,
+                    fontSize = 14.sp,
+                    color = Color.DarkGray,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+                    ContinueGoogle(onClick = {
+                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(token)
+                            .requestEmail()
+                            .build()
+                        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                        launcher.launch(googleSignInClient.signInIntent)
+                    })
+                    ContinueGitHub {
+
+                    }
+                }
+
+            }
         }
     }
 }

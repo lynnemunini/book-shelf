@@ -28,6 +28,7 @@ fun HomeScreen(navController: NavHostController) {
         Text("Welcome ${user!!.displayName}")
         Button(onClick = {
             // TODO sign out
+            // Firebase.auth.signOut()
             }) {
             Text("Sign Out")
         }

@@ -13,7 +13,7 @@ val Teal = Color(0xFF03cdc2)
 
 
 val Gray700 = Color(0xFF201f25)
-val IconColor = Color(0xFFc2c4ca)
+val Gray500 = Color(0xFF80817f)
 val Gray200 = Color(0xFFf4f0ff)
 
 val Yellow = Color(0xFFf5a641)
