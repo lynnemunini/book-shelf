@@ -47,9 +47,8 @@ fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>)
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+            .padding(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         if (showLoginForm.value) UserForm(
             launcher = launcher,
@@ -127,7 +126,7 @@ fun UserForm(
         Text(
             textIntro,
             fontFamily = poppinsFamily,
-            fontSize = 27.sp,
+            fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
