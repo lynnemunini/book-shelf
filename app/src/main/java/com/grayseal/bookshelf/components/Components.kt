@@ -9,11 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Visibility
-import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -71,10 +70,23 @@ fun PasswordInput(
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {
+        var color by remember{
+            mutableStateOf(Gray500)
+        }
         OutlinedTextField(
             value = passwordState.value,
-            onValueChange = { passwordState.value = it },
+            onValueChange = {
+                color = Pink500
+                passwordState.value = it
+                            },
             placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Lock,
+                    contentDescription = "Lock Icon",
+                    tint = color
+                )
+            },
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -139,10 +151,23 @@ fun InputField(
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {
+        var color by remember{
+            mutableStateOf(Gray500)
+        }
         OutlinedTextField(
             value = valueState.value,
-            onValueChange = { valueState.value = it },
+            onValueChange = {
+            color = Pink500
+                valueState.value = it
+                            },
             placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.AlternateEmail,
+                    contentDescription = "Email Icon",
+                    tint = color
+                )
+            },
             singleLine = isSingleLine,
             textStyle = TextStyle(
                 fontSize = 14.sp,
