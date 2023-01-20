@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.common.io.Files.append
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.*
 import com.grayseal.bookshelf.ui.theme.Gray500
@@ -70,7 +71,7 @@ fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>)
             }
         }
         Row(
-            modifier = Modifier.padding(top = 15.dp),
+            modifier = Modifier.padding(top = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             val text = if (showLoginForm.value) "Sign Up" else "Log in"
@@ -88,59 +89,6 @@ fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>)
                     .padding(start = 5.dp),
                 fontWeight = FontWeight.Bold)
         }
-        if (!showLoginForm.value) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Text(
-                    buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.LightGray,
-                                fontSize = 12.sp,
-                                fontFamily = poppinsFamily
-                            )
-                        ) {
-                            append("By using this app, you agree to our ")
-                        }
-                    },
-                    textAlign = TextAlign.Center
-                )
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Text(
-                    buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = Pink500,
-                                fontSize = 12.sp,
-                                fontFamily = poppinsFamily
-                            )
-                        ) {
-                            append("Terms of Use ")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.LightGray,
-                                fontSize = 12.sp,
-                                fontFamily = poppinsFamily
-                            )
-                        ) {
-                            append("and ")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                color = Pink500,
-                                fontSize = 12.sp,
-                                fontFamily = poppinsFamily
-                            )
-                        ) {
-                            append("Privacy Policy")
-                        }
-                    },
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
     }
 }
 
@@ -209,6 +157,50 @@ fun UserForm(
                     onDone(email.value.trim(), password.value.trim())
                     keyboardController?.hide()
                 })
+            if (isCreateAccount) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Gray500,
+                                    fontSize = 12.sp,
+                                    fontFamily = poppinsFamily
+                                )
+                            ) {
+                                append("By using this app, you agree to our ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Pink500,
+                                    fontSize = 12.sp,
+                                    fontFamily = poppinsFamily
+                                )
+                            ) {
+                                append("Terms of Use ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Gray500,
+                                    fontSize = 12.sp,
+                                    fontFamily = poppinsFamily
+                                )
+                            ) {
+                                append("and ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Pink500,
+                                    fontSize = 12.sp,
+                                    fontFamily = poppinsFamily
+                                )
+                            ) {
+                                append("Privacy Policy")
+                            }
+                        }
+                    )
+                }
+            }
             SubmitButton(
                 textId = if (isCreateAccount) "Create Account" else "Log in",
                 loading = loading,
@@ -221,12 +213,13 @@ fun UserForm(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Continue with",
+                    if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
                     fontFamily = poppinsFamily,
-                    fontSize = 14.sp,
-                    color = Color.DarkGray,
+                    fontSize = 13.sp,
+                    color = Gray500,
+                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+                Row(horizontalArrangement = Arrangement.Center) {
                     ContinueGoogle(onClick = {
                         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                             .requestIdToken(token)

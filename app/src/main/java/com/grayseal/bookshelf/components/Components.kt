@@ -123,13 +123,13 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
             Icon(
                 imageVector = Icons.Outlined.Visibility,
                 contentDescription = "Visibility Icon",
-                tint = Yellow
+                tint = Gray500
             )
         } else {
             Icon(
                 imageVector = Icons.Outlined.VisibilityOff,
                 contentDescription = "Visibility Icon",
-                tint = Yellow
+                tint = Gray500
             )
         }
     }
@@ -147,7 +147,7 @@ fun InputField(
     onAction: KeyboardActions = KeyboardActions.Default
 ) {
     Card(
-        modifier = Modifier.padding(bottom = 10.dp),
+        modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {
@@ -193,7 +193,7 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 10.dp),
+            .padding(top = 15.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
         androidx.compose.material3.Button(
@@ -233,7 +233,7 @@ fun ContinueGoogle(onClick: () -> Unit) {
     Image(
         painter = painterResource(id = R.drawable.google),
         contentDescription = "Google Icon",
-        modifier = Modifier.height(28.dp).clickable { }
+        modifier = Modifier.height(28.dp).padding(end = 20.dp).clickable { }
     )
 }
 
