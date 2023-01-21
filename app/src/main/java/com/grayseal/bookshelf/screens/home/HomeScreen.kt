@@ -32,12 +32,12 @@ fun HomeScreen(navController: NavHostController, viewModel: LoginScreenViewModel
     }
     else{
         // Main Screen Content
-        Text("Welcome ${user!!.displayName}")
-        Button(onClick = {
-            // TODO sign out
-            // Firebase.auth.signOut()
-            }) {
-            Text("Sign Out")
-        }
+        Text("Welcome ${user?.email}")
+//        Button(onClick = {
+//            // TODO sign out
+//            // Firebase.auth.signOut()
+//            }) {
+//            Text("Sign Out")
+//        }
     }
 }
