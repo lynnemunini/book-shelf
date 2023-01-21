@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -35,9 +36,15 @@ import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import kotlinx.coroutines.launch
+
 
 @Composable
-fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLauncher<Intent, ActivityResult>, viewModel: LoginScreenViewModel) {
+fun LoginScreen(
+    navController: NavController,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    viewModel: LoginScreenViewModel
+) {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
@@ -45,7 +52,7 @@ fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLau
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+            .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (showLoginForm.value) UserForm(
@@ -56,7 +63,7 @@ fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLau
             isCreateAccount = false
         ) { email, password ->
             // Login to Firebase Account
-            viewModel.signInWithEmailAndPassword(email, password){
+            viewModel.signInWithEmailAndPassword(email, password) {
                 navController.navigate(BookShelfScreens.HomeScreen.name)
             }
         }
@@ -69,7 +76,7 @@ fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLau
                 isCreateAccount = true
             ) { email, password ->
                 // Create FireBase Account
-                viewModel.createUserWithEmailAndPassword(email, password){
+                viewModel.createUserWithEmailAndPassword(email, password) {
                     navController.navigate(BookShelfScreens.HomeScreen.name)
                 }
             }
@@ -123,9 +130,11 @@ fun UserForm(
     val valid = remember(email.value, password.value) {
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
     }
-
     val token = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
+
+    // a coroutine scope
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background), verticalArrangement = Arrangement.Center
@@ -146,17 +155,16 @@ fun UserForm(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (isCreateAccount){
+            if (isCreateAccount) {
                 Image(
                     painter = painterResource(id = R.drawable.loginillustration),
                     contentDescription = "Login Illustration",
                     modifier = Modifier.size(200.dp)
                 )
-                NameInput(nameState = name, enabled = !loading, onAction = KeyboardActions{
+                NameInput(nameState = name, enabled = !loading, onAction = KeyboardActions {
                     keyboardController?.hide()
                 })
-            }
-            else {
+            } else {
                 Image(
                     painter = painterResource(id = R.drawable.loginillustration),
                     contentDescription = "Login Illustration",
@@ -229,8 +237,13 @@ fun UserForm(
                 if (isCreateAccount) {
                     onDone(email.value.trim(), password.value.trim())
                     name.value.trim()
-                }
-                else{
+                    // Instantiate the StoreUserName class
+                    val dataStore = StoreUserName(context)
+                    scope.launch {
+                        dataStore.saveName(name.value)
+                    }
+                    // TODO Save name to datastore
+                } else {
                     onDone(email.value.trim(), password.value.trim())
                 }
             }

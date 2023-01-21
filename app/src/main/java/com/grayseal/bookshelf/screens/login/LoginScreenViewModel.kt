@@ -1,20 +1,25 @@
 package com.grayseal.bookshelf.screens.login
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
-class LoginScreenViewModel : ViewModel() {
+class LoginScreenViewModel(application: Application) : AndroidViewModel(application) {
     private val auth: FirebaseAuth = Firebase.auth
 
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
+    private val context = getApplication<Application>().applicationContext
+    private val dataStore = StoreUserName(context)
+    val displayName = dataStore.getName
 
     fun createUserWithEmailAndPassword(email: String, password: String, home: () -> Unit) {
         if(_loading.value == false) {
