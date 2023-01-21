@@ -68,7 +68,10 @@ fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLau
                 loading = false,
                 isCreateAccount = true
             ) { email, password ->
-                // TODO: Create FireBase Account
+                // Create FireBase Account
+                viewModel.createUserWithEmailAndPassword(email, password){
+                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                }
             }
         }
         Row(
