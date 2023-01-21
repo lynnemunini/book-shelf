@@ -1,21 +1,19 @@
 package com.grayseal.bookshelf.components
 
-import android.content.Context
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -24,14 +22,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.common.io.Resources.getResource
 import com.grayseal.bookshelf.R
-import com.grayseal.bookshelf.ui.theme.*
-import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
+import com.grayseal.bookshelf.ui.theme.Gray500
+import com.grayseal.bookshelf.ui.theme.Pink500
+import com.grayseal.bookshelf.ui.theme.Yellow
+import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
 fun EmailInput(
@@ -53,6 +50,60 @@ fun EmailInput(
     )
 }
 
+@Composable
+fun NameInput(
+    modifier: Modifier = Modifier,
+    nameState: MutableState<String>,
+    labelId: String = "Name",
+    enabled: Boolean = true,
+    imeAction: ImeAction = ImeAction.Next,
+    onAction: KeyboardActions = KeyboardActions.Default
+){
+    Card(
+        modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
+        shape = RoundedCornerShape(10.dp),
+        elevation = 20.dp
+    ) {
+        var color by remember{
+            mutableStateOf(Gray500)
+        }
+        var icon by remember {
+            mutableStateOf(Icons.Outlined.SentimentSatisfied)
+        }
+        OutlinedTextField(
+            value = nameState.value,
+            onValueChange = {
+                color = Pink500
+                nameState.value = it
+                icon = Icons.Outlined.InsertEmoticon
+            },
+            placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+            leadingIcon = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Name Icon",
+                    tint = color
+                )
+            },
+            singleLine = true,
+            textStyle = TextStyle(
+                fontSize = 14.sp,
+                fontFamily = poppinsFamily,
+                color = MaterialTheme.colors.onBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            enabled = enabled,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = imeAction),
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                cursorColor = Yellow,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            )
+        )
+    }
+}
 @Composable
 fun PasswordInput(
     modifier: Modifier,
@@ -233,6 +284,8 @@ fun ContinueGoogle(onClick: () -> Unit) {
     Image(
         painter = painterResource(id = R.drawable.google),
         contentDescription = "Google Icon",
-        modifier = Modifier.height(28.dp).clickable(onClick = onClick)
+        modifier = Modifier
+            .height(28.dp)
+            .clickable(onClick = onClick)
     )
 }

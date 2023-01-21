@@ -45,7 +45,7 @@ fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLau
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+            .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (showLoginForm.value) UserForm(
@@ -112,6 +112,9 @@ fun UserForm(
     val password = rememberSaveable {
         mutableStateOf("")
     }
+    val name = rememberSaveable {
+        mutableStateOf("")
+    }
     val passwordVisibility = rememberSaveable {
         mutableStateOf(false)
     }
@@ -130,7 +133,7 @@ fun UserForm(
         Text(
             textIntro,
             fontFamily = poppinsFamily,
-            fontSize = 28.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
@@ -142,11 +145,24 @@ fun UserForm(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.loginillustration),
-                contentDescription = "Login Illustration",
-                modifier = Modifier.size(250.dp)
-            )
+
+            if (isCreateAccount){
+                Image(
+                    painter = painterResource(id = R.drawable.loginillustration),
+                    contentDescription = "Login Illustration",
+                    modifier = Modifier.size(200.dp)
+                )
+                NameInput(nameState = name, enabled = !loading, onAction = KeyboardActions{
+                    keyboardController?.hide()
+                })
+            }
+            else {
+                Image(
+                    painter = painterResource(id = R.drawable.loginillustration),
+                    contentDescription = "Login Illustration",
+                    modifier = Modifier.size(300.dp)
+                )
+            }
             EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
                 keyboardController?.hide()
@@ -210,7 +226,13 @@ fun UserForm(
                 loading = loading,
                 validInputs = valid
             ) {
-                onDone(email.value.trim(), password.value.trim())
+                if (isCreateAccount) {
+                    onDone(email.value.trim(), password.value.trim())
+                    name.value.trim()
+                }
+                else{
+                    onDone(email.value.trim(), password.value.trim())
+                }
             }
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
