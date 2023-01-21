@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.utils
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -23,6 +24,7 @@ fun rememberFirebaseAuthLauncher(
 ): ManagedActivityResultLauncher<Intent, ActivityResult>{
     val scope = rememberCoroutineScope()
     return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Log.e("TAG", "rememberFirebaseAuthLauncher: ${result.data}", )
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)!!

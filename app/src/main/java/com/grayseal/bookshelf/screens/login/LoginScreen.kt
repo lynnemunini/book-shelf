@@ -14,10 +14,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -25,21 +23,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.common.io.Files.append
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.*
+import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) {
+fun LoginScreen(navController: NavController, launcher: ManagedActivityResultLauncher<Intent, ActivityResult>, viewModel: LoginScreenViewModel) {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
@@ -57,7 +55,10 @@ fun LoginScreen(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>)
             loading = false,
             isCreateAccount = false
         ) { email, password ->
-            // TODO: Login to Firebase Account
+            // Login to Firebase Account
+            viewModel.signInWithEmailAndPassword(email, password){
+                navController.navigate(BookShelfScreens.HomeScreen.name)
+            }
         }
         else {
             UserForm(
@@ -141,7 +142,7 @@ fun UserForm(
             Image(
                 painter = painterResource(id = R.drawable.loginillustration),
                 contentDescription = "Login Illustration",
-                modifier =  Modifier.size(250.dp)
+                modifier = Modifier.size(250.dp)
             )
             EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
@@ -228,9 +229,6 @@ fun UserForm(
                         val googleSignInClient = GoogleSignIn.getClient(context, gso)
                         launcher.launch(googleSignInClient.signInIntent)
                     })
-                    ContinueGitHub {
-
-                    }
                 }
 
             }

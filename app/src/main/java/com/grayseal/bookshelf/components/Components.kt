@@ -233,15 +233,6 @@ fun ContinueGoogle(onClick: () -> Unit) {
     Image(
         painter = painterResource(id = R.drawable.google),
         contentDescription = "Google Icon",
-        modifier = Modifier.height(28.dp).padding(end = 20.dp).clickable { }
-    )
-}
-
-@Composable
-fun ContinueGitHub(onClick: () -> Unit) {
-    Image(
-        painter = painterResource(id = R.drawable.github),
-        contentDescription = "Google Icon",
-        modifier = Modifier.height(28.dp).clickable { }
+        modifier = Modifier.height(28.dp).clickable(onClick = onClick)
     )
 }
