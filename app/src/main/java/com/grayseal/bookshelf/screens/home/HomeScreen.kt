@@ -4,13 +4,16 @@ import androidx.activity.result.ActivityResult
 import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
@@ -32,12 +35,15 @@ fun HomeScreen(navController: NavHostController, viewModel: LoginScreenViewModel
     }
     else{
         // Main Screen Content
-        Text("Welcome ${user?.email}")
-//        Button(onClick = {
-//            // TODO sign out
-//            // Firebase.auth.signOut()
-//            }) {
-//            Text("Sign Out")
-//        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("Welcome ${user?.email}")
+            Button(onClick = {
+                // TODO sign out
+                Firebase.auth.signOut()
+                navController.navigate(BookShelfScreens.HomeScreen.name)
+            }) {
+                Text("Sign Out")
+            }
+        }
     }
 }
