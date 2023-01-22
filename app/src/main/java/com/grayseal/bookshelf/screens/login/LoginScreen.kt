@@ -7,10 +7,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -43,7 +40,8 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     navController: NavController,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-    viewModel: LoginScreenViewModel
+    viewModel: LoginScreenViewModel,
+    dataStore: StoreUserName,
 ) {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
@@ -57,6 +55,7 @@ fun LoginScreen(
     ) {
         if (showLoginForm.value) UserForm(
             launcher = launcher,
+            dataStore = dataStore,
             textIntro = "Welcome Back,",
             textDesc = "Log in to continue",
             loading = false,
@@ -70,6 +69,7 @@ fun LoginScreen(
         else {
             UserForm(
                 launcher = launcher,
+                dataStore = dataStore,
                 textIntro = "Create Your Account",
                 textDesc = "Sign up and get started",
                 loading = false,
@@ -107,6 +107,7 @@ fun LoginScreen(
 @Composable
 fun UserForm(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    dataStore: StoreUserName,
     textIntro: String,
     textDesc: String,
     loading: Boolean = false,
@@ -132,6 +133,7 @@ fun UserForm(
     }
     val token = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
+
 
     // a coroutine scope
     val scope = rememberCoroutineScope()
@@ -238,7 +240,6 @@ fun UserForm(
                     onDone(email.value.trim(), password.value.trim())
                     name.value.trim()
                     // Instantiate the StoreUserName class
-                    val dataStore = StoreUserName(context)
                     scope.launch {
                         dataStore.saveName(name.value)
                     }
@@ -259,14 +260,14 @@ fun UserForm(
                     modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 )
                 Row(horizontalArrangement = Arrangement.Center) {
-                    ContinueGoogle(onClick = {
+                    ContinueGoogle {
                         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                             .requestIdToken(token)
                             .requestEmail()
                             .build()
                         val googleSignInClient = GoogleSignIn.getClient(context, gso)
                         launcher.launch(googleSignInClient.signInIntent)
-                    })
+                    }
                 }
 
             }

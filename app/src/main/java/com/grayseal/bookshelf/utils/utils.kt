@@ -21,14 +21,16 @@ import kotlinx.coroutines.tasks.await
 fun rememberFirebaseAuthLauncher(
     onAuthComplete: (AuthResult) -> Unit,
     onAuthError: (ApiException) -> Unit
-): ManagedActivityResultLauncher<Intent, ActivityResult>{
+): ManagedActivityResultLauncher<Intent, ActivityResult> {
     val scope = rememberCoroutineScope()
     return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        Log.e("TAG", "rememberFirebaseAuthLauncher: ${result.data}", )
+        Log.e("TAG", "rememberFirebaseAuthLauncher: ${result.data}")
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)!!
             val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+            Log.e("CREDENTIALS", "rememberFirebaseAuthLauncher: $credential")
+            Log.e("ACCOUNT", "rememberFirebaseAuthLauncher: $account")
             scope.launch {
                 val authResult = Firebase.auth.signInWithCredential(credential).await()
                 onAuthComplete(authResult)

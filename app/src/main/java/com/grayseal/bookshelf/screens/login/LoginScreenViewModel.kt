@@ -17,6 +17,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
 
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
+    // TODO FIX: This field leaks a context object
     private val context = getApplication<Application>().applicationContext
     private val dataStore = StoreUserName(context)
     val displayName = dataStore.getName
