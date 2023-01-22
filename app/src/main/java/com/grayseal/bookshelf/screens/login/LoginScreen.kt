@@ -88,7 +88,6 @@ fun LoginScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserForm(
     showLoginForm: MutableState<Boolean>,
@@ -113,7 +112,6 @@ fun UserForm(
         mutableStateOf(false)
     }
     val passwordFocusRequest = FocusRequester.Default
-    val keyboardController = LocalSoftwareKeyboardController.current
     val valid = remember(email.value, password.value) {
         (email.value.trim().isNotEmpty()
                 && password.value.trim().isNotEmpty()
@@ -121,8 +119,6 @@ fun UserForm(
     }
     val token = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
-
 
     // a coroutine scope
     val scope = rememberCoroutineScope()
@@ -170,9 +166,7 @@ fun UserForm(
                     labelId = "Password",
                     enabled = !loading,
                     passwordVisibility = passwordVisibility,
-                    onAction = KeyboardActions {
-                        keyboardController?.hide()
-                    })
+                    )
                 if (isCreateAccount) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

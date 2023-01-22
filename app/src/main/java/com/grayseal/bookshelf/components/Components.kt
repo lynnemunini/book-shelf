@@ -13,8 +13,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.grayseal.bookshelf.R
@@ -29,6 +32,7 @@ import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import com.grayseal.bookshelf.utils.isValidEmail
 
 @Composable
 fun EmailInput(
@@ -39,7 +43,7 @@ fun EmailInput(
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default
 ) {
-    InputField(
+    EmailInputField(
         modifier = modifier,
         valueState = emailState,
         labelId = labelId,
@@ -107,6 +111,7 @@ fun NameInput(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PasswordInput(
     modifier: Modifier,
@@ -114,11 +119,22 @@ fun PasswordInput(
     labelId: String,
     enabled: Boolean,
     passwordVisibility: MutableState<Boolean>,
-    imeAction: ImeAction = ImeAction.Default,
-    onAction: KeyboardActions = KeyboardActions.Default
+    imeAction: ImeAction = ImeAction.Done
 ) {
     val visualTransformation = if (passwordVisibility.value) VisualTransformation.None else
         PasswordVisualTransformation()
+    var error by remember {
+        mutableStateOf(false)
+    }
+    if(error){
+        Text("* Password must be at least 6 characters", fontSize = 12.sp,
+            fontFamily = poppinsFamily,
+            color = Yellow,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Card(
         modifier = Modifier.padding(bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
@@ -132,6 +148,7 @@ fun PasswordInput(
             onValueChange = {
                 color = Pink500
                 passwordState.value = it
+                error = passwordState.value.length < 6
             },
             placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
             leadingIcon = {
@@ -158,7 +175,9 @@ fun PasswordInput(
             trailingIcon = {
                 PasswordVisibility(passwordVisibility = passwordVisibility)
             },
-            keyboardActions = onAction,
+            keyboardActions = KeyboardActions {
+                keyboardController?.hide()
+            },
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 cursorColor = Yellow,
@@ -189,8 +208,9 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun InputField(
+fun EmailInputField(
     modifier: Modifier = Modifier,
     valueState: MutableState<String>,
     labelId: String,
@@ -200,6 +220,18 @@ fun InputField(
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default
 ) {
+    var error by remember {
+        mutableStateOf(false)
+    }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    if(error){
+        Text("* Email is not in the correct format", fontSize = 12.sp,
+            fontFamily = poppinsFamily,
+            color = Yellow,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
     Card(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
@@ -213,6 +245,7 @@ fun InputField(
             onValueChange = {
                 color = Pink500
                 valueState.value = it
+                error = !isValidEmail(valueState.value)
             },
             placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
             leadingIcon = {
@@ -231,7 +264,9 @@ fun InputField(
             modifier = Modifier
                 .fillMaxWidth(),
             enabled = enabled,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+            keyboardActions = KeyboardActions {
+                keyboardController?.hide()
+            },
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 cursorColor = Yellow,
