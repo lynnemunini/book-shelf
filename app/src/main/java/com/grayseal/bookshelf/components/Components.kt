@@ -225,7 +225,7 @@ fun EmailInputField(
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     if(error){
-        Text("* Email is not in the correct format", fontSize = 12.sp,
+        Text("* Invalid email address", fontSize = 12.sp,
             fontFamily = poppinsFamily,
             color = Yellow,
             textAlign = TextAlign.Start,
