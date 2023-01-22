@@ -52,19 +52,18 @@ fun EmailInput(
 
 @Composable
 fun NameInput(
-    modifier: Modifier = Modifier,
     nameState: MutableState<String>,
     labelId: String = "Name",
     enabled: Boolean = true,
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default
-){
+) {
     Card(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {
-        var color by remember{
+        var color by remember {
             mutableStateOf(Gray500)
         }
         var icon by remember {
@@ -94,7 +93,10 @@ fun NameInput(
             modifier = Modifier
                 .fillMaxWidth(),
             enabled = enabled,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = imeAction),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = imeAction
+            ),
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 cursorColor = Yellow,
@@ -104,6 +106,7 @@ fun NameInput(
         )
     }
 }
+
 @Composable
 fun PasswordInput(
     modifier: Modifier,
@@ -111,7 +114,7 @@ fun PasswordInput(
     labelId: String,
     enabled: Boolean,
     passwordVisibility: MutableState<Boolean>,
-    imeAction: ImeAction = ImeAction.Done,
+    imeAction: ImeAction = ImeAction.Default,
     onAction: KeyboardActions = KeyboardActions.Default
 ) {
     val visualTransformation = if (passwordVisibility.value) VisualTransformation.None else
@@ -121,7 +124,7 @@ fun PasswordInput(
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {
-        var color by remember{
+        var color by remember {
             mutableStateOf(Gray500)
         }
         OutlinedTextField(
@@ -129,7 +132,7 @@ fun PasswordInput(
             onValueChange = {
                 color = Pink500
                 passwordState.value = it
-                            },
+            },
             placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
             leadingIcon = {
                 Icon(
@@ -202,15 +205,15 @@ fun InputField(
         shape = RoundedCornerShape(10.dp),
         elevation = 20.dp
     ) {
-        var color by remember{
+        var color by remember {
             mutableStateOf(Gray500)
         }
         OutlinedTextField(
             value = valueState.value,
             onValueChange = {
-            color = Pink500
+                color = Pink500
                 valueState.value = it
-                            },
+            },
             placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
             leadingIcon = {
                 Icon(

@@ -1,7 +1,6 @@
 package com.grayseal.bookshelf.utils
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -24,13 +23,10 @@ fun rememberFirebaseAuthLauncher(
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
     val scope = rememberCoroutineScope()
     return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        Log.e("TAG", "rememberFirebaseAuthLauncher: ${result.data}")
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)!!
             val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
-            Log.e("CREDENTIALS", "rememberFirebaseAuthLauncher: $credential")
-            Log.e("ACCOUNT", "rememberFirebaseAuthLauncher: $account")
             scope.launch {
                 val authResult = Firebase.auth.signInWithCredential(credential).await()
                 onAuthComplete(authResult)

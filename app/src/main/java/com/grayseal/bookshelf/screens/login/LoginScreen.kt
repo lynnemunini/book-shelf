@@ -163,9 +163,7 @@ fun UserForm(
                     contentDescription = "Login Illustration",
                     modifier = Modifier.size(200.dp)
                 )
-                NameInput(nameState = name, enabled = !loading, onAction = KeyboardActions {
-                    keyboardController?.hide()
-                })
+                NameInput(nameState = name, enabled = !loading)
             } else {
                 Image(
                     painter = painterResource(id = R.drawable.loginillustration),
@@ -173,10 +171,7 @@ fun UserForm(
                     modifier = Modifier.size(300.dp)
                 )
             }
-            EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
-                passwordFocusRequest.requestFocus()
-                keyboardController?.hide()
-            })
+            EmailInput(emailState = email, enabled = !loading)
             PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
                 passwordState = password,
                 labelId = "Password",
@@ -184,7 +179,6 @@ fun UserForm(
                 passwordVisibility = passwordVisibility,
                 onAction = KeyboardActions {
                     if (!valid) return@KeyboardActions
-                    onDone(email.value.trim(), password.value.trim())
                     keyboardController?.hide()
                 })
             if (isCreateAccount) {
@@ -243,7 +237,6 @@ fun UserForm(
                     scope.launch {
                         dataStore.saveName(name.value)
                     }
-                    // TODO Save name to datastore
                 } else {
                     onDone(email.value.trim(), password.value.trim())
                 }

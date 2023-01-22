@@ -10,8 +10,12 @@ import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * gdfghjkjsxcvbkyutrdfmnbvcxfghjuytrsd
+ */
 class LoginScreenViewModel(application: Application) : AndroidViewModel(application) {
     private val auth: FirebaseAuth = Firebase.auth
 
@@ -20,7 +24,22 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
     // TODO FIX: This field leaks a context object
     private val context = getApplication<Application>().applicationContext
     private val dataStore = StoreUserName(context)
-    val displayName = dataStore.getName
+
+    private val _name = MutableStateFlow("")
+    val name: StateFlow<String> = _name
+
+    init {
+        viewModelScope.launch {
+            dataStore.getName
+                .onEach { value ->
+                    if (value != null) {
+                        _name.value = value
+                    }
+                }
+                .launchIn(this)
+        }
+    }
+
 
     fun createUserWithEmailAndPassword(email: String, password: String, home: () -> Unit) {
         if(_loading.value == false) {
@@ -28,16 +47,16 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {task ->
                 if(task.isSuccessful) {
+                    val displayName = name.value
+                    Log.e("DISPLAY NAME", "createUserWithEmailAndPassword: $displayName" )
                     home()
                 }
                     else{
-                    Log.d("TAG", "createUserWithEmailAndPassword: ${task.result}")
+                    Log.e("TAG", "createUserWithEmailAndPassword: ${task.result}")
                 }
                     _loading.value = false
-                    
                 }
         }
-
     }
 
     fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) = viewModelScope.launch {
@@ -45,7 +64,6 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d("TAG", "signInWithEmailAndPassword: SUCCESS!! ${task.result.toString()}")
                         // HomeScreen
                         home()
                     } else {

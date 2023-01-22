@@ -44,7 +44,6 @@ fun HomeScreen(
     if (user == null) {
         LoginScreen(navController, launcher, viewModel, dataStore)
     } else {
-        val dataStore = StoreUserName(context)
         // Main Screen Content
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             val name = dataStore.getName.collectAsState(initial = "")
