@@ -33,6 +33,7 @@ import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import com.grayseal.bookshelf.utils.isValidEmail
 import kotlinx.coroutines.launch
 
 
@@ -129,7 +130,9 @@ fun UserForm(
     val passwordFocusRequest = FocusRequester.Default
     val keyboardController = LocalSoftwareKeyboardController.current
     val valid = remember(email.value, password.value) {
-        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+        (email.value.trim().isNotEmpty()
+                && password.value.trim().isNotEmpty()
+                && password.value.length >= 6) && isValidEmail(email.value)
     }
     val token = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current

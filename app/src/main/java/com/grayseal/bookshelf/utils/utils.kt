@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.utils
 
 import android.content.Intent
+import android.util.Patterns
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -35,4 +36,8 @@ fun rememberFirebaseAuthLauncher(
             onAuthError(e)
         }
     }
+}
+
+fun isValidEmail(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
