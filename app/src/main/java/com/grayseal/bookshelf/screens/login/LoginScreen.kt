@@ -158,143 +158,132 @@ fun UserForm(
                     modifier = Modifier.size(300.dp)
                 )
             }
-            Scaffold(
-                content = { padding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(padding),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (isCreateAccount) {
+                    NameInput(nameState = name, enabled = !loading)
+                }
+                EmailInput(emailState = email, enabled = !loading)
+                PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
+                    passwordState = password,
+                    labelId = "Password",
+                    enabled = !loading,
+                    passwordVisibility = passwordVisibility,
+                    onAction = KeyboardActions {
+                        keyboardController?.hide()
+                    })
+                if (isCreateAccount) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
                     ) {
-                        if (isCreateAccount) {
-                            NameInput(nameState = name, enabled = !loading)
-                        }
-                        EmailInput(emailState = email, enabled = !loading)
-                        PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
-                            passwordState = password,
-                            labelId = "Password",
-                            enabled = !loading,
-                            passwordVisibility = passwordVisibility,
-                            onAction = KeyboardActions {
-                                keyboardController?.hide()
-                            })
-                        if (isCreateAccount) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Text(
-                                    buildAnnotatedString {
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = Gray500,
-                                                fontSize = 12.sp,
-                                                fontFamily = poppinsFamily
-                                            )
-                                        ) {
-                                            append("By signing up, you agree to our ")
-                                        }
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = Pink500,
-                                                fontSize = 12.sp,
-                                                fontFamily = poppinsFamily
-                                            )
-                                        ) {
-                                            append("Terms of Use ")
-                                        }
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = Gray500,
-                                                fontSize = 12.sp,
-                                                fontFamily = poppinsFamily
-                                            )
-                                        ) {
-                                            append("and ")
-                                        }
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = Pink500,
-                                                fontSize = 12.sp,
-                                                fontFamily = poppinsFamily
-                                            )
-                                        ) {
-                                            append("Privacy Policy")
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                        SubmitButton(
-                            textId = if (isCreateAccount) "Create Account" else "Log in",
-                            loading = loading,
-                            validInputs = valid
-                        ) {
-                            if (isCreateAccount) {
-                                onDone(email.value.trim(), password.value.trim())
-                                name.value.trim()
-                                // Instantiate the StoreUserName class
-                                scope.launch {
-                                    dataStore.saveName(name.value)
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Gray500,
+                                        fontSize = 12.sp,
+                                        fontFamily = poppinsFamily
+                                    )
+                                ) {
+                                    append("By signing up, you agree to our ")
                                 }
-                            } else {
-                                onDone(email.value.trim(), password.value.trim())
-                            }
-                        }
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(5.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
-                                fontFamily = poppinsFamily,
-                                fontSize = 13.sp,
-                                color = Gray500,
-                                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
-                            )
-                            Row(horizontalArrangement = Arrangement.Center) {
-                                ContinueGoogle {
-                                    val gso =
-                                        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                            .requestIdToken(token)
-                                            .requestEmail()
-                                            .build()
-                                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                                    launcher.launch(googleSignInClient.signInIntent)
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Pink500,
+                                        fontSize = 12.sp,
+                                        fontFamily = poppinsFamily
+                                    )
+                                ) {
+                                    append("Terms of Use ")
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Gray500,
+                                        fontSize = 12.sp,
+                                        fontFamily = poppinsFamily
+                                    )
+                                ) {
+                                    append("and ")
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Pink500,
+                                        fontSize = 12.sp,
+                                        fontFamily = poppinsFamily
+                                    )
+                                ) {
+                                    append("Privacy Policy")
                                 }
                             }
-                            Row(
-                                modifier = Modifier.padding(top = 8.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                val text = if (showLoginForm.value) "Sign Up" else "Log in"
-                                val desc =
-                                    if (showLoginForm.value) "Don't have an account?" else "Already have an account?"
-                                Text(
-                                    text = desc,
-                                    fontFamily = poppinsFamily,
-                                    fontSize = 14.sp,
-                                    color = Gray500
-                                )
-                                Text(text,
-                                    fontFamily = poppinsFamily,
-                                    fontSize = 14.sp,
-                                    color = Pink500,
-                                    modifier = Modifier
-                                        .clickable {
-                                            showLoginForm.value = !showLoginForm.value
-                                        }
-                                        .padding(start = 5.dp),
-                                    fontWeight = FontWeight.Bold)
-                            }
+                        )
+                    }
+                }
+                SubmitButton(
+                    textId = if (isCreateAccount) "Create Account" else "Log in",
+                    loading = loading,
+                    validInputs = valid
+                ) {
+                    if (isCreateAccount) {
+                        onDone(email.value.trim(), password.value.trim())
+                        name.value.trim()
+                        // Instantiate the StoreUserName class
+                        scope.launch {
+                            dataStore.saveName(name.value)
                         }
+                    } else {
+                        onDone(email.value.trim(), password.value.trim())
                     }
-                },
-                snackbarHost = {
-                    SnackbarHost(snackbarHostState, snackbar = {
-                        Text("errorMessage")
-                    }
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
+                        fontFamily = poppinsFamily,
+                        fontSize = 13.sp,
+                        color = Gray500,
+                        modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                     )
-                })
+                    Row(horizontalArrangement = Arrangement.Center) {
+                        ContinueGoogle {
+                            val gso =
+                                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                    .requestIdToken(token)
+                                    .requestEmail()
+                                    .build()
+                            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                            launcher.launch(googleSignInClient.signInIntent)
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        val text = if (showLoginForm.value) "Sign Up" else "Log in"
+                        val desc =
+                            if (showLoginForm.value) "Don't have an account?" else "Already have an account?"
+                        Text(
+                            text = desc,
+                            fontFamily = poppinsFamily,
+                            fontSize = 14.sp,
+                            color = Gray500
+                        )
+                        Text(text,
+                            fontFamily = poppinsFamily,
+                            fontSize = 14.sp,
+                            color = Pink500,
+                            modifier = Modifier
+                                .clickable {
+                                    showLoginForm.value = !showLoginForm.value
+                                }
+                                .padding(start = 5.dp),
+                            fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
         }
     }
 }
