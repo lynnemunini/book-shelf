@@ -47,6 +47,7 @@ fun LoginScreen(
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,6 +56,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (showLoginForm.value) UserForm(
+            showLoginForm = showLoginForm,
             launcher = launcher,
             dataStore = dataStore,
             textIntro = "Welcome Back,",
@@ -69,6 +71,7 @@ fun LoginScreen(
         }
         else {
             UserForm(
+                showLoginForm = showLoginForm,
                 launcher = launcher,
                 dataStore = dataStore,
                 textIntro = "Create Your Account",
@@ -82,31 +85,13 @@ fun LoginScreen(
                 }
             }
         }
-        Row(
-            modifier = Modifier.padding(top = 8.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            val text = if (showLoginForm.value) "Sign Up" else "Log in"
-            val desc =
-                if (showLoginForm.value) "Don't have an account?" else "Already have an account?"
-            Text(text = desc, fontFamily = poppinsFamily, fontSize = 14.sp, color = Gray500)
-            Text(text,
-                fontFamily = poppinsFamily,
-                fontSize = 14.sp,
-                color = Pink500,
-                modifier = Modifier
-                    .clickable {
-                        showLoginForm.value = !showLoginForm.value
-                    }
-                    .padding(start = 5.dp),
-                fontWeight = FontWeight.Bold)
-        }
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserForm(
+    showLoginForm: MutableState<Boolean>,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     dataStore: StoreUserName,
     textIntro: String,
@@ -136,6 +121,7 @@ fun UserForm(
     }
     val token = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
 
     // a coroutine scope
@@ -159,14 +145,12 @@ fun UserForm(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             if (isCreateAccount) {
                 Image(
                     painter = painterResource(id = R.drawable.loginillustration),
                     contentDescription = "Login Illustration",
                     modifier = Modifier.size(200.dp)
                 )
-                NameInput(nameState = name, enabled = !loading)
             } else {
                 Image(
                     painter = painterResource(id = R.drawable.loginillustration),
@@ -174,99 +158,143 @@ fun UserForm(
                     modifier = Modifier.size(300.dp)
                 )
             }
-            EmailInput(emailState = email, enabled = !loading)
-            PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
-                passwordState = password,
-                labelId = "Password",
-                enabled = !loading,
-                passwordVisibility = passwordVisibility,
-                onAction = KeyboardActions {
-                    if (!valid) return@KeyboardActions
-                    keyboardController?.hide()
-                })
-            if (isCreateAccount) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    color = Gray500,
-                                    fontSize = 12.sp,
-                                    fontFamily = poppinsFamily
-                                )
+            Scaffold(
+                content = { padding ->
+                    Column(
+                        modifier = Modifier
+                            .padding(padding),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (isCreateAccount) {
+                            NameInput(nameState = name, enabled = !loading)
+                        }
+                        EmailInput(emailState = email, enabled = !loading)
+                        PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
+                            passwordState = password,
+                            labelId = "Password",
+                            enabled = !loading,
+                            passwordVisibility = passwordVisibility,
+                            onAction = KeyboardActions {
+                                keyboardController?.hide()
+                            })
+                        if (isCreateAccount) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start
                             ) {
-                                append("By signing up, you agree to our ")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    color = Pink500,
-                                    fontSize = 12.sp,
-                                    fontFamily = poppinsFamily
+                                Text(
+                                    buildAnnotatedString {
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = Gray500,
+                                                fontSize = 12.sp,
+                                                fontFamily = poppinsFamily
+                                            )
+                                        ) {
+                                            append("By signing up, you agree to our ")
+                                        }
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = Pink500,
+                                                fontSize = 12.sp,
+                                                fontFamily = poppinsFamily
+                                            )
+                                        ) {
+                                            append("Terms of Use ")
+                                        }
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = Gray500,
+                                                fontSize = 12.sp,
+                                                fontFamily = poppinsFamily
+                                            )
+                                        ) {
+                                            append("and ")
+                                        }
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = Pink500,
+                                                fontSize = 12.sp,
+                                                fontFamily = poppinsFamily
+                                            )
+                                        ) {
+                                            append("Privacy Policy")
+                                        }
+                                    }
                                 )
-                            ) {
-                                append("Terms of Use ")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    color = Gray500,
-                                    fontSize = 12.sp,
-                                    fontFamily = poppinsFamily
-                                )
-                            ) {
-                                append("and ")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    color = Pink500,
-                                    fontSize = 12.sp,
-                                    fontFamily = poppinsFamily
-                                )
-                            ) {
-                                append("Privacy Policy")
                             }
                         }
+                        SubmitButton(
+                            textId = if (isCreateAccount) "Create Account" else "Log in",
+                            loading = loading,
+                            validInputs = valid
+                        ) {
+                            if (isCreateAccount) {
+                                onDone(email.value.trim(), password.value.trim())
+                                name.value.trim()
+                                // Instantiate the StoreUserName class
+                                scope.launch {
+                                    dataStore.saveName(name.value)
+                                }
+                            } else {
+                                onDone(email.value.trim(), password.value.trim())
+                            }
+                        }
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
+                                fontFamily = poppinsFamily,
+                                fontSize = 13.sp,
+                                color = Gray500,
+                                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                            )
+                            Row(horizontalArrangement = Arrangement.Center) {
+                                ContinueGoogle {
+                                    val gso =
+                                        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                            .requestIdToken(token)
+                                            .requestEmail()
+                                            .build()
+                                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                                    launcher.launch(googleSignInClient.signInIntent)
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.padding(top = 8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                val text = if (showLoginForm.value) "Sign Up" else "Log in"
+                                val desc =
+                                    if (showLoginForm.value) "Don't have an account?" else "Already have an account?"
+                                Text(
+                                    text = desc,
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 14.sp,
+                                    color = Gray500
+                                )
+                                Text(text,
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 14.sp,
+                                    color = Pink500,
+                                    modifier = Modifier
+                                        .clickable {
+                                            showLoginForm.value = !showLoginForm.value
+                                        }
+                                        .padding(start = 5.dp),
+                                    fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                },
+                snackbarHost = {
+                    SnackbarHost(snackbarHostState, snackbar = {
+                        Text("errorMessage")
+                    }
                     )
-                }
-            }
-            SubmitButton(
-                textId = if (isCreateAccount) "Create Account" else "Log in",
-                loading = loading,
-                validInputs = valid
-            ) {
-                if (isCreateAccount) {
-                    onDone(email.value.trim(), password.value.trim())
-                    name.value.trim()
-                    // Instantiate the StoreUserName class
-                    scope.launch {
-                        dataStore.saveName(name.value)
-                    }
-                } else {
-                    onDone(email.value.trim(), password.value.trim())
-                }
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
-                    fontFamily = poppinsFamily,
-                    fontSize = 13.sp,
-                    color = Gray500,
-                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
-                )
-                Row(horizontalArrangement = Arrangement.Center) {
-                    ContinueGoogle {
-                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(token)
-                            .requestEmail()
-                            .build()
-                        val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                        launcher.launch(googleSignInClient.signInIntent)
-                    }
-                }
-
-            }
+                })
         }
     }
 }
