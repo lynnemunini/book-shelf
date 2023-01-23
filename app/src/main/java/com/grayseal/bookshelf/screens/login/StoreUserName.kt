@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 /**
 Class to store and retrieve a user's name using DataStore.
 
-@param context The context of the application.
+* @param context The context of the application.
  */
 class StoreUserName(private val context: Context) {
     // to make sure there's only one instance

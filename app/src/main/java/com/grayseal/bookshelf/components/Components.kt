@@ -37,13 +37,13 @@ import com.grayseal.bookshelf.utils.isValidEmail
 /**
 
 EmailInput is a composable function that creates an email input field.
-@param modifier: Modifier, the modifier to be applied to the input field.
-@param emailState: MutableState<String>, the state object that holds the current value of the input field.
-@param labelId: String, the label id of the input field
-@param enabled: Boolean, flag that indicates whether the input field is enabled or not.
-@param imeAction: ImeAction, the action that should be taken when the input field is activated.
-@param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
-@return None
+* @param modifier: Modifier, the modifier to be applied to the input field.
+* @param emailState: MutableState<String>, the state object that holds the current value of the input field.
+* @param labelId: String, the label id of the input field
+* @param enabled: Boolean, flag that indicates whether the input field is enabled or not.
+* @param imeAction: ImeAction, the action that should be taken when the input field is activated.
+* @param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
+* @return None
  */
 @Composable
 fun EmailInput(
@@ -68,12 +68,12 @@ fun EmailInput(
 /**
 
 NameInput is a composable function that creates an input field for a user's name.
-@param nameState: MutableState<String>, the state object that holds the current value of the input field.
-@param labelId: String, the label id of the input field.
-@param enabled: Boolean, flag that indicates whether the input field is enabled or not.
-@param imeAction: ImeAction, the action that should be taken when the input field is activated.
-@param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
-@return None
+* @param nameState: MutableState<String>, the state object that holds the current value of the input field.
+* @param labelId: String, the label id of the input field.
+* @param enabled: Boolean, flag that indicates whether the input field is enabled or not.
+* @param imeAction: ImeAction, the action that should be taken when the input field is activated.
+* @param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
+* @return None
  */
 @Composable
 fun NameInput(
@@ -135,13 +135,13 @@ fun NameInput(
 /**
 
 PasswordInput is a composable function that creates a password input field.
-@param modifier: Modifier, the modifier to be applied to the input field.
-@param passwordState: MutableState<String>, the state object that holds the current value of the password input field.
-@param labelId: String, the label id of the input field.
-@param enabled: Boolean, flag that indicates whether the input field is enabled or not.
-@param passwordVisibility: MutableState<Boolean>, the state object that holds the current visibility of the password.
-@param imeAction: ImeAction, the action that should be taken when the input field is activated.
-@return None
+* @param modifier: Modifier, the modifier to be applied to the input field.
+* @param passwordState: MutableState<String>, the state object that holds the current value of the password input field.
+* @param labelId: String, the label id of the input field.
+* @param enabled: Boolean, flag that indicates whether the input field is enabled or not.
+* @param passwordVisibility: MutableState<Boolean>, the state object that holds the current visibility of the password.
+* @param imeAction: ImeAction, the action that should be taken when the input field is activated.
+* @return None
 */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -223,8 +223,8 @@ fun PasswordInput(
 /**
 
 PasswordVisibility is a composable function that creates a button to toggle the visibility of the password input field.
-@param passwordVisibility: MutableState<Boolean>, the state object that holds the current visibility of the password.
-@return None
+* @param passwordVisibility: MutableState<Boolean>, the state object that holds the current visibility of the password.
+* @return None
  */
 @Composable
 fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
@@ -249,15 +249,15 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 /**
 
 EmailInputField is a composable function that creates an input field for a user's email address.
-@param modifier: Modifier, the modifier to be applied to the input field.
-@param valueState: MutableState<String>, the state object that holds the current value of the email input field.
-@param labelId: String, the label id of the input field.
-@param enabled: Boolean, flag that indicates whether the input field is enabled or not.
-@param isSingleLine: Boolean, flag that indicates whether the input field is single or multi-line.
-@param keyboardType: KeyboardType, the type of keyboard to be used for the input field.
-@param imeAction: ImeAction, the action that should be taken when the input field is activated.
-@param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
-@return None
+* @param modifier: Modifier, the modifier to be applied to the input field.
+* @param valueState: MutableState<String>, the state object that holds the current value of the email input field.
+* @param labelId: String, the label id of the input field.
+* @param enabled: Boolean, flag that indicates whether the input field is enabled or not.
+* @param isSingleLine: Boolean, flag that indicates whether the input field is single or multi-line.
+* @param keyboardType: KeyboardType, the type of keyboard to be used for the input field.
+* @param imeAction: ImeAction, the action that should be taken when the input field is activated.
+* @param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
+* @return None
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -331,11 +331,11 @@ fun EmailInputField(
 /**
 
 SubmitButton is a composable function that creates a button for submitting a form.
-@param textId: String, the text displayed on the button.
-@param loading: Boolean, flag that indicates whether the button is in a loading state or not.
-@param validInputs: Boolean, flag that indicates whether the form inputs are valid or not.
-@param onClick: () -> Unit, callback function that is called when the button is clicked.
-@return None
+* @param textId: String, the text displayed on the button.
+* @param loading: Boolean, flag that indicates whether the button is in a loading state or not.
+* @param validInputs: Boolean, flag that indicates whether the form inputs are valid or not.
+* @param onClick: () -> Unit, callback function that is called when the button is clicked.
+* @return None
  */
 @Composable
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
@@ -380,8 +380,8 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
 /**
 
 ContinueGoogle is a composable function that creates an image of the google icon that can be clicked to continue with google sign in.
-@param onClick: () -> Unit, callback function that is called when the google icon is clicked
-@return None
+* @param onClick: () -> Unit, callback function that is called when the google icon is clicked
+* @return None
  */
 @Composable
 fun ContinueGoogle(onClick: () -> Unit) {

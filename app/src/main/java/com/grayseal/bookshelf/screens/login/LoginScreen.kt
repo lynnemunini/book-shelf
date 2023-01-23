@@ -39,14 +39,10 @@ import kotlinx.coroutines.launch
 /**
 
 Composable function to display a login screen.
-
-@param navController The NavController used to navigate to different screens.
-
-@param launcher The ManagedActivityResultLauncher used to handle activity results.
-
-@param viewModel The viewModel containing logic for login and creating a user.
-
-@param dataStore The dataStore used to store and retrieve user information.
+* @param navController The NavController used to navigate to different screens.
+* @param launcher The ManagedActivityResultLauncher used to handle activity results.
+* @param viewModel The viewModel containing logic for login and creating a user.
+* @param dataStore The dataStore used to store and retrieve user information.
  */
 @Composable
 fun LoginScreen(
@@ -102,22 +98,14 @@ fun LoginScreen(
 /**
 
 Composable function to display a user form for login or account creation.
-
-@param showLoginForm A MutableState that holds a boolean indicating whether the login form should be shown or not.
-
-@param launcher The ManagedActivityResultLauncher used to handle activity results.
-
-@param dataStore The dataStore used to store and retrieve user information.
-
-@param textIntro The introduction text to be displayed above the form
-
-@param textDesc The description text to be displayed above the form
-
-@param loading A boolean indicating whether the form is in loading state or not.
-
-@param isCreateAccount A boolean indicating whether the form is for account creation or login.
-
-@param onDone A function to be called when the form is submitted, takes in email and password as arguments.
+* @param showLoginForm A MutableState that holds a boolean indicating whether the login form should be shown or not.
+* @param launcher The ManagedActivityResultLauncher used to handle activity results.
+* @param dataStore The dataStore used to store and retrieve user information.
+* @param textIntro The introduction text to be displayed above the form
+* @param textDesc The description text to be displayed above the form
+* @param loading A boolean indicating whether the form is in loading state or not.
+* @param isCreateAccount A boolean indicating whether the form is for account creation or login.
+* @param onDone A function to be called when the form is submitted, takes in email and password as arguments.
  */
 @Composable
 fun UserForm(
