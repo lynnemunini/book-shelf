@@ -8,6 +8,9 @@ The app utilizes Firestore, a No-SQL database service provided by Google, to sto
 
 In order to help with understanding the data structure and organization of the app, a sample of the JSON data used in the app is provided below
 
+<details>
+<summary>JSON data structure</summary>
+
 ```json
 {
     "users": [
@@ -123,9 +126,11 @@ In order to help with understanding the data structure and organization of the a
 }
 ```
 
+</details>
+
 **Diagram Representation of the JSON Data Structure**
 
-<img src="images/diagram.svg" alt="Diagram" width="80%">
+<img src="images/diagram.svg" alt="Diagram" width="100%">
 
 ### Authentication
 The app uses Firebase Authentication to handle user authentication. The app uses email/password authentication and Google authentication. 
