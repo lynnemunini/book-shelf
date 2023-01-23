@@ -13,6 +13,12 @@ import com.grayseal.bookshelf.screens.login.StoreUserName
 import com.grayseal.bookshelf.screens.search.SearchScreen
 import com.grayseal.bookshelf.screens.shelf.ShelfScreen
 
+/**
+
+Composable function to handle navigation between screens in the BookShelf app.
+This function uses the rememberNavController() function to create a NavController and
+NavHost to handle navigation between different screens using the provided startDestination
+*/
 @Composable
 fun BookShelfNavigation(){
     val navController = rememberNavController()
