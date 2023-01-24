@@ -53,9 +53,9 @@ data class Review (
 )
 
 /**
-* @property name the name of the shelf
-* @property books a list of books in the shelf
-*/
+ * @property name the name of the shelf
+ * @property books a list of books in the shelf
+ */
 data class Shelf (
     val name: String,
     val books: List<Book>
