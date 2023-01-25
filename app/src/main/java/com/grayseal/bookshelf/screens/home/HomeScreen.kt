@@ -15,8 +15,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.material.icons.rounded.LibraryAdd
 import androidx.compose.material.icons.rounded.MenuBook
+import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -101,6 +103,7 @@ fun HomeContent() {
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun TopHeader(displayName: String = "Lynne") {
     Row(
@@ -113,7 +116,6 @@ fun TopHeader(displayName: String = "Lynne") {
                 .size(60.dp)
                 .background(color = Color.Transparent, shape = CircleShape),
             shape = CircleShape,
-//            border = BorderStroke(width = 1.dp, color = Pink200)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.wall_burst),
@@ -136,12 +138,13 @@ fun TopHeader(displayName: String = "Lynne") {
             Surface(
                 modifier = Modifier.size(50.dp),
                 shape = CircleShape,
-                color = Color.Transparent
+                color = Color.Transparent,
+                border = BorderStroke(width = 0.9.dp, color = Gray200)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.MenuBook,
-                    contentDescription = "Search",
-                    tint = Color.LightGray,
+                    contentDescription = "Home",
+                    tint = Gray700.copy(alpha = 0.8f),
                     modifier = Modifier
                         .padding(10.dp)
                         .background(color = Color.Transparent)
@@ -159,7 +162,7 @@ fun MainCard() {
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF3940d6), Color(0xFF804eee), Color(0xFF804eee), Color(0xFF804eee)
+                        Color(0xFF3940d6), Color(0xFF804eee), Color(0xFFfe999e)
                     ),
                     start = Offset(0f, 0f), // top left corner
                     end = Offset(boxSize, boxSize)
@@ -254,7 +257,7 @@ fun Categories() {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
-        color = Gray700,
+        color = Gray700.copy(alpha = 0.8f),
         modifier = Modifier.padding(top = 20.dp)
     )
     val keysList = categories.keys.toList()
@@ -263,5 +266,10 @@ fun Categories() {
             Category(category = item, image = categories[item]!!)
         }
     }
+}
+
+@Composable
+fun ReadingList(){
+
 }
 

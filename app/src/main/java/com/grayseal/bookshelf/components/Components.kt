@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -399,7 +400,7 @@ fun ContinueGoogle(onClick: () -> Unit) {
 
 @Composable
 fun Category(category: String, image: Int){
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Surface(
             modifier = Modifier
                 .size(50.dp)
@@ -416,7 +417,7 @@ fun Category(category: String, image: Int){
             category,
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
-            color = Gray500,
+            color = Gray700.copy(alpha = 0.6f),
             modifier = Modifier.padding(top = 5.dp)
         )
     }
