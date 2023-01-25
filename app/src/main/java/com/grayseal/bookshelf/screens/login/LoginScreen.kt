@@ -5,17 +5,15 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -39,10 +37,10 @@ import kotlinx.coroutines.launch
 /**
 
 Composable function to display a login screen.
-* @param navController The NavController used to navigate to different screens.
-* @param launcher The ManagedActivityResultLauncher used to handle activity results.
-* @param viewModel The viewModel containing logic for login and creating a user.
-* @param dataStore The dataStore used to store and retrieve user information.
+ * @param navController The NavController used to navigate to different screens.
+ * @param launcher The ManagedActivityResultLauncher used to handle activity results.
+ * @param viewModel The viewModel containing logic for login and creating a user.
+ * @param dataStore The dataStore used to store and retrieve user information.
  */
 @Composable
 fun LoginScreen(
@@ -98,14 +96,14 @@ fun LoginScreen(
 /**
 
 Composable function to display a user form for login or account creation.
-* @param showLoginForm A MutableState that holds a boolean indicating whether the login form should be shown or not.
-* @param launcher The ManagedActivityResultLauncher used to handle activity results.
-* @param dataStore The dataStore used to store and retrieve user information.
-* @param textIntro The introduction text to be displayed above the form
-* @param textDesc The description text to be displayed above the form
-* @param loading A boolean indicating whether the form is in loading state or not.
-* @param isCreateAccount A boolean indicating whether the form is for account creation or login.
-* @param onDone A function to be called when the form is submitted, takes in email and password as arguments.
+ * @param showLoginForm A MutableState that holds a boolean indicating whether the login form should be shown or not.
+ * @param launcher The ManagedActivityResultLauncher used to handle activity results.
+ * @param dataStore The dataStore used to store and retrieve user information.
+ * @param textIntro The introduction text to be displayed above the form
+ * @param textDesc The description text to be displayed above the form
+ * @param loading A boolean indicating whether the form is in loading state or not.
+ * @param isCreateAccount A boolean indicating whether the form is for account creation or login.
+ * @param onDone A function to be called when the form is submitted, takes in email and password as arguments.
  */
 @Composable
 fun UserForm(
@@ -180,12 +178,13 @@ fun UserForm(
                     NameInput(nameState = name, enabled = !loading)
                 }
                 EmailInput(emailState = email, enabled = !loading)
-                PasswordInput(modifier = Modifier.focusRequester(passwordFocusRequest),
+                PasswordInput(
+                    modifier = Modifier.focusRequester(passwordFocusRequest),
                     passwordState = password,
                     labelId = "Password",
                     enabled = !loading,
                     passwordVisibility = passwordVisibility,
-                    )
+                )
                 if (isCreateAccount) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
