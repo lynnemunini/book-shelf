@@ -7,6 +7,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -35,6 +37,8 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.components.Category
+import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
@@ -42,6 +46,7 @@ import com.grayseal.bookshelf.screens.login.StoreUserName
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import kotlinx.coroutines.launch
+import org.checkerframework.checker.units.qual.h
 
 @Composable
 fun HomeScreen(
@@ -92,6 +97,7 @@ fun HomeContent() {
     ) {
         TopHeader()
         MainCard()
+        Categories()
     }
 }
 
@@ -135,7 +141,7 @@ fun TopHeader(displayName: String = "Lynne") {
                 Icon(
                     imageVector = Icons.Rounded.MenuBook,
                     contentDescription = "Search",
-                    tint = Pink500,
+                    tint = Color.LightGray,
                     modifier = Modifier
                         .padding(10.dp)
                         .background(color = Color.Transparent)
@@ -240,3 +246,21 @@ fun MainCard() {
         }
     }
 }
+
+@Composable
+fun Categories() {
+    Text(
+        "Categories",
+        fontFamily = poppinsFamily,
+        fontSize = 15.sp,
+        color = Gray700,
+        modifier = Modifier.padding(top = 20.dp, end = 20.dp)
+    )
+    val keysList = categories.keys.toList()
+    LazyRow(modifier = Modifier.padding(top = 20.dp, end = 20.dp), horizontalArrangement = Arrangement.spacedBy(30.dp)) {
+        items(items = keysList) { item: String ->
+            Category(category = item, image = categories[item]!!)
+        }
+    }
+}
+

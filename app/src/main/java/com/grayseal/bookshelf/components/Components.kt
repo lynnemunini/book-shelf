@@ -1,11 +1,11 @@
 package com.grayseal.bookshelf.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,13 +26,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.grayseal.bookshelf.R
-import com.grayseal.bookshelf.ui.theme.Gray500
-import com.grayseal.bookshelf.ui.theme.Pink500
-import com.grayseal.bookshelf.ui.theme.Yellow
-import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
 
 /**
@@ -395,4 +394,29 @@ fun ContinueGoogle(onClick: () -> Unit) {
             .height(28.dp)
             .clickable(onClick = onClick)
     )
+}
+
+
+@Composable
+fun Category(category: String, image: Int){
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+        Surface(
+            modifier = Modifier
+                .size(50.dp)
+                .background(color = Pink500, shape = CircleShape),
+            shape = CircleShape,
+            color = Pink200
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = "Category"
+            )
+        }
+        Text(
+            category,
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = Gray700
+        )
+    }
 }
