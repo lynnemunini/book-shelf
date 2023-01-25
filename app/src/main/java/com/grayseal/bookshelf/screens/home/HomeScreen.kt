@@ -252,12 +252,13 @@ fun Categories() {
     Text(
         "Categories",
         fontFamily = poppinsFamily,
-        fontSize = 15.sp,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
         color = Gray700,
-        modifier = Modifier.padding(top = 20.dp, end = 20.dp)
+        modifier = Modifier.padding(top = 20.dp)
     )
     val keysList = categories.keys.toList()
-    LazyRow(modifier = Modifier.padding(top = 20.dp, end = 20.dp), horizontalArrangement = Arrangement.spacedBy(30.dp)) {
+    LazyRow(modifier = Modifier.padding(top = 10.dp, bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(30.dp)) {
         items(items = keysList) { item: String ->
             Category(category = item, image = categories[item]!!)
         }

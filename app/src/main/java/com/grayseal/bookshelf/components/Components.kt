@@ -416,7 +416,8 @@ fun Category(category: String, image: Int){
             category,
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
-            color = Gray700
+            color = Gray500,
+            modifier = Modifier.padding(top = 5.dp)
         )
     }
 }
