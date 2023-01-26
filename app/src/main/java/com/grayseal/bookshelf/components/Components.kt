@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,10 +26,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
@@ -399,8 +396,12 @@ fun ContinueGoogle(onClick: () -> Unit) {
 
 
 @Composable
-fun Category(category: String, image: Int){
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+fun Category(category: String, image: Int) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Surface(
             modifier = Modifier
                 .size(50.dp)
@@ -419,6 +420,34 @@ fun Category(category: String, image: Int){
             fontSize = 13.sp,
             color = Gray700.copy(alpha = 0.6f),
             modifier = Modifier.padding(top = 5.dp)
+        )
+    }
+}
+
+@Composable
+fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
+    Column() {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            backgroundColor = Color.Transparent
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = "Book Image",
+            )
+        }
+        Text(
+            bookTitle,
+            fontFamily = poppinsFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            color = Gray700.copy(alpha = 0.8f),
+        )
+        Text(
+            bookAuthor,
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = Gray700.copy(alpha = 0.6f),
         )
     }
 }

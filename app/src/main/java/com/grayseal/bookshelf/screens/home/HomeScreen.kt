@@ -15,31 +15,30 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.material.icons.rounded.LibraryAdd
 import androidx.compose.material.icons.rounded.MenuBook
-import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
+import com.grayseal.bookshelf.components.Reading
 import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
@@ -48,7 +47,6 @@ import com.grayseal.bookshelf.screens.login.StoreUserName
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import kotlinx.coroutines.launch
-import org.checkerframework.checker.units.qual.h
 
 @Composable
 fun HomeScreen(
@@ -100,6 +98,7 @@ fun HomeContent() {
         TopHeader()
         MainCard()
         Categories()
+        ReadingList()
     }
 }
 
@@ -154,94 +153,91 @@ fun TopHeader(displayName: String = "Lynne") {
     }
 }
 
+@Preview
 @Composable
 fun MainCard() {
-    val boxSize = with(LocalDensity.current) { 300.dp.toPx() }
-    Box(
-        modifier = Modifier
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF3940d6), Color(0xFF804eee), Color(0xFFfe999e)
-                    ),
-                    start = Offset(0f, 0f), // top left corner
-                    end = Offset(boxSize, boxSize)
-                ), // bottom right corner
-                shape = RoundedCornerShape(20.dp),
+    Card(shape = RoundedCornerShape(20.dp)){
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.card),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop
             )
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                "Track your", fontFamily = poppinsFamily,
-                fontSize = 23.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 10.dp)
-            )
-            Text(
-                "reading activity", fontFamily = poppinsFamily,
-                fontSize = 23.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            )
-            Box(
-                modifier = Modifier
-                    .padding(15.dp)
-                    .background(color = Pink200, shape = RoundedCornerShape(15.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    "Track your", fontFamily = poppinsFamily,
+                    fontSize = 23.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+                Text(
+                    "reading activity", fontFamily = poppinsFamily,
+                    fontSize = 23.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(15.dp)
+                        .background(color = Pink200, shape = RoundedCornerShape(15.dp)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Surface(
+                    Row(
                         modifier = Modifier
-                            .size(50.dp)
-                            .background(color = Color.Transparent, shape = CircleShape),
-                        shape = CircleShape,
-                        border = BorderStroke(width = 1.dp, color = Pink200)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.wall_burst),
-                            contentDescription = "Book Picture"
-                        )
-                    }
-                    Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
-                        Text(
-                            "Book Title", fontFamily = poppinsFamily,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Pink700
-                        )
-                        Text(
-                            "Continue reading", fontFamily = poppinsFamily,
-                            fontSize = 13.sp,
-                            color = Pink700
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.End
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Surface(
-                            modifier = Modifier.size(30.dp),
+                            modifier = Modifier
+                                .size(50.dp)
+                                .background(color = Color.Transparent, shape = CircleShape),
                             shape = CircleShape,
-                            color = Color.Transparent
+                            border = BorderStroke(width = 1.dp, color = Pink200)
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.LibraryAdd,
-                                contentDescription = "Add",
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .background(color = Color.Transparent)
+                            Image(
+                                painter = painterResource(id = R.drawable.wall_burst),
+                                contentDescription = "Book Picture"
                             )
+                        }
+                        Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
+                            Text(
+                                "Book Title", fontFamily = poppinsFamily,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Pink700
+                            )
+                            Text(
+                                "Continue reading", fontFamily = poppinsFamily,
+                                fontSize = 13.sp,
+                                color = Pink700
+                            )
+                        }
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(30.dp),
+                                shape = CircleShape,
+                                color = Color.Transparent
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.LibraryAdd,
+                                    contentDescription = "Add",
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .background(color = Color.Transparent)
+                                )
+                            }
                         }
                     }
                 }
@@ -261,7 +257,10 @@ fun Categories() {
         modifier = Modifier.padding(top = 20.dp)
     )
     val keysList = categories.keys.toList()
-    LazyRow(modifier = Modifier.padding(top = 10.dp, bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(30.dp)) {
+    LazyRow(
+        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(30.dp)
+    ) {
         items(items = keysList) { item: String ->
             Category(category = item, image = categories[item]!!)
         }
@@ -269,7 +268,22 @@ fun Categories() {
 }
 
 @Composable
-fun ReadingList(){
-
+fun ReadingList() {
+    Text(
+        "Reading List",
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
+        color = Gray700.copy(alpha = 0.8f)
+    )
+    val keysList = categories.keys.toList()
+    LazyRow(
+        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(30.dp)
+    ) {
+        items(items = keysList) { item: String ->
+            Reading(bookAuthor = "Dan Brown", bookTitle = "Deception Point", image = R.drawable.loginillustration)
+        }
+    }
 }
 

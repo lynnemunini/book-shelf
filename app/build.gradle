@@ -123,6 +123,9 @@ dependencies {
 
     // Preferences Datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // ConstraintLayout
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 }
 
 // Allow references to generated code
