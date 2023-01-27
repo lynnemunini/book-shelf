@@ -17,6 +17,8 @@ import androidx.compose.material.icons.rounded.LibraryAdd
 import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
@@ -85,20 +86,24 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun HomeContent() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        TopHeader()
-        MainCard()
-        Categories()
-        ReadingList()
-    }
+    Scaffold(content = {padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            TopHeader()
+            MainCard()
+            Categories()
+            ReadingList()
+        }
+    },
+    bottomBar = {})
 }
 
 @Preview(showBackground = true)
@@ -155,7 +160,7 @@ fun TopHeader(displayName: String = "Lynne") {
 @Preview
 @Composable
 fun MainCard() {
-    Card(shape = RoundedCornerShape(20.dp)){
+    Card(shape = RoundedCornerShape(20.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -282,7 +287,11 @@ fun ReadingList() {
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(items = keysList) { item: String ->
-            Reading(bookAuthor = "Dan Brown", bookTitle = "Deception Point", image = R.drawable.loginillustration)
+            Reading(
+                bookAuthor = "Dan Brown",
+                bookTitle = "Deception Point",
+                image = R.drawable.loginillustration
+            )
         }
     }
 }
