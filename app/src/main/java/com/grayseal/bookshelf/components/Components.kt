@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -417,7 +418,7 @@ fun Category(category: String, image: Int) {
         Text(
             category,
             fontFamily = poppinsFamily,
-            fontSize = 13.sp,
+            fontSize = 12.sp,
             color = Gray700.copy(alpha = 0.6f),
             modifier = Modifier.padding(top = 5.dp)
         )
@@ -428,26 +429,27 @@ fun Category(category: String, image: Int) {
 fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
     Column {
         Surface(
-            Modifier.size(200.dp),
+            Modifier.size(150.dp),
             shape = RoundedCornerShape(15.dp)
         ) {
             Image(
                 painter = painterResource(id = image),
                 contentDescription = "Book Image",
-                modifier = Modifier.background(color = Color.Transparent, shape = RoundedCornerShape(15.dp))
+                modifier = Modifier.background(color = Color.Transparent, shape = RoundedCornerShape(15.dp)),
+                contentScale = ContentScale.Crop
             )
         }
         Text(
             bookTitle,
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             color = Gray700.copy(alpha = 0.8f),
         )
         Text(
             bookAuthor,
             fontFamily = poppinsFamily,
-            fontSize = 13.sp,
+            fontSize = 12.sp,
             color = Gray700.copy(alpha = 0.6f),
         )
     }

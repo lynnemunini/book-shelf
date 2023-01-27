@@ -216,7 +216,7 @@ fun MainCard() {
                             )
                             Text(
                                 "Continue reading", fontFamily = poppinsFamily,
-                                fontSize = 13.sp,
+                                fontSize = 12.sp,
                                 color = Pink700
                             )
                         }
@@ -258,7 +258,7 @@ fun Categories() {
     val keysList = categories.keys.toList()
     LazyRow(
         modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(30.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(items = keysList) { item: String ->
             Category(category = item, image = categories[item]!!)
@@ -279,7 +279,7 @@ fun ReadingList() {
     LazyRow(
         modifier = Modifier
             .padding(top = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(30.dp)
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(items = keysList) { item: String ->
             Reading(bookAuthor = "Dan Brown", bookTitle = "Deception Point", image = R.drawable.loginillustration)
