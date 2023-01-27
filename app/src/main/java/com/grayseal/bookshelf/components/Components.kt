@@ -426,14 +426,15 @@ fun Category(category: String, image: Int) {
 
 @Composable
 fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
-    Column() {
-        Card(
-            shape = RoundedCornerShape(15.dp),
-            backgroundColor = Color.Transparent
+    Column {
+        Surface(
+            Modifier.size(200.dp),
+            shape = RoundedCornerShape(15.dp)
         ) {
             Image(
                 painter = painterResource(id = image),
                 contentDescription = "Book Image",
+                modifier = Modifier.background(color = Color.Transparent, shape = RoundedCornerShape(15.dp))
             )
         }
         Text(

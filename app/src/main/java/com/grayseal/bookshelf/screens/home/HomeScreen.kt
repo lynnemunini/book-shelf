@@ -3,9 +3,7 @@ package com.grayseal.bookshelf.screens.home
 import android.content.Intent
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -94,6 +92,7 @@ fun HomeContent() {
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         TopHeader()
         MainCard()
@@ -278,7 +277,8 @@ fun ReadingList() {
     )
     val keysList = categories.keys.toList()
     LazyRow(
-        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
+        modifier = Modifier
+            .padding(top = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         items(items = keysList) { item: String ->
