@@ -429,7 +429,7 @@ fun Category(category: String, image: Int) {
 fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
     Column {
         Surface(
-            Modifier.size(150.dp),
+            Modifier.size(120.dp),
             shape = RoundedCornerShape(15.dp)
         ) {
             Image(
