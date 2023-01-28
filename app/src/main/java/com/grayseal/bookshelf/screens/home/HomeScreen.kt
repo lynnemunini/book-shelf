@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -37,6 +38,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
+import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.components.Reading
 import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.navigation.BookShelfScreens
@@ -72,16 +74,16 @@ fun HomeScreen(
         LoginScreen(navController, launcher, viewModel, dataStore)
     } else {
         // Main Screen Content
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            val name = dataStore.getName.collectAsState(initial = "")
-            Text("Welcome ${name.value}")
-            Button(onClick = {
-                // TODO sign out
-                Firebase.auth.signOut()
-                navController.navigate(BookShelfScreens.HomeScreen.name)
-            }) {
-                Text("Sign Out")
-            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                val name = dataStore.getName.collectAsState(initial = "")
+                Text("Welcome ${name.value}")
+                Button(onClick = {
+                    // TODO sign out
+                    Firebase.auth.signOut()
+                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                }) {
+                    Text("Sign Out")
+                }
         }
     }
 }
@@ -90,20 +92,22 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun HomeContent() {
-    Scaffold(content = {padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            TopHeader()
-            MainCard()
-            Categories()
-            ReadingList()
-        }
-    },
-    bottomBar = {})
+        Scaffold(content = {padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                TopHeader()
+                MainCard()
+                Categories()
+                ReadingList()
+            }
+        },
+            bottomBar = {
+                NavBar()
+            })
 }
 
 @Preview(showBackground = true)

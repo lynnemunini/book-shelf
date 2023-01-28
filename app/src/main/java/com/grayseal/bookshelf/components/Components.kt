@@ -8,10 +8,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -74,6 +73,7 @@ NameInput is a composable function that creates an input field for a user's name
  * @param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
  * @return None
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameInput(
     nameState: MutableState<String>,
@@ -85,7 +85,7 @@ fun NameInput(
     Card(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = 20.dp
+        elevation = CardDefaults.cardElevation(20.dp)
     ) {
         var color by remember {
             mutableStateOf(Gray500)
@@ -112,7 +112,7 @@ fun NameInput(
             textStyle = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = poppinsFamily,
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colorScheme.background
             ),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -142,7 +142,7 @@ PasswordInput is a composable function that creates a password input field.
  * @param imeAction: ImeAction, the action that should be taken when the input field is activated.
  * @return None
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordInput(
     modifier: Modifier,
@@ -170,7 +170,7 @@ fun PasswordInput(
     Card(
         modifier = Modifier.padding(bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = 20.dp
+        elevation = CardDefaults.cardElevation(20.dp)
     ) {
         var color by remember {
             mutableStateOf(Gray500)
@@ -194,7 +194,7 @@ fun PasswordInput(
             textStyle = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = poppinsFamily,
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colorScheme.background
             ),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -259,7 +259,7 @@ EmailInputField is a composable function that creates an input field for a user'
  * @param onAction: KeyboardActions, the action that should be taken when the input field is deactivated.
  * @return None
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EmailInputField(
     modifier: Modifier = Modifier,
@@ -287,7 +287,7 @@ fun EmailInputField(
     Card(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = 20.dp
+        elevation = CardDefaults.cardElevation(20.dp)
     ) {
         var color by remember {
             mutableStateOf(Gray500)
@@ -311,7 +311,7 @@ fun EmailInputField(
             textStyle = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = poppinsFamily,
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colorScheme.background
             ),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -435,7 +435,10 @@ fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
             Image(
                 painter = painterResource(id = image),
                 contentDescription = "Book Image",
-                modifier = Modifier.background(color = Color.Transparent, shape = RoundedCornerShape(15.dp)),
+                modifier = Modifier.background(
+                    color = Color.Transparent,
+                    shape = RoundedCornerShape(15.dp)
+                ),
                 contentScale = ContentScale.Crop
             )
         }
@@ -452,5 +455,49 @@ fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
             fontSize = 12.sp,
             color = Gray700.copy(alpha = 0.6f),
         )
+    }
+}
+
+@Composable
+fun NavBar() {
+    var selectedItem by remember { mutableStateOf(0) }
+    val items = listOf("Home", "Shelves", "Favourites", "Reviews")
+    val navBarItems = mapOf(
+        items[0] to Icons.Rounded.Home,
+        items[1] to Icons.Rounded.MenuBook,
+        items[2] to Icons.Rounded.FavoriteBorder,
+        items[3] to Icons.Rounded.Reviews
+    )
+
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = {
+                    navBarItems[item]?.let {
+                        Icon(
+                            it,
+                            contentDescription = item,
+                        )
+                    }
+                },
+                label = {
+                    Text(
+                        item, fontFamily = poppinsFamily,
+                        fontSize = 12.sp,
+                    )
+                },
+                selected = selectedItem == index,
+                onClick = {
+                    selectedItem = index
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Purple500,
+                    selectedTextColor = Purple500,
+                    unselectedTextColor = Gray700.copy(alpha = 0.4f),
+                    unselectedIconColor = Gray700.copy(alpha = 0.4f),
+                    indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)
+                )
+            )
+        }
     }
 }
