@@ -6,7 +6,6 @@ import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -96,8 +96,38 @@ fun HomeContent() {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                Spacer(Modifier.height(12.dp))
+            ModalDrawerSheet(
+                modifier = Modifier.width(300.dp),
+                drawerShape = RectangleShape,
+                drawerContainerColor = Color.White,
+                drawerTonalElevation = 0.dp,
+            ) {
+                Spacer(Modifier.height(10.dp))
+                Surface(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(color = Color.Transparent, shape = CircleShape)
+                        .align(Alignment.CenterHorizontally),
+                    shape = CircleShape,
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.wall_burst),
+                        contentDescription = "Profile Picture"
+                    )
+                }
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        "Hi, Lynne!", fontFamily = loraFamily,
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        "16 books in your reading list", fontFamily = poppinsFamily,
+                        fontSize = 13.sp,
+                        color = Gray500
+                    )
+                }
+                Spacer(Modifier.height(30.dp))
                 items.forEach { item ->
                     NavigationDrawerItem(
                         icon = { androidx.compose.material3.Icon(item, contentDescription = null) },
@@ -112,6 +142,7 @@ fun HomeContent() {
                 }
             }
         },
+        scrimColor = Color.Transparent,
         content = {
             Scaffold(content = { padding ->
                 Column(
@@ -137,7 +168,8 @@ fun TopHeader(displayName: String = "Lynne") {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp), horizontalArrangement = Arrangement.Start
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+        horizontalArrangement = Arrangement.Start
     ) {
         Surface(
             modifier = Modifier
@@ -150,18 +182,6 @@ fun TopHeader(displayName: String = "Lynne") {
                 contentDescription = "Profile Picture"
             )
         }
-        /*Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
-            Text(
-                "Hi, $displayName!", fontFamily = loraFamily,
-                fontSize = 21.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                "16 books in your reading list", fontFamilyop = 20.dp,  = poppinsFamily,
-                fontSize = 13.sp,
-                color = Gray500
-            )
-        }*/
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Surface(
                 modifier = Modifier.size(48.dp),
@@ -185,7 +205,10 @@ fun TopHeader(displayName: String = "Lynne") {
 @Preview
 @Composable
 fun MainCard() {
-    Card(modifier = Modifier.padding(start = 20.dp, end = 20.dp), shape = RoundedCornerShape(20.dp)) {
+    Card(
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+        shape = RoundedCornerShape(20.dp)
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -291,11 +314,10 @@ fun Categories() {
         horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         itemsIndexed(items = keysList) { index: Int, item: String ->
-            if(index == 0) {
+            if (index == 0) {
                 Spacer(modifier = Modifier.width(20.dp))
                 categories[item]?.let { Category(category = item, image = it) }
-            }
-            else{
+            } else {
                 Category(category = item, image = categories[item]!!)
             }
         }
@@ -318,16 +340,15 @@ fun ReadingList() {
             .padding(top = 10.dp, start = 0.dp, end = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        itemsIndexed(items = keysList) {index: Int, item: String ->
-            if(index == 0) {
+        itemsIndexed(items = keysList) { index: Int, item: String ->
+            if (index == 0) {
                 Spacer(modifier = Modifier.width(20.dp))
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
                     image = R.drawable.loginillustration
                 )
-            }
-            else{
+            } else {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
