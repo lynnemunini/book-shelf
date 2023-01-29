@@ -35,3 +35,10 @@ val poppinsFamily = FontFamily(
     Font(R.font.poppins_light, FontWeight.Light),
     Font(R.font.poppins_medium, FontWeight.Medium)
 )
+
+val loraFamily = FontFamily(
+    Font(R.font.lora_bold, FontWeight.Bold),
+    Font(R.font.lora_regular, FontWeight.Normal),
+    Font(R.font.lora_semibold, FontWeight.SemiBold),
+    Font(R.font.lora_medium, FontWeight.Medium)
+)

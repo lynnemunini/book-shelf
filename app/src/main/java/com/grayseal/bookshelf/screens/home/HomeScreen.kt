@@ -130,7 +130,7 @@ fun TopHeader(displayName: String = "Lynne") {
         }
         Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
             Text(
-                "Hi, $displayName!", fontFamily = poppinsFamily,
+                "Hi, $displayName!", fontFamily = loraFamily,
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -257,9 +257,9 @@ fun MainCard() {
 fun Categories() {
     Text(
         "Categories",
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
+        fontFamily = loraFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 19.sp,
         color = Gray700.copy(alpha = 0.8f),
         modifier = Modifier.padding(top = 20.dp)
     )
@@ -278,9 +278,9 @@ fun Categories() {
 fun ReadingList() {
     Text(
         "Reading List",
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
+        fontFamily = loraFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 19.sp,
         color = Gray700.copy(alpha = 0.8f)
     )
     val keysList = categories.keys.toList()
