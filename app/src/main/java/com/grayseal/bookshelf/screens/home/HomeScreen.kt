@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LibraryAdd
 import androidx.compose.material.icons.rounded.MenuBook
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -95,9 +96,7 @@ fun HomeContent() {
         Scaffold(content = {padding ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(20.dp)
-                    .verticalScroll(rememberScrollState())
             ) {
                 TopHeader()
                 MainCard()
@@ -149,8 +148,8 @@ fun TopHeader(displayName: String = "Lynne") {
                 border = BorderStroke(width = 0.9.dp, color = Gray200)
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.MenuBook,
-                    contentDescription = "Home",
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "Search",
                     tint = Gray700.copy(alpha = 0.8f),
                     modifier = Modifier
                         .padding(10.dp)

@@ -1,8 +1,6 @@
 package com.grayseal.bookshelf.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -429,16 +427,20 @@ fun Category(category: String, image: Int) {
 fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
     Column {
         Surface(
-            Modifier.size(120.dp),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .aspectRatio(1f)
+                .align(Alignment.CenterHorizontally)
         ) {
             Image(
                 painter = painterResource(id = image),
                 contentDescription = "Book Image",
-                modifier = Modifier.background(
-                    color = Color.Transparent,
-                    shape = RoundedCornerShape(15.dp)
-                ),
+                modifier = Modifier
+                    .background(
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(15.dp)
+                    ),
                 contentScale = ContentScale.Crop
             )
         }
@@ -455,6 +457,7 @@ fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
             fontSize = 12.sp,
             color = Gray700.copy(alpha = 0.6f),
         )
+        Spacer(modifier = Modifier.height(56.dp))
     }
 }
 
