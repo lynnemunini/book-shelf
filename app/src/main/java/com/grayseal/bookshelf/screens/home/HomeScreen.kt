@@ -91,8 +91,12 @@ fun HomeContent() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 // icons to mimic drawer destinations
-    val items = listOf(Icons.Rounded.Favorite, Icons.Rounded.Face, Icons.Rounded.Email)
-    val selectedItem = remember { mutableStateOf(items[0]) }
+    val items = mapOf(
+        "Settings" to Icons.Rounded.Settings,
+        "Log Out" to Icons.Rounded.Logout,
+        "Delete Account" to Icons.Rounded.DeleteForever
+    )
+    val selectedItem = remember { mutableStateOf(items["Settings"]) }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -115,7 +119,10 @@ fun HomeContent() {
                         contentDescription = "Profile Picture"
                     )
                 }
-                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
                         "Hi, Lynne!", fontFamily = loraFamily,
                         fontSize = 21.sp,
@@ -130,12 +137,17 @@ fun HomeContent() {
                 Spacer(Modifier.height(30.dp))
                 items.forEach { item ->
                     NavigationDrawerItem(
-                        icon = { androidx.compose.material3.Icon(item, contentDescription = null) },
-                        label = { androidx.compose.material3.Text(item.name) },
-                        selected = item == selectedItem.value,
+                        icon = {
+                            androidx.compose.material3.Icon(
+                                item.value,
+                                contentDescription = null
+                            )
+                        },
+                        label = { androidx.compose.material3.Text(item.key, fontFamily = poppinsFamily) },
+                        selected = item.value == selectedItem.value,
                         onClick = {
                             scope.launch { drawerState.close() }
-                            selectedItem.value = item
+                            selectedItem.value = item.value
                         },
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
