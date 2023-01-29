@@ -7,18 +7,15 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.LibraryAdd
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -91,20 +88,47 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun HomeContent() {
-    Scaffold(content = { padding ->
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-        ) {
-            TopHeader()
-            MainCard()
-            Categories()
-            ReadingList()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+// icons to mimic drawer destinations
+    val items = listOf(Icons.Rounded.Favorite, Icons.Rounded.Face, Icons.Rounded.Email)
+    val selectedItem = remember { mutableStateOf(items[0]) }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Spacer(Modifier.height(12.dp))
+                items.forEach { item ->
+                    NavigationDrawerItem(
+                        icon = { androidx.compose.material3.Icon(item, contentDescription = null) },
+                        label = { androidx.compose.material3.Text(item.name) },
+                        selected = item == selectedItem.value,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            selectedItem.value = item
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
+                }
+            }
+        },
+        content = {
+            Scaffold(content = { padding ->
+                Column(
+                    modifier = Modifier
+                        .padding(top = 20.dp, bottom = 20.dp)
+                ) {
+                    TopHeader()
+                    MainCard()
+                    Categories()
+                    ReadingList()
+                }
+            },
+                bottomBar = {
+                    NavBar()
+                })
         }
-    },
-        bottomBar = {
-            NavBar()
-        })
+    )
 }
 
 @Preview(showBackground = true)
@@ -113,7 +137,7 @@ fun TopHeader(displayName: String = "Lynne") {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 20.dp), horizontalArrangement = Arrangement.Start
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp), horizontalArrangement = Arrangement.Start
     ) {
         Surface(
             modifier = Modifier
@@ -133,7 +157,7 @@ fun TopHeader(displayName: String = "Lynne") {
                 fontWeight = FontWeight.Medium
             )
             Text(
-                "16 books in your reading list", fontFamily = poppinsFamily,
+                "16 books in your reading list", fontFamilyop = 20.dp,  = poppinsFamily,
                 fontSize = 13.sp,
                 color = Gray500
             )
@@ -161,7 +185,7 @@ fun TopHeader(displayName: String = "Lynne") {
 @Preview
 @Composable
 fun MainCard() {
-    Card(shape = RoundedCornerShape(20.dp)) {
+    Card(modifier = Modifier.padding(start = 20.dp, end = 20.dp), shape = RoundedCornerShape(20.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -259,15 +283,21 @@ fun Categories() {
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
         color = Color.Black.copy(alpha = 0.75f),
-        modifier = Modifier.padding(top = 20.dp)
+        modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
     LazyRow(
-        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
+        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp, end = 0.dp, start = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        items(items = keysList) { item: String ->
-            Category(category = item, image = categories[item]!!)
+        itemsIndexed(items = keysList) { index: Int, item: String ->
+            if(index == 0) {
+                Spacer(modifier = Modifier.width(20.dp))
+                categories[item]?.let { Category(category = item, image = it) }
+            }
+            else{
+                Category(category = item, image = categories[item]!!)
+            }
         }
     }
 }
@@ -279,20 +309,31 @@ fun ReadingList() {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
-        color = Color.Black.copy(alpha = 0.75f)
+        color = Color.Black.copy(alpha = 0.75f),
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
     LazyRow(
         modifier = Modifier
-            .padding(top = 10.dp),
+            .padding(top = 10.dp, start = 0.dp, end = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(items = keysList) { item: String ->
-            Reading(
-                bookAuthor = "Dan Brown",
-                bookTitle = "Deception Point",
-                image = R.drawable.loginillustration
-            )
+        itemsIndexed(items = keysList) {index: Int, item: String ->
+            if(index == 0) {
+                Spacer(modifier = Modifier.width(20.dp))
+                Reading(
+                    bookAuthor = "Dan Brown",
+                    bookTitle = "Deception Point",
+                    image = R.drawable.loginillustration
+                )
+            }
+            else{
+                Reading(
+                    bookAuthor = "Dan Brown",
+                    bookTitle = "Deception Point",
+                    image = R.drawable.loginillustration
+                )
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
+import kotlinx.coroutines.launch
 
 /**
 
@@ -83,7 +84,8 @@ fun NameInput(
     Card(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(20.dp)
+        elevation = CardDefaults.cardElevation(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         var color by remember {
             mutableStateOf(Gray500)
@@ -503,4 +505,10 @@ fun NavBar() {
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NavigationDrawer() {
+
 }
