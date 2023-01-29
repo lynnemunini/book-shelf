@@ -10,12 +10,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LibraryAdd
-import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -75,16 +73,16 @@ fun HomeScreen(
         LoginScreen(navController, launcher, viewModel, dataStore)
     } else {
         // Main Screen Content
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                val name = dataStore.getName.collectAsState(initial = "")
-                Text("Welcome ${name.value}")
-                Button(onClick = {
-                    // TODO sign out
-                    Firebase.auth.signOut()
-                    navController.navigate(BookShelfScreens.HomeScreen.name)
-                }) {
-                    Text("Sign Out")
-                }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            val name = dataStore.getName.collectAsState(initial = "")
+            Text("Welcome ${name.value}")
+            Button(onClick = {
+                // TODO sign out
+                Firebase.auth.signOut()
+                navController.navigate(BookShelfScreens.HomeScreen.name)
+            }) {
+                Text("Sign Out")
+            }
         }
     }
 }
@@ -93,20 +91,20 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun HomeContent() {
-        Scaffold(content = {padding ->
-            Column(
-                modifier = Modifier
-                    .padding(20.dp)
-            ) {
-                TopHeader()
-                MainCard()
-                Categories()
-                ReadingList()
-            }
-        },
-            bottomBar = {
-                NavBar()
-            })
+    Scaffold(content = { padding ->
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+        ) {
+            TopHeader()
+            MainCard()
+            Categories()
+            ReadingList()
+        }
+    },
+        bottomBar = {
+            NavBar()
+        })
 }
 
 @Preview(showBackground = true)
@@ -119,7 +117,7 @@ fun TopHeader(displayName: String = "Lynne") {
     ) {
         Surface(
             modifier = Modifier
-                .size(60.dp)
+                .size(48.dp)
                 .background(color = Color.Transparent, shape = CircleShape),
             shape = CircleShape,
         ) {
@@ -128,7 +126,7 @@ fun TopHeader(displayName: String = "Lynne") {
                 contentDescription = "Profile Picture"
             )
         }
-        Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
+        /*Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
             Text(
                 "Hi, $displayName!", fontFamily = loraFamily,
                 fontSize = 21.sp,
@@ -139,10 +137,10 @@ fun TopHeader(displayName: String = "Lynne") {
                 fontSize = 13.sp,
                 color = Gray500
             )
-        }
+        }*/
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Surface(
-                modifier = Modifier.size(50.dp),
+                modifier = Modifier.size(48.dp),
                 shape = CircleShape,
                 color = Color.Transparent,
                 border = BorderStroke(width = 0.9.dp, color = Gray200)
@@ -257,16 +255,16 @@ fun MainCard() {
 fun Categories() {
     Text(
         "Categories",
-        fontFamily = loraFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 19.sp,
-        color = Gray700.copy(alpha = 0.8f),
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 17.sp,
+        color = Color.Black.copy(alpha = 0.75f),
         modifier = Modifier.padding(top = 20.dp)
     )
     val keysList = categories.keys.toList()
     LazyRow(
         modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         items(items = keysList) { item: String ->
             Category(category = item, image = categories[item]!!)
@@ -278,10 +276,10 @@ fun Categories() {
 fun ReadingList() {
     Text(
         "Reading List",
-        fontFamily = loraFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 19.sp,
-        color = Gray700.copy(alpha = 0.8f)
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 17.sp,
+        color = Color.Black.copy(alpha = 0.75f)
     )
     val keysList = categories.keys.toList()
     LazyRow(
