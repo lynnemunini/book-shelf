@@ -9,12 +9,16 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.Icon
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -180,7 +184,11 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 20.dp)
                 ) {
-                    TopHeader()
+                    TopHeader(navController) {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }
                     MainCard()
                     Categories()
                     ReadingList()
@@ -193,9 +201,8 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun TopHeader(displayName: String = "Lynne") {
+fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -210,12 +217,20 @@ fun TopHeader(displayName: String = "Lynne") {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.wall_burst),
-                contentDescription = "Profile Picture"
+                contentDescription = "Profile Picture",
+                modifier = Modifier.clickable(enabled = true, onClick = {
+                    onProfileClick()
+                }
+                ),
             )
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Surface(
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(enabled = true, onClick = {
+                        navController.navigate(route = BookShelfScreens.SearchScreen.name)
+                    }),
                 shape = CircleShape,
                 color = Color.Transparent,
                 border = BorderStroke(width = 0.9.dp, color = Gray200)
