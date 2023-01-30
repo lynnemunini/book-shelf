@@ -7,13 +7,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection.Companion.Out
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -524,6 +527,50 @@ fun NavBar() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationDrawer() {
-
+fun SearchInputField(
+    // Make a modifier optional
+    modifier: Modifier = Modifier,
+    valueState: MutableState<String>,
+    labelId: String,
+    enabled: Boolean,
+    isSingleLine: Boolean,
+    keyBoardType: KeyboardType = KeyboardType.Ascii,
+    imeAction: ImeAction = ImeAction.Done,
+    onAction: KeyboardActions = KeyboardActions.Default
+) {
+    OutlinedTextField(
+        value = valueState.value,
+        onValueChange = {
+            valueState.value = it
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = "Search Icon"
+            )
+        },
+        singleLine = isSingleLine,
+        textStyle = TextStyle(fontSize = 14.sp, fontFamily = poppinsFamily),
+        enabled = enabled,
+        keyboardOptions = KeyboardOptions(keyboardType = keyBoardType, imeAction = imeAction),
+        keyboardActions = onAction,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp),
+        placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = Color.Black,
+            focusedLeadingIconColor = selectedIconColor,
+            cursorColor = Yellow,
+            focusedBorderColor = selectedIconColor,
+            unfocusedBorderColor = iconColor,
+            selectionColors = TextSelectionColors(
+                handleColor = Yellow,
+                backgroundColor = Pink200
+            ),
+            unfocusedLeadingIconColor = iconColor,
+            placeholderColor = Gray500
+        ),
+    )
 }
