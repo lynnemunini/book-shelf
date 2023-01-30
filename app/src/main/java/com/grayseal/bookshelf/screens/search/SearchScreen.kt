@@ -2,6 +2,7 @@ package com.grayseal.bookshelf.screens.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -38,7 +39,7 @@ fun SearchScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Search(navController: NavController) {
+fun Search(navController: NavController, onSearch: (String) -> Unit = {}) {
     val searchState = rememberSaveable {
         mutableStateOf("")
     }
@@ -71,9 +72,14 @@ fun Search(navController: NavController) {
             valueState = searchState,
             labelId = "Find a book 🧐",
             enabled = true,
-            isSingleLine = false
+            isSingleLine = false,
+            onAction = KeyboardActions{
+                if (!valid) return@KeyboardActions
+                onSearch(searchState.value.trim())
+                searchState.value = ""
+                keyboardController?.hide()
+            }
         )
-
     }
 }
 
