@@ -111,7 +111,8 @@ fun HomeContent() {
                     modifier = Modifier
                         .size(150.dp)
                         .background(color = Color.Transparent, shape = CircleShape)
-                        .align(Alignment.CenterHorizontally),
+                        .align(Alignment.Start)
+                        .padding(NavigationDrawerItemDefaults.ItemPadding),
                     shape = CircleShape,
                 ) {
                     Image(
@@ -120,14 +121,14 @@ fun HomeContent() {
                     )
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxWidth().padding(NavigationDrawerItemDefaults.ItemPadding),
+                    horizontalAlignment = Alignment.Start
                 ) {
                     Spacer(Modifier.height(10.dp))
                     Text(
                         "Hi, Lynne!", fontFamily = loraFamily,
                         fontSize = 21.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
                     Spacer(Modifier.height(5.dp))
                     Text(
@@ -149,7 +150,7 @@ fun HomeContent() {
                                     item.key,
                                     fontFamily = poppinsFamily,
                                     fontWeight = FontWeight.Medium,
-                                    fontSize = 18.sp
+                                    fontSize = 17.sp
                                 )
                             },
                             selected = item.value == selectedItem.value,
@@ -160,9 +161,12 @@ fun HomeContent() {
                             shape = RectangleShape,
                             colors = NavigationDrawerItemDefaults.colors(
                                 selectedContainerColor = MaterialTheme.colorScheme.background,
-                                unselectedContainerColor = Color.Transparent
-                            ),
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                unselectedContainerColor = Color.Transparent,
+                                selectedIconColor = selectedIconColor,
+                                unselectedIconColor = Gray700,
+                                selectedTextColor = selectedIconColor,
+                                unselectedTextColor = Gray700
+                            )
                         )
                     }
                 }
@@ -218,7 +222,7 @@ fun TopHeader(displayName: String = "Lynne") {
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = "Search",
-                    tint = iconColor,
+                    tint = Gray700,
                     modifier = Modifier
                         .padding(10.dp)
                         .background(color = Color.Transparent)
@@ -331,7 +335,7 @@ fun Categories() {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
-        color = Color.Black.copy(alpha = 0.75f),
+        color = Gray700,
         modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
@@ -357,7 +361,7 @@ fun ReadingList() {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
-        color = Color.Black.copy(alpha = 0.75f),
+        color = Gray700,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
