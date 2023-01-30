@@ -43,6 +43,7 @@ import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
 import com.grayseal.bookshelf.screens.login.StoreUserName
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
+import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
 import kotlinx.coroutines.launch
 
 @Composable
@@ -112,7 +113,7 @@ fun HomeContent() {
                         .size(150.dp)
                         .background(color = Color.Transparent, shape = CircleShape)
                         .align(Alignment.Start)
-                        .padding(NavigationDrawerItemDefaults.ItemPadding),
+                        .padding(horizontal = 20.dp),
                     shape = CircleShape,
                 ) {
                     Image(
@@ -121,10 +122,11 @@ fun HomeContent() {
                     )
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(NavigationDrawerItemDefaults.ItemPadding),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Spacer(Modifier.height(10.dp))
                     Text(
                         "Hi, Lynne!", fontFamily = loraFamily,
                         fontSize = 21.sp,
@@ -136,9 +138,11 @@ fun HomeContent() {
                         fontSize = 13.sp,
                         color = Gray500
                     )
-                    Spacer(Modifier.height(30.dp))
+                    Spacer(Modifier.height(10.dp))
+                    androidx.compose.material.Divider()
+
                     items.forEach { item ->
-                        NavigationDrawerItem(
+                        BookShelfNavigationDrawerItem(
                             icon = {
                                 androidx.compose.material3.Icon(
                                     item.value,
@@ -158,7 +162,6 @@ fun HomeContent() {
                                 scope.launch { drawerState.close() }
                                 selectedItem.value = item.value
                             },
-                            shape = RectangleShape,
                             colors = NavigationDrawerItemDefaults.colors(
                                 selectedContainerColor = MaterialTheme.colorScheme.background,
                                 unselectedContainerColor = Color.Transparent,
