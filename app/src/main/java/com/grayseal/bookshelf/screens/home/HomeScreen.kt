@@ -29,7 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
@@ -70,28 +72,17 @@ fun HomeScreen(
     if (user == null) {
         LoginScreen(navController, launcher, viewModel, dataStore)
     } else {
+        val name = dataStore.getName.collectAsState(initial = "")
         // Main Screen Content
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            val name = dataStore.getName.collectAsState(initial = "")
-            Text("Welcome ${name.value}")
-            Button(onClick = {
-                // TODO sign out
-                Firebase.auth.signOut()
-                navController.navigate(BookShelfScreens.HomeScreen.name)
-            }) {
-                Text("Sign Out")
-            }
-        }
+        HomeContent(user = user!!, name = name.value, navController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun HomeContent() {
+fun HomeContent(user: FirebaseUser, name: String?, navController: NavController) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-// icons to mimic drawer destinations
     val items = mapOf(
         "Settings" to Icons.Rounded.Settings,
         "Log Out" to Icons.Rounded.Logout,
@@ -128,7 +119,7 @@ fun HomeContent() {
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        "Hi, Lynne!", fontFamily = loraFamily,
+                        "Hi, ${name}!", fontFamily = loraFamily,
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Medium,
                     )
@@ -138,7 +129,7 @@ fun HomeContent() {
                         fontSize = 13.sp,
                         color = Gray500
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(20.dp))
                     androidx.compose.material.Divider()
 
                     items.forEach { item ->
@@ -159,6 +150,13 @@ fun HomeContent() {
                             },
                             selected = item.value == selectedItem.value,
                             onClick = {
+                                if (item.key == "Log Out") {
+                                    Firebase.auth.signOut()
+                                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                                } else if (item.key == "Delete Account") {
+                                    user.delete()
+                                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                                }
                                 scope.launch { drawerState.close() }
                                 selectedItem.value = item.value
                             },
