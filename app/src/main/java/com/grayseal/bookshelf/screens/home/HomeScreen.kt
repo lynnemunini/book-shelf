@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -19,7 +18,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -111,7 +109,7 @@ fun HomeContent() {
                 Spacer(Modifier.height(10.dp))
                 Surface(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(150.dp)
                         .background(color = Color.Transparent, shape = CircleShape)
                         .align(Alignment.CenterHorizontally),
                     shape = CircleShape,
@@ -125,38 +123,48 @@ fun HomeContent() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Spacer(Modifier.height(10.dp))
                     Text(
                         "Hi, Lynne!", fontFamily = loraFamily,
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Medium
                     )
+                    Spacer(Modifier.height(5.dp))
                     Text(
                         "16 books in your reading list", fontFamily = poppinsFamily,
                         fontSize = 13.sp,
                         color = Gray500
                     )
                     Spacer(Modifier.height(30.dp))
-                    Divider(modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding), thickness = 1.dp, color = Gray700.copy(alpha = 0.4f),)
-                }
-                Spacer(Modifier.height(30.dp))
-                items.forEach { item ->
-                    NavigationDrawerItem(
-                        icon = {
-                            androidx.compose.material3.Icon(
-                                item.value,
-                                contentDescription = null
-                            )
-                        },
-                        label = { androidx.compose.material3.Text(item.key, fontFamily = poppinsFamily, fontWeight = FontWeight.Medium, fontSize = 18.sp) },
-                        selected = item.value == selectedItem.value,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            selectedItem.value = item.value
-                        },
-                        shape = RectangleShape,
-                        colors = NavigationDrawerItemDefaults.colors(selectedContainerColor = Color.Transparent, unselectedContainerColor = Color.Transparent),
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                    )
+                    items.forEach { item ->
+                        NavigationDrawerItem(
+                            icon = {
+                                androidx.compose.material3.Icon(
+                                    item.value,
+                                    contentDescription = null
+                                )
+                            },
+                            label = {
+                                androidx.compose.material3.Text(
+                                    item.key,
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 18.sp
+                                )
+                            },
+                            selected = item.value == selectedItem.value,
+                            onClick = {
+                                scope.launch { drawerState.close() }
+                                selectedItem.value = item.value
+                            },
+                            shape = RectangleShape,
+                            colors = NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor = MaterialTheme.colorScheme.background,
+                                unselectedContainerColor = Color.Transparent
+                            ),
+                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                        )
+                    }
                 }
             }
         },
@@ -210,7 +218,7 @@ fun TopHeader(displayName: String = "Lynne") {
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = "Search",
-                    tint = Gray700.copy(alpha = 0.8f),
+                    tint = iconColor,
                     modifier = Modifier
                         .padding(10.dp)
                         .background(color = Color.Transparent)

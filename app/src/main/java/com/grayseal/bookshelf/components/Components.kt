@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
-import kotlinx.coroutines.launch
 
 /**
 
@@ -87,16 +87,16 @@ fun NameInput(
         elevation = CardDefaults.cardElevation(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        var color by remember {
-            mutableStateOf(Gray500)
-        }
         var icon by remember {
             mutableStateOf(Icons.Rounded.SentimentSatisfied)
+        }
+        var color by remember {
+            mutableStateOf(iconColor)
         }
         OutlinedTextField(
             value = nameState.value,
             onValueChange = {
-                color = Pink500
+                color = selectedIconColor
                 nameState.value = it
                 icon = Icons.Rounded.InsertEmoticon
             },
@@ -111,8 +111,7 @@ fun NameInput(
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 14.sp,
-                fontFamily = poppinsFamily,
-                color = MaterialTheme.colorScheme.background
+                fontFamily = poppinsFamily
             ),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -123,9 +122,14 @@ fun NameInput(
             ),
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = Color.Black,
                 cursorColor = Yellow,
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                selectionColors = TextSelectionColors(
+                    handleColor = Yellow,
+                    backgroundColor = Pink200
+                )
             )
         )
     }
@@ -166,19 +170,20 @@ fun PasswordInput(
             modifier = Modifier.fillMaxWidth()
         )
     }
+    var color by remember {
+        mutableStateOf(iconColor)
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
     Card(
         modifier = Modifier.padding(bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(20.dp)
+        elevation = CardDefaults.cardElevation(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        var color by remember {
-            mutableStateOf(Gray500)
-        }
         OutlinedTextField(
             value = passwordState.value,
             onValueChange = {
-                color = Pink500
+                color = selectedIconColor
                 passwordState.value = it
                 error = passwordState.value.length < 6
             },
@@ -193,8 +198,7 @@ fun PasswordInput(
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 14.sp,
-                fontFamily = poppinsFamily,
-                color = MaterialTheme.colorScheme.background
+                fontFamily = poppinsFamily
             ),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -212,9 +216,14 @@ fun PasswordInput(
             },
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = Color.Black,
                 cursorColor = Yellow,
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                selectionColors = TextSelectionColors(
+                    handleColor = Yellow,
+                    backgroundColor = Pink200
+                )
             )
         )
     }
@@ -234,13 +243,13 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
             Icon(
                 imageVector = Icons.Rounded.Visibility,
                 contentDescription = "Visibility Icon",
-                tint = Gray500
+                tint = iconColor
             )
         } else {
             Icon(
                 imageVector = Icons.Rounded.VisibilityOff,
                 contentDescription = "Visibility Icon",
-                tint = Gray500
+                tint = iconColor
             )
         }
     }
@@ -274,6 +283,9 @@ fun EmailInputField(
     var error by remember {
         mutableStateOf(false)
     }
+    var color by remember {
+        mutableStateOf(iconColor)
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
     if (error) {
         Text(
@@ -287,15 +299,13 @@ fun EmailInputField(
     Card(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(20.dp)
+        elevation = CardDefaults.cardElevation(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        var color by remember {
-            mutableStateOf(Gray500)
-        }
         OutlinedTextField(
             value = valueState.value,
             onValueChange = {
-                color = Pink500
+                color = selectedIconColor
                 valueState.value = it
                 error = !isValidEmail(valueState.value)
             },
@@ -310,8 +320,7 @@ fun EmailInputField(
             singleLine = isSingleLine,
             textStyle = TextStyle(
                 fontSize = 14.sp,
-                fontFamily = poppinsFamily,
-                color = MaterialTheme.colorScheme.background
+                fontFamily = poppinsFamily
             ),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -321,9 +330,14 @@ fun EmailInputField(
             },
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = Color.Black,
                 cursorColor = Yellow,
                 focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
+                unfocusedBorderColor = Color.Transparent,
+                selectionColors = TextSelectionColors(
+                    handleColor = Yellow,
+                    backgroundColor = Pink200
+                )
             )
         )
     }
@@ -351,7 +365,8 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
                 .fillMaxWidth(),
             enabled = !loading && validInputs, shape = RoundedCornerShape(10.dp),
             colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                containerColor = Pink500
+                containerColor = selectedIconColor,
+                disabledContainerColor = Color.LightGray
             )
         ) {
             if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp)) else
@@ -370,7 +385,7 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
                         fontFamily = poppinsFamily,
                         modifier = Modifier.padding(5.dp),
                         fontSize = 15.sp,
-                        color = Gray500,
+                        color = iconColor,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -496,10 +511,10 @@ fun NavBar() {
                     selectedItem = index
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Purple500,
-                    selectedTextColor = Purple500,
-                    unselectedTextColor = Gray700.copy(alpha = 0.4f),
-                    unselectedIconColor = Gray700.copy(alpha = 0.4f),
+                    selectedIconColor = selectedIconColor,
+                    selectedTextColor = selectedIconColor,
+                    unselectedTextColor = iconColor,
+                    unselectedIconColor = iconColor,
                     indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)
                 )
             )
