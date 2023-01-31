@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -104,45 +105,55 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                 drawerTonalElevation = 0.dp,
             ) {
                 Spacer(Modifier.height(10.dp))
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, top = 20.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
-                    Surface(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .background(color = Color.Transparent, shape = CircleShape),
-                        shape = CircleShape,
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.card),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier.clip(CircleShape),
-                            contentScale = ContentScale.FillBounds
-                        )
-                        Column(
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, top = 20.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ConstraintLayout() {
+                        val (profile, edit) = createRefs()
+                        Surface(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.Bottom,
-                            horizontalAlignment = Alignment.End
+                                .size(60.dp)
+                                .background(color = Color.Transparent, shape = CircleShape)
+                                .constrainAs(profile) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                },
+                            shape = CircleShape,
                         ) {
-                            Surface(
-                                modifier = Modifier
-                                    .padding(end = 3.dp)
-                                    .size(25.dp)
-                                    // Clip image to be shaped as a circle
-                                    .clip(CircleShape),
-                                color = Pink500,
-                                shape = CircleShape,
-                                border = BorderStroke(width = 1.dp, color = Color.White)
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.pen),
-                                    contentDescription = "Update Profile Picture",
-                                    modifier = Modifier
-                                        .padding(3.dp)
-                                )
-                            }
+                            Image(
+                                painter = painterResource(id = R.drawable.card),
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier.clip(CircleShape),
+                                contentScale = ContentScale.FillBounds
+                            )
                         }
+                        Surface(
+                            modifier = Modifier
+                                .size(25.dp)
+                                // Clip image to be shaped as a circle
+                                .clip(CircleShape)
+                                .constrainAs(edit) {
+                                    top.linkTo(profile.bottom)
+                                    end.linkTo(profile.absoluteRight)
+                                    baseline.linkTo(profile.baseline)
+                                    bottom.linkTo(profile.bottom)
+                                },
+                            color = Pink500,
+                            shape = CircleShape,
+                            border = BorderStroke(width = 1.dp, color = Color.White)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.pen),
+                                contentDescription = "Update Profile Picture",
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
+
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
@@ -270,10 +281,9 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
                 color = Color.Transparent,
                 border = BorderStroke(width = 0.9.dp, color = Gray200)
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.Search,
+                Image(
+                    painter = painterResource(id = R.drawable.search),
                     contentDescription = "Search",
-                    tint = Gray700,
                     modifier = Modifier
                         .padding(10.dp)
                         .background(color = Color.Transparent)
