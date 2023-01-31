@@ -22,6 +22,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -103,17 +104,51 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                 drawerTonalElevation = 0.dp,
             ) {
                 Spacer(Modifier.height(10.dp))
-                Surface(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .background(color = Color.Transparent, shape = CircleShape)
-                        .align(Alignment.Start)
-                        .padding(horizontal = 20.dp),
-                    shape = CircleShape,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.wall_burst),
-                        contentDescription = "Profile Picture"
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 20.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+                    Surface(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .background(color = Color.Transparent, shape = CircleShape),
+                        shape = CircleShape,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.card),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier.clip(CircleShape),
+                            contentScale = ContentScale.FillBounds
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.Bottom,
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Surface(
+                                modifier = Modifier
+                                    .padding(end = 3.dp)
+                                    .size(25.dp)
+                                    // Clip image to be shaped as a circle
+                                    .clip(CircleShape),
+                                color = Pink500,
+                                shape = CircleShape,
+                                border = BorderStroke(width = 1.dp, color = Color.White)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.pen),
+                                    contentDescription = "Update Profile Picture",
+                                    modifier = Modifier
+                                        .padding(3.dp)
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        "Hi, ${name}!", fontFamily = loraFamily,
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Medium,
                     )
                 }
                 Column(
@@ -122,18 +157,13 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                         .padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text(
-                        "Hi, ${name}!", fontFamily = loraFamily,
-                        fontSize = 21.sp,
-                        fontWeight = FontWeight.Medium,
-                    )
                     Spacer(Modifier.height(5.dp))
                     Text(
                         "16 books in your reading list", fontFamily = poppinsFamily,
                         fontSize = 13.sp,
                         color = Gray500
                     )
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(10.dp))
                     androidx.compose.material.Divider()
 
                     items.forEach { item ->
@@ -216,12 +246,17 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
             shape = CircleShape,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.wall_burst),
+                painter = painterResource(id = R.drawable.card),
                 contentDescription = "Profile Picture",
-                modifier = Modifier.clickable(enabled = true, onClick = {
-                    onProfileClick()
-                }
-                ),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            onProfileClick()
+                        },
+                    ),
+                contentScale = ContentScale.FillBounds
             )
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
