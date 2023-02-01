@@ -10,9 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Card
@@ -126,9 +124,15 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                             shape = CircleShape,
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.card),
+                                painter = painterResource(id = R.drawable.profile),
                                 contentDescription = "Profile Picture",
-                                modifier = Modifier.clip(CircleShape),
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable(onClick = {
+                                        scope.launch {
+                                            drawerState.close()
+                                        }
+                                    }),
                                 contentScale = ContentScale.FillBounds
                             )
                         }
@@ -156,7 +160,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                         }
 
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         "Hi, ${name}!", fontFamily = loraFamily,
                         fontSize = 21.sp,
@@ -170,14 +174,15 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                         .padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Spacer(Modifier.height(5.dp))
+                    Spacer(Modifier.height(15.dp))
                     Text(
                         "16 books in your reading list", fontFamily = poppinsFamily,
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(15.dp))
                     androidx.compose.material3.Divider(color = MaterialTheme.colorScheme.onBackground)
+                    Spacer(Modifier.height(20.dp))
                     items.forEach { item ->
                         BookShelfNavigationDrawerItem(
                             icon = {
@@ -261,7 +266,7 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
             shape = CircleShape,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.card),
+                painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .clip(CircleShape)
@@ -284,7 +289,10 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
                     }),
                 shape = CircleShape,
                 color = Color.Transparent,
-                border = BorderStroke(width = 0.9.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                border = BorderStroke(
+                    width = 0.9.dp,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.search),
@@ -312,18 +320,27 @@ fun MainCard() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.card),
-                contentDescription = null,
-                modifier = Modifier.matchParentSize(),
-                contentScale = ContentScale.Crop
-            )
+            if (isSystemInDarkTheme()) {
+                Image(
+                    painter = painterResource(id = R.drawable.darkcard),
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.card),
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     "Track your", fontFamily = poppinsFamily,
                     fontSize = 23.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 10.dp)
                 )
@@ -331,13 +348,16 @@ fun MainCard() {
                     "reading activity", fontFamily = poppinsFamily,
                     fontSize = 23.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     textAlign = TextAlign.Center
                 )
                 Box(
                     modifier = Modifier
                         .padding(15.dp)
-                        .background(color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(15.dp)),
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary,
+                            shape = RoundedCornerShape(15.dp)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -352,7 +372,10 @@ fun MainCard() {
                                 .size(50.dp)
                                 .background(color = Color.Transparent, shape = CircleShape),
                             shape = CircleShape,
-                            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.secondary)
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.wall_burst),
@@ -376,18 +399,32 @@ fun MainCard() {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.End
                         ) {
-                            Surface(
-                                modifier = Modifier.size(30.dp),
-                                shape = CircleShape,
-                                color = Color.Transparent
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.LibraryAdd,
-                                    contentDescription = "Add",
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                    modifier = Modifier
-                                        .background(color = Color.Transparent)
-                                )
+                            if (isSystemInDarkTheme()) {
+                                Surface(
+                                    modifier = Modifier.size(60.dp),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.darkchart),
+                                        contentDescription = "Add",
+                                        modifier = Modifier
+                                            .background(color = Color.Transparent)
+                                    )
+                                }
+                            } else {
+                                Surface(
+                                    modifier = Modifier.size(60.dp),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.lightchart),
+                                        contentDescription = "Add",
+                                        modifier = Modifier
+                                            .background(color = Color.Transparent)
+                                    )
+                                }
                             }
                         }
                     }
@@ -416,7 +453,7 @@ fun Categories() {
             if (index == 0) {
                 Spacer(modifier = Modifier.width(20.dp))
                 categories[item]?.let { Category(category = item, image = it) }
-            } else {
+            }else {
                 Category(category = item, image = categories[item]!!)
             }
         }
@@ -445,13 +482,13 @@ fun ReadingList() {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
-                    image = R.drawable.loginillustration_transformed
+                    image = R.drawable.profile
                 )
-            } else {
+            }else {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
-                    image = R.drawable.loginillustration_transformed
+                    image = R.drawable.profile
                 )
             }
         }

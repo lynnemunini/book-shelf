@@ -428,7 +428,7 @@ fun Category(category: String, image: Int) {
             category,
             fontFamily = poppinsFamily,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             modifier = Modifier.padding(top = 5.dp)
         )
     }
@@ -511,8 +511,8 @@ fun NavBar() {
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedTextColor = MaterialTheme.colorScheme.onBackground,
-                    unselectedIconColor = MaterialTheme.colorScheme.onBackground,
+                    unselectedTextColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    unselectedIconColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                     indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)
                 ),
                 interactionSource = MutableInteractionSource()
@@ -560,7 +560,7 @@ fun SearchInputField(
         placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Color.Black,
+            textColor = MaterialTheme.colorScheme.onBackground,
             cursorColor = Yellow,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,

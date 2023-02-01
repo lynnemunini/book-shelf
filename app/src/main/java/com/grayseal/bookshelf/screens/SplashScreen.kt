@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.R
@@ -40,14 +41,15 @@ fun SplashScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary),
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Image(
                 modifier = Modifier.alpha(alphaAnimation.value),
                 painter = painterResource(id = R.drawable.book),
-                contentDescription = "Splash Book"
+                contentDescription = "Splash Book",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer)
             )
         }
     }
