@@ -285,6 +285,7 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = "Search",
                     modifier = Modifier
+                        .size(20.dp)
                         .padding(10.dp)
                         .background(color = Color.Transparent)
                 )

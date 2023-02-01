@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.components
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,8 +17,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection.Companion.Out
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -31,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
 
@@ -486,10 +490,10 @@ fun NavBar() {
     var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("Home", "Shelves", "Favourites", "Reviews")
     val navBarItems = mapOf(
-        items[0] to Icons.Rounded.Home,
-        items[1] to Icons.Rounded.MenuBook,
-        items[2] to Icons.Rounded.FavoriteBorder,
-        items[3] to Icons.Rounded.Reviews
+        items[0] to R.drawable.home,
+        items[1] to R.drawable.shelves,
+        items[2] to R.drawable.favourite,
+        items[3] to R.drawable.reviews
     )
 
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
@@ -498,8 +502,11 @@ fun NavBar() {
                 icon = {
                     navBarItems[item]?.let {
                         Icon(
-                            it,
+                            painter = painterResource(id = it),
                             contentDescription = item,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .background(color = Color.Transparent)
                         )
                     }
                 },
@@ -516,10 +523,11 @@ fun NavBar() {
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = selectedIconColor,
                     selectedTextColor = selectedIconColor,
-                    unselectedTextColor = iconColor,
-                    unselectedIconColor = iconColor,
+                    unselectedTextColor = Gray700,
+                    unselectedIconColor = Gray700,
                     indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)
-                )
+                ),
+                interactionSource = MutableInteractionSource()
             )
         }
     }
@@ -544,9 +552,13 @@ fun SearchInputField(
             valueState.value = it
         },
         leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Search,
-                contentDescription = "Search Icon"
+            Image(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "Search",
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(color = Color.Transparent),
+                colorFilter = ColorFilter.tint(color = iconColor)
             )
         },
         singleLine = isSingleLine,
@@ -561,7 +573,6 @@ fun SearchInputField(
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = Color.Black,
-            focusedLeadingIconColor = selectedIconColor,
             cursorColor = Yellow,
             focusedBorderColor = selectedIconColor,
             unfocusedBorderColor = iconColor,
@@ -569,7 +580,6 @@ fun SearchInputField(
                 handleColor = Yellow,
                 backgroundColor = Pink200
             ),
-            unfocusedLeadingIconColor = iconColor,
             placeholderColor = Gray500
         ),
     )
