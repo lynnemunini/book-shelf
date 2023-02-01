@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -90,9 +91,9 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val items = mapOf(
-        "Settings" to Icons.Rounded.Settings,
-        "Log Out" to Icons.Rounded.Logout,
-        "Delete Account" to Icons.Rounded.DeleteForever
+        "Settings" to R.drawable.settings,
+        "Log Out" to R.drawable.logout,
+        "Delete Account" to R.drawable.delete
     )
     val selectedItem = remember { mutableStateOf(items["Settings"]) }
     ModalNavigationDrawer(
@@ -101,10 +102,10 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
             ModalDrawerSheet(
                 modifier = Modifier.width(300.dp),
                 drawerShape = RectangleShape,
-                drawerContainerColor = Color.White,
+                drawerContainerColor = MaterialTheme.colorScheme.background,
                 drawerTonalElevation = 0.dp,
             ) {
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(30.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,7 +113,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ConstraintLayout() {
+                    ConstraintLayout {
                         val (profile, edit) = createRefs()
                         Surface(
                             modifier = Modifier
@@ -142,7 +143,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                                     baseline.linkTo(profile.baseline)
                                     bottom.linkTo(profile.bottom)
                                 },
-                            color = Pink500,
+                            color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
                             border = BorderStroke(width = 1.dp, color = Color.White)
                         ) {
@@ -160,6 +161,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                         "Hi, ${name}!", fontFamily = loraFamily,
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Column(
@@ -172,17 +174,19 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                     Text(
                         "16 books in your reading list", fontFamily = poppinsFamily,
                         fontSize = 13.sp,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(Modifier.height(10.dp))
-                    androidx.compose.material.Divider()
-
+                    androidx.compose.material3.Divider(color = MaterialTheme.colorScheme.onBackground)
                     items.forEach { item ->
                         BookShelfNavigationDrawerItem(
                             icon = {
                                 androidx.compose.material3.Icon(
-                                    item.value,
-                                    contentDescription = null
+                                    painter = painterResource(id = item.value),
+                                    contentDescription = item.key,
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .background(color = Color.Transparent)
                                 )
                             },
                             label = {
@@ -195,6 +199,8 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                             },
                             selected = item.value == selectedItem.value,
                             onClick = {
+                                selectedItem.value = item.value
+                                scope.launch { drawerState.close() }
                                 if (item.key == "Log Out") {
                                     Firebase.auth.signOut()
                                     navController.navigate(BookShelfScreens.HomeScreen.name)
@@ -202,16 +208,14 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                                     user.delete()
                                     navController.navigate(BookShelfScreens.HomeScreen.name)
                                 }
-                                scope.launch { drawerState.close() }
-                                selectedItem.value = item.value
                             },
                             colors = NavigationDrawerItemDefaults.colors(
                                 selectedContainerColor = MaterialTheme.colorScheme.background,
                                 unselectedContainerColor = Color.Transparent,
-                                selectedIconColor = selectedIconColor,
-                                unselectedIconColor = Gray700,
-                                selectedTextColor = selectedIconColor,
-                                unselectedTextColor = Gray700
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onBackground,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedTextColor = MaterialTheme.colorScheme.onBackground
                             )
                         )
                     }
@@ -274,12 +278,13 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
             Surface(
                 modifier = Modifier
                     .size(48.dp)
+                    .clip(CircleShape)
                     .clickable(enabled = true, onClick = {
                         navController.navigate(route = BookShelfScreens.SearchScreen.name)
                     }),
                 shape = CircleShape,
                 color = Color.Transparent,
-                border = BorderStroke(width = 0.9.dp, color = Gray200)
+                border = BorderStroke(width = 0.9.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.search),
@@ -287,7 +292,9 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
                     modifier = Modifier
                         .size(20.dp)
                         .padding(10.dp)
-                        .background(color = Color.Transparent)
+                        .clip(CircleShape)
+                        .background(color = Color.Transparent, shape = CircleShape),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
             }
         }
@@ -330,7 +337,7 @@ fun MainCard() {
                 Box(
                     modifier = Modifier
                         .padding(15.dp)
-                        .background(color = Pink200, shape = RoundedCornerShape(15.dp)),
+                        .background(color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(15.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -345,7 +352,7 @@ fun MainCard() {
                                 .size(50.dp)
                                 .background(color = Color.Transparent, shape = CircleShape),
                             shape = CircleShape,
-                            border = BorderStroke(width = 1.dp, color = Pink200)
+                            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.secondary)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.wall_burst),
@@ -357,12 +364,12 @@ fun MainCard() {
                                 "Book Title", fontFamily = poppinsFamily,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Pink700
+                                color = MaterialTheme.colorScheme.tertiary
                             )
                             Text(
                                 "Continue reading", fontFamily = poppinsFamily,
                                 fontSize = 12.sp,
-                                color = Pink700
+                                color = MaterialTheme.colorScheme.tertiary
                             )
                         }
                         Column(
@@ -377,7 +384,7 @@ fun MainCard() {
                                 Icon(
                                     imageVector = Icons.Rounded.LibraryAdd,
                                     contentDescription = "Add",
-                                    tint = Color.White,
+                                    tint = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier
                                         .background(color = Color.Transparent)
                                 )
@@ -397,7 +404,7 @@ fun Categories() {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
-        color = Gray700,
+        color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
@@ -423,7 +430,7 @@ fun ReadingList() {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
-        color = Gray700,
+        color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
@@ -438,13 +445,13 @@ fun ReadingList() {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
-                    image = R.drawable.loginillustration
+                    image = R.drawable.loginillustration_transformed
                 )
             } else {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
-                    image = R.drawable.loginillustration
+                    image = R.drawable.loginillustration_transformed
                 )
             }
         }

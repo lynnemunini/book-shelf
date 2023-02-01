@@ -14,7 +14,9 @@ val Gray700 = Color(0xFF201f25)
 val Gray500 = Color(0xFF80817f)
 val Gray200 = Color(0xFFe7e6e9)
 
-val Yellow = Color(0xFFf5a641)
+val Gray = Color(0xFF2A2A2A)
 
+val Yellow = Color(0xFFf5a641)
 val iconColor = Gray700.copy(alpha = 0.4f)
-val selectedIconColor = Pink500
+
+val DarkWhite = Color(0xFFE1D9D1)

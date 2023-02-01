@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
-import com.grayseal.bookshelf.ui.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
@@ -25,7 +25,7 @@ fun SplashScreen(navController: NavHostController) {
         mutableStateOf(false)
     }
     val alphaAnimation = animateFloatAsState(
-        targetValue = if(startAnimation) 1f else 0f,
+        targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(
             durationMillis = 1000
         )
@@ -40,7 +40,7 @@ fun SplashScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Pink500),
+                .background(color = MaterialTheme.colorScheme.primary),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

@@ -5,8 +5,8 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -29,7 +29,6 @@ import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.*
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Gray500
-import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.isValidEmail
 import kotlinx.coroutines.launch
@@ -141,7 +140,8 @@ fun UserForm(
     val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colors.background), verticalArrangement = Arrangement.Center
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             textIntro,
@@ -160,13 +160,13 @@ fun UserForm(
         ) {
             if (isCreateAccount) {
                 Image(
-                    painter = painterResource(id = R.drawable.loginillustration),
+                    painter = painterResource(id = R.drawable.loginillustration_transformed),
                     contentDescription = "Login Illustration",
                     modifier = Modifier.size(200.dp)
                 )
             } else {
                 Image(
-                    painter = painterResource(id = R.drawable.loginillustration),
+                    painter = painterResource(id = R.drawable.loginillustration_transformed),
                     contentDescription = "Login Illustration",
                     modifier = Modifier.size(300.dp)
                 )
@@ -203,7 +203,7 @@ fun UserForm(
                                 }
                                 withStyle(
                                     style = SpanStyle(
-                                        color = Pink500,
+                                        color = MaterialTheme.colorScheme.primary,
                                         fontSize = 12.sp,
                                         fontFamily = poppinsFamily
                                     )
@@ -221,7 +221,7 @@ fun UserForm(
                                 }
                                 withStyle(
                                     style = SpanStyle(
-                                        color = Pink500,
+                                        color = MaterialTheme.colorScheme.primary,
                                         fontSize = 12.sp,
                                         fontFamily = poppinsFamily
                                     )
@@ -286,7 +286,7 @@ fun UserForm(
                         Text(text,
                             fontFamily = poppinsFamily,
                             fontSize = 14.sp,
-                            color = Pink500,
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .clickable {
                                     showLoginForm.value = !showLoginForm.value
