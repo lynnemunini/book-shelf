@@ -572,3 +572,41 @@ fun SearchInputField(
         ),
     )
 }
+
+@Composable
+fun SearchCard(bookTitle: String, bookAuthor: String, image: Int) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(100.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+        Surface(
+            shape = RoundedCornerShape(15.dp),
+            color = Color.Transparent,
+            tonalElevation = 10.dp
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = "Book Image",
+                modifier = Modifier
+                    .background(
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(2.dp)
+                    ),
+                contentScale = ContentScale.Fit
+            )
+        }
+        Column {
+            Text(
+                bookTitle,
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Text(
+                bookAuthor,
+                fontFamily = poppinsFamily,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            )
+        }
+    }
+}
