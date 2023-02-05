@@ -574,7 +574,7 @@ fun SearchInputField(
 }
 
 @Composable
-fun SearchCard(bookTitle: String, bookAuthor: String, image: Int) {
+fun SearchCard(bookTitle: String, bookAuthor: String, image: String) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(100.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {

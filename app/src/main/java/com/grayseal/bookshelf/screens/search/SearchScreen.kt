@@ -27,28 +27,32 @@ import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
-import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun SearchScreen(navController: NavHostController) {
+fun SearchScreen(
+    navController: NavHostController,
+    viewModel: SearchBookViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Search(navController = navController)
+        Search(navController = navController, viewModel = viewModel)
         Spacer(modifier = Modifier.height(20.dp))
-        Recents()
-
     }
 }
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Search(navController: NavController, onSearch: (String) -> Unit = {}) {
+fun Search(
+    navController: NavController,
+    viewModel: SearchBookViewModel,
+    onSearch: (String) -> Unit = {}
+) {
     val searchState = rememberSaveable {
         mutableStateOf("")
     }
@@ -89,13 +93,10 @@ fun Search(navController: NavController, onSearch: (String) -> Unit = {}) {
                 Log.d("Search Item", "SEARCH SCREEN: ${searchState.value}")
                 searchState.value = ""
                 keyboardController?.hide()
+                viewModel.searchBooks(searchState.value)
             }
         )
     }
-}
-
-@Composable
-fun Recents() {
     Column {
         Text(
             "Recent Searches",
@@ -103,22 +104,22 @@ fun Recents() {
             color = MaterialTheme.colorScheme.onBackground
         )
     }
-    Searches()
+    Searches(viewModel = viewModel)
 }
 
 @Composable
-fun Searches() {
-    val keysList = categories.keys.toList()
+fun Searches(viewModel: SearchBookViewModel) {
+    val searchResults = viewModel.listOfBooks.value.data
     LazyColumn(
         modifier = Modifier
             .padding(top = 10.dp, start = 0.dp, end = 0.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        itemsIndexed(items = keysList) { index: Int, item: String ->
+        itemsIndexed(items = searchResults!!) { index, item ->
             SearchCard(
-                bookTitle = "Deception Point",
-                bookAuthor = "Dan Brown",
-                image = R.drawable.wall_burst
+                bookTitle = item.volumeInfo.title,
+                bookAuthor = item.volumeInfo.authors[0],
+                image = item.volumeInfo.imageLinks.thumbnail
             )
         }
     }
