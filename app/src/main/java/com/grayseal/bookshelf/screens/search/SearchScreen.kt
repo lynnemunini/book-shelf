@@ -42,7 +42,9 @@ fun SearchScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Search(navController = navController, viewModel = viewModel)
+        Search(navController = navController, viewModel = viewModel){query ->
+            viewModel.searchBooks(query)
+        }
         Spacer(modifier = Modifier.height(20.dp))
     }
 }
@@ -94,7 +96,6 @@ fun Search(
                 Log.d("Search Item", "SEARCH SCREEN: ${searchState.value}")
                 searchState.value = ""
                 keyboardController?.hide()
-                viewModel.searchBooks(searchState.value)
             }
         )
     }

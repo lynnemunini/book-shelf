@@ -24,11 +24,11 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
     }
 
     fun searchBooks(query: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (query.isEmpty()) {
                 return@launch
             }
-            //listOfBooks.value.loading = true
+            listOfBooks.value.loading = true
             listOfBooks.value = repository.getBooks(query)
             if (listOfBooks.value.data.toString().isNotEmpty()) listOfBooks.value.loading = false
             Log.d("SEARCH BOOKS", "searchBooks: ${listOfBooks.value.data.toString()}")
