@@ -22,18 +22,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun SearchScreen(
     navController: NavHostController,
-    viewModel: SearchBookViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: SearchBookViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier
@@ -44,7 +46,6 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(20.dp))
     }
 }
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -109,18 +110,20 @@ fun Search(
 
 @Composable
 fun Searches(viewModel: SearchBookViewModel) {
-    val searchResults = viewModel.listOfBooks.value.data
-    LazyColumn(
-        modifier = Modifier
-            .padding(top = 10.dp, start = 0.dp, end = 0.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        itemsIndexed(items = searchResults!!) { index, item ->
-            SearchCard(
-                bookTitle = item.volumeInfo.title,
-                bookAuthor = item.volumeInfo.authors[0],
-                image = item.volumeInfo.imageLinks.thumbnail
-            )
+    val searchResults = viewModel.listOfBooks.value
+    if (searchResults.loading == false && searchResults.e == null) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = 10.dp, start = 0.dp, end = 0.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            itemsIndexed(items = searchResults.data!!) { index, item ->
+                SearchCard(
+                    bookTitle = item.volumeInfo.title,
+                    bookAuthor = item.volumeInfo.authors[0],
+                    image = item.volumeInfo.imageLinks.thumbnail
+                )
+            }
         }
     }
 }

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
@@ -575,38 +576,36 @@ fun SearchInputField(
 
 @Composable
 fun SearchCard(bookTitle: String, bookAuthor: String, image: String) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(100.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Surface(
             shape = RoundedCornerShape(15.dp),
             color = Color.Transparent,
             tonalElevation = 10.dp
         ) {
             Image(
-                painter = painterResource(id = image),
-                contentDescription = "Book Image",
-                modifier = Modifier
-                    .background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(2.dp)
-                    ),
-                contentScale = ContentScale.Fit
+                painter = rememberImagePainter(data = image),
+                contentDescription = "Image Poster"
             )
         }
-        Column {
-            Text(
-                bookTitle,
-                fontFamily = poppinsFamily,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Text(
-                bookAuthor,
-                fontFamily = poppinsFamily,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            )
-        }
+    }
+    Column {
+        Text(
+            bookTitle,
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Text(
+            bookAuthor,
+            fontFamily = poppinsFamily,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+        )
     }
 }
