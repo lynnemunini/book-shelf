@@ -2,6 +2,7 @@ package com.grayseal.bookshelf.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,6 +11,7 @@ import com.grayseal.bookshelf.screens.book.BookScreen
 import com.grayseal.bookshelf.screens.home.HomeScreen
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.StoreUserName
+import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.screens.search.SearchScreen
 import com.grayseal.bookshelf.screens.shelf.ShelfScreen
 
@@ -33,7 +35,8 @@ fun BookShelfNavigation(){
             BookScreen(navController = navController)
         }
         composable(BookShelfScreens.SearchScreen.name){
-            SearchScreen(navController = navController)
+            val searchViewModel: SearchBookViewModel = hiltViewModel()
+            SearchScreen(navController = navController, searchViewModel)
         }
         composable(BookShelfScreens.ShelfScreen.name){
             ShelfScreen(navController = navController)

@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.screens.search
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -17,10 +16,10 @@ import javax.inject.Inject
 class SearchBookViewModel @Inject constructor(private val repository: BookRepository) :
     ViewModel() {
     var listOfBooks: MutableState<DataOrException<List<Item>, Boolean, Exception>> =
-        mutableStateOf(DataOrException(null, true, Exception("")))
+        mutableStateOf(DataOrException(null, false, Exception("")))
 
-    init {
-        searchBooks("android")
+    private fun loadBooks(query: String) {
+        searchBooks(query)
     }
 
     fun searchBooks(query: String) {
@@ -30,10 +29,8 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
             }
             listOfBooks.value.loading = true
             listOfBooks.value = repository.getBooks(query)
-            if (listOfBooks.value.data.toString().isNotEmpty()) listOfBooks.value.loading = false
-            Log.d("SEARCH BOOKS", "searchBooks: ${listOfBooks.value.data.toString()}")
+            if (listOfBooks.value.data.toString().isNotEmpty()) listOfBooks.value.loading =
+                false
         }
-
     }
-
 }

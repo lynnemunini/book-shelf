@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -14,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -28,6 +30,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
+import com.grayseal.bookshelf.data.DataOrException
+import com.grayseal.bookshelf.model.Item
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +39,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 @Composable
 fun SearchScreen(
     navController: NavHostController,
-    viewModel: SearchBookViewModel = hiltViewModel()
+    viewModel: SearchBookViewModel
 ) {
     Column(
         modifier = Modifier
@@ -126,5 +130,8 @@ fun Searches(viewModel: SearchBookViewModel) {
                 )
             }
         }
+    }
+    else if(searchResults.loading == true ){
+        CircularProgressIndicator()
     }
 }
