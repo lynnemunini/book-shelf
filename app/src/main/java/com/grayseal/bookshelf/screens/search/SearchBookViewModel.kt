@@ -9,15 +9,16 @@ import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Item
 import com.grayseal.bookshelf.repository.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchBookViewModel @Inject constructor(private val repository: BookRepository) :
     ViewModel() {
-    var listOfBooks: MutableState<DataOrException<List<Item>, Boolean, Exception>> =
+    var resultsState: MutableState<DataOrException<List<Item>, Boolean, Exception>> =
         mutableStateOf(DataOrException(null, false, Exception("")))
+
+    var listOfBooks: MutableState<List<Item>> = mutableStateOf(listOf())
 
     private fun loadBooks(query: String) {
         searchBooks(query)
@@ -28,12 +29,13 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
             if (query.isEmpty()) {
                 return@launch
             }
-            listOfBooks.value.loading = true
-            listOfBooks.value = repository.getBooks(query)
-            if (listOfBooks.value.data.toString().isNotEmpty()) listOfBooks.value.loading =
+            resultsState.value.loading = true
+            resultsState.value = repository.getBooks(query)
+            listOfBooks.value = resultsState.value.data!!
+            if (listOfBooks.value.toString().isNotEmpty()) resultsState.value.loading =
                 false
-            Log.d("LOADING", "searchBooks: ${listOfBooks.value.loading}")
-            Log.d("RESULTS", "searchBooks: ${listOfBooks.value.data}")
+            Log.d("LOADING", "searchBooks: ${resultsState.value.loading}")
+            Log.d("RESULTS", "searchBooks: ${listOfBooks.value}")
         }
     }
 }

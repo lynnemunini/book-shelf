@@ -109,7 +109,8 @@ fun Search(
 
 @Composable
 fun Results(viewModel: SearchBookViewModel) {
-    val searchResults = viewModel.listOfBooks.value
+    val searchResults = viewModel.resultsState.value
+    val listOfBooks = viewModel.listOfBooks.value
     if (searchResults.loading == true) {
         CircularProgressIndicator()
     }
@@ -119,11 +120,15 @@ fun Results(viewModel: SearchBookViewModel) {
                 .padding(top = 10.dp, start = 0.dp, end = 0.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            itemsIndexed(items = searchResults.data!!) { index, item ->
+            itemsIndexed(items = listOfBooks) { index, item ->
+                var image = ""
+                if (item.volumeInfo.imageLinks.thumbnail.isNotEmpty()){
+                    image = item.volumeInfo.imageLinks.thumbnail
+                }
                 SearchCard(
                     bookTitle = item.volumeInfo.title,
                     bookAuthor = item.volumeInfo.authors[0],
-                    image = item.volumeInfo.imageLinks.thumbnail
+                    image = image
                 )
             }
         }
