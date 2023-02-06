@@ -15,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -24,17 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
-import com.grayseal.bookshelf.data.DataOrException
-import com.grayseal.bookshelf.model.Item
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun SearchScreen(
@@ -46,10 +40,11 @@ fun SearchScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Search(navController = navController, viewModel = viewModel){query ->
+        Search(navController = navController, viewModel = viewModel) { query ->
             viewModel.searchBooks(query)
         }
         Spacer(modifier = Modifier.height(20.dp))
+        Results(viewModel = viewModel)
     }
 }
 
@@ -110,12 +105,14 @@ fun Search(
             color = MaterialTheme.colorScheme.onBackground
         )
     }
-    Searches(viewModel = viewModel)
 }
 
 @Composable
-fun Searches(viewModel: SearchBookViewModel) {
+fun Results(viewModel: SearchBookViewModel) {
     val searchResults = viewModel.listOfBooks.value
+    if (searchResults.loading == true) {
+        CircularProgressIndicator()
+    }
     if (searchResults.loading == false && searchResults.e == null) {
         LazyColumn(
             modifier = Modifier
@@ -130,8 +127,5 @@ fun Searches(viewModel: SearchBookViewModel) {
                 )
             }
         }
-    }
-    else if(searchResults.loading == true ){
-        CircularProgressIndicator()
     }
 }
