@@ -111,6 +111,7 @@ fun Search(
 fun Results(viewModel: SearchBookViewModel) {
     val searchResults = viewModel.resultsState.value
     val listOfBooks = viewModel.listOfBooks.value
+
     if (searchResults.loading == true) {
         CircularProgressIndicator()
     }
@@ -121,13 +122,17 @@ fun Results(viewModel: SearchBookViewModel) {
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             itemsIndexed(items = listOfBooks) { index, item ->
+                var title = ""
+                var author = ""
                 var image = ""
-                if (item.volumeInfo.imageLinks.thumbnail.isNotEmpty()){
-                    image = item.volumeInfo.imageLinks.thumbnail
+                if (item.imageLinks.toString().isNotEmpty() && item.title.isNotEmpty() && item.authors[0].isNotEmpty()) {
+                    title = item.title
+                    author = item.authors[0]
+                    image = item.imageLinks.thumbnail.toString()
                 }
                 SearchCard(
-                    bookTitle = item.volumeInfo.title,
-                    bookAuthor = item.volumeInfo.authors[0],
+                    bookTitle = title,
+                    bookAuthor = author,
                     image = image
                 )
             }

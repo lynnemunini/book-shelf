@@ -105,7 +105,6 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
     private fun createUser(displayName: String) {
         val userId = auth.currentUser?.uid
         val readingList: List<Book> = mutableListOf(
-            Book(1, "Deception", "Dan Brown", "", "", "")
         )
         val shelves: List<Shelf> = mutableListOf(
             Shelf("reading", readingList)

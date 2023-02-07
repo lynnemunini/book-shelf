@@ -1,16 +1,19 @@
 package com.grayseal.bookshelf.repository
 
 import com.grayseal.bookshelf.data.DataOrException
+import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.Item
+import com.grayseal.bookshelf.model.ResourceConverter
 import com.grayseal.bookshelf.network.BooksAPI
 import javax.inject.Inject
 
 class BookRepository @Inject constructor(private val api: BooksAPI) {
-    private val dataOrException = DataOrException<List<Item>, Boolean, Exception>()
-    suspend fun getBooks(searchQuery: String): DataOrException<List<Item>, Boolean, Exception> {
+    private val dataOrException = DataOrException<List<Book>, Boolean, Exception>()
+    suspend fun getBooks(searchQuery: String): DataOrException<List<Book>, Boolean, Exception> {
         try {
             dataOrException.loading = true
-            dataOrException.data = api.getAllBooks(searchQuery).items
+            val bookResource = api.getAllBooks(searchQuery)
+            dataOrException.data = ResourceConverter().toBook(bookResource)
             if (dataOrException.data!!.isNotEmpty()) dataOrException.loading = false
         } catch (e: Exception) {
             dataOrException.e = e

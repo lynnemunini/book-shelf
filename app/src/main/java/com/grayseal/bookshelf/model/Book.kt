@@ -1,20 +1,39 @@
 package com.grayseal.bookshelf.model
 
 /**
- * Book class represents a book in the book shelf app.
+ * Class representing a Book.
  *
- * @property bookID the unique ID of the book
- * @property title the title of the book
- * @property author the author of the book
- * @property summary a brief summary of the book
- * @property coverImage the URL of the book's cover image
- * @property bookCoverImage the URL of the book's book cover image
+ * @author Lynne Munini
  */
 data class Book (
-    val bookID: Long,
+    /** The unique identifier of the book */
+    val bookID: String,
+    /** A list of authors of the book */
+    val authors: List<String>,
+    /** The average rating of the book */
+    val averageRating: Double?,
+    /** A list of categories the book belongs to */
+    val categories: List<String>,
+    /** A brief description of the book */
+    val description: String,
+    /** Image links related to the book */
+    val imageLinks: ImageLinks,
+    /** The language in which the book is written */
+    val language: String,
+    /** The number of pages the book has */
+    val pageCount: Int,
+    /** A list of industry identifiers for the book */
+    val industryIdentifiers: List<IndustryIdentifier>,
+    /** The date the book was published */
+    val publishedDate: String,
+    /** The publisher of the book */
+    val publisher: String,
+    /** The number of ratings the book has received */
+    val ratingsCount: Int,
+    /** The subtitle of the book */
+    val subtitle: String,
+    /** The title of the book */
     val title: String,
-    val author: String,
-    val summary: String,
-    val coverImage: String? = null,
-    val bookCoverImage: String? = null
+    /** Information related to a search query for the book */
+    val searchInfo: String
 )
