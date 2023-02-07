@@ -2,7 +2,6 @@ package com.grayseal.bookshelf.model
 
 /**
  * Class to convert a BooksResource object to a List of Book objects.
- * The conversion only includes books that have both volumeInfo and searchInfo.
  */
 class ResourceConverter {
     /**
@@ -12,10 +11,11 @@ class ResourceConverter {
      * @return a List of Book objects
      */
     fun toBook(resource: BooksResource): List<Book> {
+        // Code to convert BooksResource to List<Book>
         val listOfBooks = mutableListOf<Book>()
         resource.items
             ?.forEach { bookResource ->
-                if (bookResource?.volumeInfo != null && bookResource.searchInfo != null) {
+                if (bookResource?.volumeInfo != null) {
                     var id = ""
                     if (bookResource.id != null) {
                         id = bookResource.id
@@ -81,8 +81,10 @@ class ResourceConverter {
                     }
 
                     var textSnippet = ""
-                    if (bookResource.searchInfo.textSnippet != null) {
-                        textSnippet = bookResource.searchInfo.textSnippet
+                    if(bookResource.searchInfo != null) {
+                        if (bookResource.searchInfo.textSnippet != null) {
+                            textSnippet = bookResource.searchInfo.textSnippet
+                        }
                     }
 
                     var industryIdentifiers: List<IndustryIdentifier> =
