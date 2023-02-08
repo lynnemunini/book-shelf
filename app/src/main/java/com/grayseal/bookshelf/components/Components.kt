@@ -1,5 +1,6 @@
 package com.grayseal.bookshelf.components
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -28,9 +30,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
@@ -89,7 +92,7 @@ fun NameInput(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         var icon by remember {
             mutableStateOf(Icons.Outlined.SentimentSatisfied)
@@ -127,6 +130,7 @@ fun NameInput(
                 unfocusedBorderColor = Color.Transparent,
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedLeadingIconColor = iconColor,
+                placeholderColor = Gray700.copy(alpha = 0.4f),
                 selectionColors = TextSelectionColors(
                     handleColor = Yellow,
                     backgroundColor = Pink200
@@ -176,7 +180,7 @@ fun PasswordInput(
         modifier = Modifier.padding(bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         OutlinedTextField(
             value = passwordState.value,
@@ -218,6 +222,7 @@ fun PasswordInput(
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedLeadingIconColor = iconColor,
                 unfocusedBorderColor = Color.Transparent,
+                placeholderColor = Gray700.copy(alpha = 0.4f),
                 selectionColors = TextSelectionColors(
                     handleColor = Yellow,
                     backgroundColor = Pink200
@@ -295,7 +300,7 @@ fun EmailInputField(
         modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         OutlinedTextField(
             value = valueState.value,
@@ -329,6 +334,7 @@ fun EmailInputField(
                 unfocusedLeadingIconColor = iconColor,
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
+                placeholderColor = Gray700.copy(alpha = 0.4f),
                 selectionColors = TextSelectionColors(
                     handleColor = Yellow,
                     backgroundColor = Pink200
@@ -575,37 +581,37 @@ fun SearchInputField(
 }
 
 @Composable
-fun SearchCard(bookTitle: String, bookAuthor: String, image: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Surface(
-            shape = RoundedCornerShape(15.dp),
-            color = Color.Transparent,
-            tonalElevation = 10.dp
+fun SearchCard(bookTitle: String, bookAuthor: String, imageUrl: String) {
+    Surface(modifier = Modifier
+        .clickable { }
+        .fillMaxWidth(),
+        shape = RectangleShape) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Top
         ) {
             Image(
-                painter = rememberImagePainter(data = image),
+                painter = rememberAsyncImagePainter(model = imageUrl),
                 contentDescription = "Image Poster"
             )
+            Log.d("IMAGEURL", "SearchCard: $imageUrl")
+            Column {
+                Text(
+                    bookTitle,
+                    overflow = TextOverflow.Ellipsis,
+                    fontFamily = poppinsFamily,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    bookAuthor,
+                    overflow = TextOverflow.Clip,
+                    fontFamily = poppinsFamily,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                )
+            }
         }
-    }
-    Column {
-        Text(
-            bookTitle,
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Text(
-            bookAuthor,
-            fontFamily = poppinsFamily,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-        )
     }
 }

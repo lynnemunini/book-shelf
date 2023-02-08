@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -118,22 +119,24 @@ fun Results(viewModel: SearchBookViewModel) {
     if (searchResults.loading == false && searchResults.e == null) {
         LazyColumn(
             modifier = Modifier
-                .padding(top = 10.dp, start = 0.dp, end = 0.dp),
+                .fillMaxSize()
+                .padding(top = 10.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            itemsIndexed(items = listOfBooks) { index, item ->
+            items(items = listOfBooks) {item ->
                 var title = ""
                 var author = ""
                 var image = ""
                 if (item.imageLinks.toString().isNotEmpty() && item.title.isNotEmpty() && item.authors[0].isNotEmpty()) {
                     title = item.title
-                    author = item.authors[0]
-                    image = item.imageLinks.thumbnail.toString()
+                    author = item.authors.toString()
+                    image = item.imageLinks.smallThumbnail.toString().trim()
                 }
+                Log.d("MY IMAGE", "Results: $image")
                 SearchCard(
                     bookTitle = title,
                     bookAuthor = author,
-                    image = image
+                    imageUrl = "http://books.google.com/books/content?id=ex-tDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
                 )
             }
         }

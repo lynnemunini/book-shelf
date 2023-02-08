@@ -15,7 +15,8 @@ private val DarkColorPalette = darkColorScheme(
     onSecondaryContainer = DarkWhite,
     tertiary = DarkWhite,
     primaryContainer = Color.Black,
-    onTertiaryContainer = Gray700.copy(alpha = 0.8f)
+    onTertiaryContainer = Gray700.copy(alpha = 0.8f),
+    surfaceVariant = DarkWhite
 )
 
 private val LightColorPalette = lightColorScheme(
@@ -27,7 +28,8 @@ private val LightColorPalette = lightColorScheme(
     onSecondaryContainer = Color.White,
     tertiary = Pink700,
     primaryContainer = Pink500,
-    onTertiaryContainer = Gray700.copy(alpha = 0.1f)
+    onTertiaryContainer = Gray700.copy(alpha = 0.1f),
+    surfaceVariant = Color.White
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,

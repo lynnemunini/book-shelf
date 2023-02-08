@@ -35,7 +35,9 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
             resultsState.value.loading = true
             resultsState.value = repository.getBooks(query)
 
-            listOfBooks.value = resultsState.value.data!!
+            if (resultsState.value.data != null) {
+                listOfBooks.value = resultsState.value.data!!
+            }
             if (listOfBooks.value.toString().isNotEmpty()) resultsState.value.loading =
                 false
             Log.d("LOADING", "searchBooks: ${resultsState.value.loading}")
