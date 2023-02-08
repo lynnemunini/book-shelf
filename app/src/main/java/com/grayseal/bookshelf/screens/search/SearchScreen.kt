@@ -22,7 +22,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
@@ -134,7 +136,23 @@ fun Results(viewModel: SearchBookViewModel) {
     if (searchResults.loading == true) {
         CircularProgressIndicator()
     }
+    if(searchResults.loading == null){
+        androidx.compose.material3.Text(
+            "Error fetching data",
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+    }
     if (searchResults.loading == false && searchResults.e == null) {
+        if (listOfBooks.isEmpty()){
+            androidx.compose.material3.Text(
+                "No results found for your search. Please try again with different keywords or try searching again.",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
