@@ -41,3 +41,11 @@ fun rememberFirebaseAuthLauncher(
 fun isValidEmail(email: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
+
+fun convertToMutableList(data: Any?): MutableList<String>? {
+    return if (data is MutableList<*>) {
+        data as MutableList<String>
+    } else {
+        null
+    }
+}

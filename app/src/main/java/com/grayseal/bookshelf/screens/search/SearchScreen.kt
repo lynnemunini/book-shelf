@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.CircularProgressIndicator
@@ -26,10 +25,14 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import com.grayseal.bookshelf.utils.convertToMutableList
 
 @Composable
 fun SearchScreen(
@@ -43,6 +46,21 @@ fun SearchScreen(
     ) {
         Search(navController = navController, viewModel = viewModel) { query ->
             viewModel.searchBooks(query)
+            // Get user and add searched value to fireStore
+            val userId = Firebase.auth.currentUser?.uid
+            if (userId != null) {
+                Log.d("USERID", "$userId")
+                // Save to searchHistory
+                val db =
+                    FirebaseFirestore.getInstance().collection("users").document(userId).get()
+                db.addOnSuccessListener {
+                    val data = db.result.get("searchHistory")
+                    val response = convertToMutableList(data)
+                    response?.add(query)
+                    FirebaseFirestore.getInstance().collection("users").document(userId)
+                        .update("searchHistory", response)
+                }
+            }
         }
         Spacer(modifier = Modifier.height(20.dp))
         Results(viewModel = viewModel)
@@ -93,9 +111,9 @@ fun Search(
             onAction = KeyboardActions {
                 if (!valid) return@KeyboardActions
                 onSearch(searchState.value.trim())
-                Log.d("Search Item", "SEARCH SCREEN: ${searchState.value}")
-                searchState.value = ""
                 keyboardController?.hide()
+                // set search value to empty string
+                searchState.value = ""
             }
         )
     }
@@ -119,26 +137,26 @@ fun Results(viewModel: SearchBookViewModel) {
     if (searchResults.loading == false && searchResults.e == null) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 10.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            items(items = listOfBooks) {item ->
+            items(items = listOfBooks) { item ->
                 var title = ""
                 var author = ""
-                var imageUrl = "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                var imageUrl =
+                    "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
                 var previewText = ""
                 if (item.imageLinks.toString().isNotEmpty()) {
                     imageUrl = item.imageLinks.thumbnail.toString().trim()
                     imageUrl = imageUrl.replace("http", "https")
                 }
-                if(item.title.isNotEmpty()){
+                if (item.title.isNotEmpty()) {
                     title = item.title
                 }
-                if(item.authors[0].isNotEmpty()){
+                if (item.authors[0].isNotEmpty()) {
                     author = item.authors.toString()
                 }
-                if(item.searchInfo.isNotEmpty()){
+                if (item.searchInfo.isNotEmpty()) {
                     previewText = item.description
                 }
                 Log.d("MY IMAGE", "Results: $imageUrl")

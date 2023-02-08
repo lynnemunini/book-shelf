@@ -103,30 +103,31 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
     Finally, it adds the user object to the "users" collection in Firebase Firestore.
      */
     private fun createUser(displayName: String) {
-        val userId = auth.currentUser?.uid
+        val userId = Firebase.auth.currentUser?.uid
         val readingList: List<Book> = mutableListOf(
         )
         val shelves: List<Shelf> = mutableListOf(
             Shelf("reading", readingList)
         )
-        val searchHistory: List<String> = mutableListOf()
+        val searchHistory: MutableList<String> = mutableListOf()
         val reviews: List<Review> = mutableListOf()
         val favourites: List<Book> = readingList
-        val user = MyUser(
-            userID = userId.toString(),
-            displayName = displayName,
-            avatar = "",
-            shelves = shelves,
-            searchHistory = searchHistory,
-            reviews = reviews,
-            favourites = favourites
-        ).toMap()
-        FirebaseFirestore.getInstance().collection("users")
-            .add(user)
+        if (userId != null) {
+            val user = MyUser(
+                userID = userId.toString(),
+                displayName = displayName,
+                avatar = "",
+                shelves = shelves,
+                searchHistory = searchHistory,
+                reviews = reviews,
+                favourites = favourites
+            ).toMap()
+            val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
+            userRef.set(user)
+        }
     }
 
     /**
-
     signInWithEmailAndPassword is a function that allows a user to sign in to their account using their email and password.
     * @param email: String, the user's email address
     * @param password: String, the user's password
