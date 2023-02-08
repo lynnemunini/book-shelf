@@ -17,12 +17,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -33,7 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
@@ -581,26 +587,31 @@ fun SearchInputField(
 }
 
 @Composable
-fun SearchCard(bookTitle: String, bookAuthor: String, imageUrl: String) {
+fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, imageUrl: String) {
     Surface(modifier = Modifier
         .clickable { }
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .height(100.dp),
         shape = RectangleShape) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = imageUrl),
-                contentDescription = "Image Poster"
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .build(),
+                contentDescription = "Book Image",
+                contentScale = ContentScale.FillHeight
             )
-            Log.d("IMAGEURL", "SearchCard: $imageUrl")
             Column {
                 Text(
                     bookTitle,
                     overflow = TextOverflow.Ellipsis,
                     fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -610,6 +621,13 @@ fun SearchCard(bookTitle: String, bookAuthor: String, imageUrl: String) {
                     fontFamily = poppinsFamily,
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                )
+                Text(
+                    previewText,
+                    overflow = TextOverflow.Ellipsis,
+                    fontFamily = poppinsFamily,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }

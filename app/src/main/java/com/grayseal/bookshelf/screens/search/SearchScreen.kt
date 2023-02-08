@@ -126,17 +126,27 @@ fun Results(viewModel: SearchBookViewModel) {
             items(items = listOfBooks) {item ->
                 var title = ""
                 var author = ""
-                var image = ""
-                if (item.imageLinks.toString().isNotEmpty() && item.title.isNotEmpty() && item.authors[0].isNotEmpty()) {
-                    title = item.title
-                    author = item.authors.toString()
-                    image = item.imageLinks.smallThumbnail.toString().trim()
+                var imageUrl = "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                var previewText = ""
+                if (item.imageLinks.toString().isNotEmpty()) {
+                    imageUrl = item.imageLinks.thumbnail.toString().trim()
+                    imageUrl = imageUrl.replace("http", "https")
                 }
-                Log.d("MY IMAGE", "Results: $image")
+                if(item.title.isNotEmpty()){
+                    title = item.title
+                }
+                if(item.authors[0].isNotEmpty()){
+                    author = item.authors.toString()
+                }
+                if(item.searchInfo.isNotEmpty()){
+                    previewText = item.description
+                }
+                Log.d("MY IMAGE", "Results: $imageUrl")
                 SearchCard(
                     bookTitle = title,
                     bookAuthor = author,
-                    imageUrl = "http://books.google.com/books/content?id=ex-tDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+                    previewText = previewText,
+                    imageUrl = imageUrl
                 )
             }
         }

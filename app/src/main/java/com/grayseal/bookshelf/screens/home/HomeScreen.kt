@@ -181,7 +181,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(Modifier.height(15.dp))
-                    androidx.compose.material3.Divider(color = MaterialTheme.colorScheme.onBackground)
+                    Divider(color = MaterialTheme.colorScheme.onBackground)
                     Spacer(Modifier.height(20.dp))
                     items.forEach { item ->
                         BookShelfNavigationDrawerItem(
