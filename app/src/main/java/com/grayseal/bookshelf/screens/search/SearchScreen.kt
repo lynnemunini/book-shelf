@@ -13,16 +13,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -30,6 +27,7 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.grayseal.bookshelf.components.HistoryCard
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
 import com.grayseal.bookshelf.navigation.BookShelfScreens
@@ -41,6 +39,31 @@ fun SearchScreen(
     navController: NavHostController,
     viewModel: SearchBookViewModel
 ) {
+    val userId = Firebase.auth.currentUser?.uid
+
+    val previousSearches: MutableList<String> by remember {
+        mutableStateOf(mutableListOf())
+    }
+
+    var displayPreviousHistory by remember {
+        mutableStateOf(false)
+    }
+
+    // Get searchHistory from FireStore
+    if (userId != null) {
+        // Save to searchHistory
+        val db = FirebaseFirestore.getInstance().collection("users").document(userId).get()
+        db.addOnSuccessListener {
+            val data = db.result.get("searchHistory")
+            if (data != null) {
+                for (i in data as MutableList<String>) {
+                    previousSearches.add(i)
+                }
+                displayPreviousHistory = previousSearches.isNotEmpty()
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,18 +72,31 @@ fun SearchScreen(
         Search(navController = navController, viewModel = viewModel) { query ->
             viewModel.searchBooks(query)
             // Get user and add searched value to fireStore
-            val userId = Firebase.auth.currentUser?.uid
             if (userId != null) {
-                Log.d("USERID", "$userId")
                 // Save to searchHistory
-                val db =
-                    FirebaseFirestore.getInstance().collection("users").document(userId).get()
+                val db = FirebaseFirestore.getInstance().collection("users").document(userId).get()
                 db.addOnSuccessListener {
                     val data = db.result.get("searchHistory")
                     val response = convertToMutableList(data)
                     response?.add(query)
                     FirebaseFirestore.getInstance().collection("users").document(userId)
                         .update("searchHistory", response)
+                }
+            }
+        }
+        if (displayPreviousHistory) {
+            Column {
+                Text(
+                    "Recent Searches",
+                    fontFamily = poppinsFamily,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    previousSearches.forEach {
+                        if (it != "") {
+                            HistoryCard(text = it, onClick = { previousSearches.remove(it) })
+                        }
+                    }
                 }
             }
         }
@@ -90,7 +126,7 @@ fun Search(
     ) {
         Icon(
             imageVector = Icons.Rounded.Close,
-            contentDescription = "Search Icon",
+            contentDescription = "Close Icon",
             modifier = Modifier
                 .size(30.dp)
                 .clip(CircleShape)
@@ -119,13 +155,11 @@ fun Search(
             }
         )
     }
-    Column {
-        Text(
-            "Recent Searches",
-            fontFamily = poppinsFamily,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
+}
+
+@Composable
+fun SearchHistory(searchHistory: MutableList<String>?, onClick: (String) -> Unit = {}) {
+
 }
 
 @Composable
@@ -136,7 +170,7 @@ fun Results(viewModel: SearchBookViewModel) {
     if (searchResults.loading == true) {
         CircularProgressIndicator()
     }
-    if(searchResults.loading == null){
+    if (searchResults.loading == null) {
         androidx.compose.material3.Text(
             "Error fetching data",
             fontFamily = poppinsFamily,
@@ -145,7 +179,7 @@ fun Results(viewModel: SearchBookViewModel) {
         )
     }
     if (searchResults.loading == false && searchResults.e == null) {
-        if (listOfBooks.isEmpty()){
+        if (listOfBooks.isEmpty()) {
             androidx.compose.material3.Text(
                 "No results found for your search. Please try again with different keywords or try searching again.",
                 fontFamily = poppinsFamily,

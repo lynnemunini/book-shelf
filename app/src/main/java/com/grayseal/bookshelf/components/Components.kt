@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.components
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -25,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -37,8 +35,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.*
@@ -628,6 +624,41 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun HistoryCard(text: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.height(20.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp)
+        ) {
+            Text(
+                text,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
+                Icon(
+                    imageVector = Icons.Rounded.Close,
+                    contentDescription = "Close Icon",
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .align(Alignment.End)
+                        .clickable(onClick = onClick)
                 )
             }
         }
