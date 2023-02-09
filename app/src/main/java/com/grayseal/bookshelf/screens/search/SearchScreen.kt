@@ -85,16 +85,22 @@ fun SearchScreen(
             }
         }
         if (displayPreviousHistory) {
-            Column {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     "Recent Searches",
                     fontFamily = poppinsFamily,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    previousSearches.forEach {
+                    val lastThree = if (previousSearches.size >= 4) {
+                        previousSearches.subList(previousSearches.size - 3, previousSearches.size)
+                    } else {
+                        previousSearches
+                    }
+                    val items = lastThree.toSet().toList().asReversed()
+                    items.forEach {
                         if (it != "") {
-                            HistoryCard(text = it, onClick = { previousSearches.remove(it) })
+                            HistoryCard(text = it)
                         }
                     }
                 }
@@ -157,10 +163,6 @@ fun Search(
     }
 }
 
-@Composable
-fun SearchHistory(searchHistory: MutableList<String>?, onClick: (String) -> Unit = {}) {
-
-}
 
 @Composable
 fun Results(viewModel: SearchBookViewModel) {

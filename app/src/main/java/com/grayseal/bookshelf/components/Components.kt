@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.*
@@ -631,36 +632,26 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
 }
 
 @Composable
-fun HistoryCard(text: String, onClick: () -> Unit) {
+fun HistoryCard(text: String) {
     Card(
-        modifier = Modifier.height(20.dp),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground),
+        modifier = Modifier.height(30.dp).padding(end = 10.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Yellow),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(3.dp)
+                .padding(3.dp),
         ) {
             Text(
                 text,
                 overflow = TextOverflow.Ellipsis,
                 fontFamily = poppinsFamily,
                 fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.padding(start = 4.dp, end = 4.dp),
+                textAlign = TextAlign.Center
             )
-            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
-                Icon(
-                    imageVector = Icons.Rounded.Close,
-                    contentDescription = "Close Icon",
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .align(Alignment.End)
-                        .clickable(onClick = onClick)
-                )
-            }
         }
     }
 }
