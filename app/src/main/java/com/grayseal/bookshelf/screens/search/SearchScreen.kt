@@ -31,6 +31,7 @@ import com.grayseal.bookshelf.components.HistoryCard
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
 import com.grayseal.bookshelf.navigation.BookShelfScreens
+import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.convertToMutableList
 
@@ -170,7 +171,7 @@ fun Results(viewModel: SearchBookViewModel) {
     val listOfBooks = viewModel.listOfBooks.value
 
     if (searchResults.loading == true) {
-        CircularProgressIndicator()
+            CircularProgressIndicator(color = Yellow)
     }
     if (searchResults.loading == null) {
         androidx.compose.material3.Text(
