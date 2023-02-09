@@ -101,7 +101,9 @@ fun SearchScreen(
                     val items = lastThree.toSet().toList().asReversed()
                     items.forEach {
                         if (it != "") {
-                            HistoryCard(text = it)
+                            HistoryCard(text = it, onClick = {
+                                viewModel.searchBooks(it)
+                            })
                         }
                     }
                 }

@@ -632,9 +632,9 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
 }
 
 @Composable
-fun HistoryCard(text: String) {
+fun HistoryCard(text: String, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.height(30.dp).padding(end = 10.dp),
+        modifier = Modifier.height(30.dp).padding(end = 10.dp).clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Yellow),
         elevation = CardDefaults.cardElevation(4.dp)
