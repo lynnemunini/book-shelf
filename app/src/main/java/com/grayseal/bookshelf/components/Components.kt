@@ -611,6 +611,7 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
+                    maxLines = 1,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
                 Text(
@@ -618,6 +619,7 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
                     overflow = TextOverflow.Clip,
                     fontFamily = poppinsFamily,
                     fontSize = 12.sp,
+                    maxLines = 1,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 )
                 Text(
@@ -625,6 +627,7 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
                     overflow = TextOverflow.Ellipsis,
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
+                    maxLines = 2,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
             }
