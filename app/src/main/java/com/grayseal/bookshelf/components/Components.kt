@@ -644,7 +644,7 @@ fun HistoryCard(text: String, onClick: () -> Unit) {
                 .padding(3.dp),
         ) {
             Text(
-                text,
+                text = if (text.length > 15) text.substring(0, 15) + "..." else text,
                 overflow = TextOverflow.Ellipsis,
                 fontFamily = poppinsFamily,
                 fontSize = 13.sp,
