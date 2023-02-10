@@ -211,7 +211,7 @@ fun Results(viewModel: SearchBookViewModel) {
                     title = item.title
                 }
                 if (item.authors[0].isNotEmpty()) {
-                    author = item.authors.toString()
+                    author = item.authors.joinToString(separator = ", ")
                 }
                 if (item.searchInfo.isNotEmpty()) {
                     previewText = item.description
