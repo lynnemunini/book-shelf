@@ -240,7 +240,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                         }
                     }
                     MainCard()
-                    Categories()
+                    Categories(navController = navController)
                     ReadingList()
                 }
             },
@@ -435,7 +435,7 @@ fun MainCard() {
 }
 
 @Composable
-fun Categories() {
+fun Categories(navController: NavController) {
     Text(
         "Categories",
         fontFamily = poppinsFamily,
@@ -452,9 +452,12 @@ fun Categories() {
         itemsIndexed(items = keysList) { index: Int, item: String ->
             if (index == 0) {
                 Spacer(modifier = Modifier.width(20.dp))
-                categories[item]?.let { Category(category = item, image = it) }
-            }else {
-                Category(category = item, image = categories[item]!!)
+                categories[item]?.let { Category(category = item, image = it, onClick = { navController.navigate(route = BookShelfScreens.CategoryScreen.name + "/$item") }) }
+            } else {
+                Category(
+                    category = item,
+                    image = categories[item]!!,
+                    onClick = { navController.navigate(route = BookShelfScreens.CategoryScreen.name + "/$item") })
             }
         }
     }
@@ -484,7 +487,7 @@ fun ReadingList() {
                     bookTitle = "Deception Point",
                     image = R.drawable.profile
                 )
-            }else {
+            } else {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",

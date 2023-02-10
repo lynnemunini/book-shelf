@@ -3,11 +3,14 @@ package com.grayseal.bookshelf.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.grayseal.bookshelf.screens.SplashScreen
 import com.grayseal.bookshelf.screens.book.BookScreen
+import com.grayseal.bookshelf.screens.category.CategoryScreen
 import com.grayseal.bookshelf.screens.home.HomeScreen
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.StoreUserName
@@ -24,22 +27,31 @@ NavHost to handle navigation between different screens using the provided startD
 @Composable
 fun BookShelfNavigation(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = BookShelfScreens.SplashScreen.name){
-        composable(BookShelfScreens.SplashScreen.name){
+    val searchViewModel: SearchBookViewModel = hiltViewModel()
+    NavHost(navController = navController, startDestination = BookShelfScreens.SplashScreen.name) {
+        composable(BookShelfScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
-        composable(BookShelfScreens.HomeScreen.name,){
+        composable(BookShelfScreens.HomeScreen.name,) {
             HomeScreen(navController = navController)
         }
-        composable(BookShelfScreens.BookScreen.name){
+        composable(BookShelfScreens.BookScreen.name) {
             BookScreen(navController = navController)
         }
-        composable(BookShelfScreens.SearchScreen.name){
-            val searchViewModel: SearchBookViewModel = hiltViewModel()
+        composable(BookShelfScreens.SearchScreen.name) {
             SearchScreen(navController = navController, searchViewModel)
         }
-        composable(BookShelfScreens.ShelfScreen.name){
+        composable(BookShelfScreens.ShelfScreen.name) {
             ShelfScreen(navController = navController)
+        }
+
+        val route = BookShelfScreens.CategoryScreen.name
+        composable("$route/{query}", arguments = listOf(navArgument(name = "query") {
+            type = NavType.StringType
+        })) { navBack ->
+            navBack.arguments?.getString("query").let { query ->
+                CategoryScreen(navController = navController, searchViewModel, category = query)
+            }
         }
     }
 }

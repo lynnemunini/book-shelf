@@ -5,7 +5,8 @@ enum class BookShelfScreens {
     HomeScreen,
     SearchScreen,
     ShelfScreen,
-    BookScreen;
+    BookScreen,
+    CategoryScreen;
 
     companion object {
         fun fromRoute(route: String): BookShelfScreens
@@ -15,6 +16,7 @@ enum class BookShelfScreens {
             HomeScreen.name -> HomeScreen
             ShelfScreen.name -> ShelfScreen
             BookScreen.name -> BookScreen
+            CategoryScreen.name -> CategoryScreen
             else -> throw IllegalArgumentException("Route $route is not recognized")
         }
     }

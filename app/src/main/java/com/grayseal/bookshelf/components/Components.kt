@@ -416,7 +416,7 @@ fun ContinueGoogle(onClick: () -> Unit) {
 
 
 @Composable
-fun Category(category: String, image: Int) {
+fun Category(category: String, image: Int, onClick: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -425,7 +425,8 @@ fun Category(category: String, image: Int) {
         Surface(
             modifier = Modifier
                 .size(50.dp)
-                .background(color = Pink200, shape = CircleShape),
+                .background(color = Pink200, shape = CircleShape)
+                .clickable(onClick = onClick),
             shape = CircleShape,
             color = MaterialTheme.colorScheme.secondary
         ) {

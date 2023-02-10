@@ -2,7 +2,9 @@ package com.grayseal.bookshelf.screens.search
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grayseal.bookshelf.data.DataOrException
@@ -38,7 +40,7 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
             if (resultsState.value.data != null) {
                 listOfBooks.value = resultsState.value.data!!
             }
-            if (listOfBooks.value.toString().isNotEmpty()) resultsState.value.loading =
+            if (listOfBooks.value.isNotEmpty()) resultsState.value.loading =
                 false
             Log.d("LOADING", "searchBooks: ${resultsState.value.loading}")
             Log.d("RESULTS", "searchBooks: ${listOfBooks.value}")
