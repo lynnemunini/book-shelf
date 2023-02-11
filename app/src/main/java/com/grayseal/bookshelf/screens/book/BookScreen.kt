@@ -1,13 +1,11 @@
 package com.grayseal.bookshelf.screens.book
 
-import android.telecom.Call
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.KeyboardBackspace
 import androidx.compose.material.icons.sharp.Edit
@@ -23,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +29,7 @@ import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
+import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.launch
 
@@ -64,7 +64,7 @@ fun BookScreen(navController: NavController) {
                     icon = {
                         Icon(
                             imageVector = Icons.Sharp.Edit,
-                            contentDescription = "Add Note",
+                            contentDescription = "Add to Shelf",
                             tint = Color.White
                         )
                     },
@@ -165,6 +165,11 @@ fun BookDescription(
     genre: String = "Fiction",
     description: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor dignissim convallis aenean et tortor. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Sed id semper risus in hendrerit gravida rutrum quisque. Nulla posuere sollicitudin aliquam ultrices. Quisque id diam vel quam elementum pulvinar. Eros in cursus turpis massa tincidunt dui. Est velit egestas dui id ornare arcu. Dui sapien eget mi proin sed. Volutpat lacus laoreet non curabitur. Ullamcorper eget nulla facilisi etiam. Pharetra convallis posuere morbi leo urna molestie at elementum. Tortor posuere ac ut consequat semper viverra."
 ) {
+    // Split the description paragraph after the first three sentences
+    val firstThreeSentences =
+        description.substringBefore(".").substringBefore(".").substringBefore(".") + "."
+    val remainingDescription = description.substringAfter(firstThreeSentences)
+
     Surface(
         modifier = Modifier.clip(
             shape = RoundedCornerShape(
@@ -274,18 +279,52 @@ fun BookDescription(
                     )
                 }
             }
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    description,
-                    fontFamily = poppinsFamily,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+                Row {
+                    Text(
+                        text = "Descriptions",
+                        fontFamily = poppinsFamily,
+                        textAlign = TextAlign.Start,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
+                    )
+                }
+                Row {
+                    Text(
+                        text = firstThreeSentences.first().toString(),
+                        fontFamily = loraFamily,
+                        textAlign = TextAlign.Justify,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 65.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(end = 20.dp).align(Alignment.CenterVertically)
+                    )
+                    Text(
+                        text = firstThreeSentences.drop(1),
+                        textAlign = TextAlign.Justify,
+                        fontFamily = poppinsFamily,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                Row {
+                    Text(
+                        text = remainingDescription,
+                        fontFamily = poppinsFamily,
+                        textAlign = TextAlign.Justify,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
     }
@@ -294,46 +333,46 @@ fun BookDescription(
 @Preview(showBackground = true)
 @Composable
 fun BottomSheetContent() {
-        Column(
-            modifier = Modifier.height(200.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround
-        ) {
-            Text(
-                text = "Add to Shelf",
-                fontFamily = poppinsFamily,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Divider(
-                modifier = Modifier.padding(5.dp)
-            )
-            Text(
-                "Reading now",
-                fontFamily = poppinsFamily,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Divider(
-                modifier = Modifier.padding(5.dp)
-            )
-            Text(
-                "To Read",
-                fontFamily = poppinsFamily,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Divider(
-                modifier = Modifier.padding(5.dp)
-            )
-            Text(
-                "Have Read",
-                fontFamily = poppinsFamily,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Divider(
-                modifier = Modifier.padding(5.dp)
-            )
-        }
+    Column(
+        modifier = Modifier.height(200.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround
+    ) {
+        Text(
+            text = "Add to Shelf",
+            fontFamily = poppinsFamily,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Divider(
+            modifier = Modifier.padding(5.dp)
+        )
+        Text(
+            "Reading now",
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Divider(
+            modifier = Modifier.padding(5.dp)
+        )
+        Text(
+            "To Read",
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Divider(
+            modifier = Modifier.padding(5.dp)
+        )
+        Text(
+            "Have Read",
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Divider(
+            modifier = Modifier.padding(5.dp)
+        )
+    }
 }
