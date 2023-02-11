@@ -1,5 +1,6 @@
 package com.grayseal.bookshelf.screens.book
 
+import android.telecom.Call
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -40,41 +41,60 @@ fun BookScreen(navController: NavController) {
     val sheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = sheetState
     )
+    var isFabVisible by remember { mutableStateOf(true) } // add this line
 
     BottomSheetScaffold(
         scaffoldState = sheetScaffoldState,
         sheetElevation = 10.dp,
         sheetBackgroundColor = Yellow,
+        sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
         floatingActionButton = {
-                FloatingActionButton(
-                    modifier = Modifier.padding(bottom = 30.dp),
+            if (isFabVisible) { // modify this line
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(
+                            "Add to Shelf",
+                            fontFamily = poppinsFamily,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                        )
+                    },
+                    modifier = Modifier.padding(bottom = 100.dp),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Sharp.Edit,
+                            contentDescription = "Add Note",
+                            tint = Color.White
+                        )
+                    },
                     onClick = {
+                        isFabVisible = false
                         scope.launch {
-                            if(sheetState.isCollapsed) {
+                            if (sheetState.isCollapsed) {
                                 sheetState.expand()
-                            }
-                            else{
-                                sheetState.collapse()
                             }
                         }
                     },
-                    backgroundColor = Yellow
+                    backgroundColor = Yellow,
+                    shape = RoundedCornerShape(15.dp),
+                    elevation = FloatingActionButtonDefaults.elevation(4.dp)
                 )
-                {
-                    Icon(
-                        imageVector = Icons.Sharp.Edit,
-                        contentDescription = "Add Note",
-                        tint = Color.White
-                    )
-                }
-        },
-        sheetContent = {
-                BottomSheetContent()
             }
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        sheetContent = {
+            BottomSheetContent()
+        }
     ) {
         Details()
     }
+    LaunchedEffect(sheetState.isCollapsed) {
+        if (sheetState.isCollapsed) {
+            isFabVisible = true
+        }
+    }
+
 }
 
 @Composable
