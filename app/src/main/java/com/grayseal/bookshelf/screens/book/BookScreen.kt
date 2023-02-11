@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -22,35 +23,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.grayseal.bookshelf.ui.theme.Gray
+import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
 fun BookScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Details()
-    }
+    Details()
 }
 
+@Preview(showBackground = true)
 @Composable
 fun Details() {
-    Surface(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.secondary)
     ) {
         TopSection()
+        BookDescription()
     }
 
 }
 
 @Composable
 fun TopSection() {
-    Column(modifier = Modifier.padding(20.dp)) {
+    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Surface(
                 modifier = Modifier
@@ -82,7 +80,7 @@ fun TopSection() {
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Image(
-                painter = painterResource(id = com.grayseal.bookshelf.R.drawable.book),
+                painter = painterResource(id = R.drawable.book),
                 contentDescription = "Book Image",
                 modifier = Modifier
                     .background(
@@ -95,7 +93,6 @@ fun TopSection() {
     }
 }
 
-@Preview
 @Composable
 fun BookDescription(
     bookTitle: String = "Deception Point",
@@ -104,8 +101,13 @@ fun BookDescription(
     genre: String = "Fiction",
     description: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor dignissim convallis aenean et tortor. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Sed id semper risus in hendrerit gravida rutrum quisque. Nulla posuere sollicitudin aliquam ultrices. Quisque id diam vel quam elementum pulvinar. Eros in cursus turpis massa tincidunt dui. Est velit egestas dui id ornare arcu. Dui sapien eget mi proin sed. Volutpat lacus laoreet non curabitur. Ullamcorper eget nulla facilisi etiam. Pharetra convallis posuere morbi leo urna molestie at elementum. Tortor posuere ac ut consequat semper viverra."
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Column {
+    Surface(modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))) {
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -135,7 +137,9 @@ fun BookDescription(
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth().background(color = Pink200, shape = RoundedCornerShape(5.dp)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Pink200, shape = RoundedCornerShape(5.dp)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -156,6 +160,10 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     )
                 }
+                Image(
+                    painter = painterResource(id = R.drawable.line),
+                    contentDescription = "Separator"
+                )
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -173,6 +181,10 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     )
                 }
+                Image(
+                    painter = painterResource(id = R.drawable.line),
+                    contentDescription = "Separator"
+                )
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -191,9 +203,12 @@ fun BookDescription(
                     )
                 }
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(
                     description,
                     fontFamily = poppinsFamily,
