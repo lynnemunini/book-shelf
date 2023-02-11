@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(navController: NavController) {
     var startAnimation by remember {
         mutableStateOf(false)
     }

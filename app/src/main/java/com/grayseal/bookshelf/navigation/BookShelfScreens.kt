@@ -9,8 +9,7 @@ enum class BookShelfScreens {
     CategoryScreen;
 
     companion object {
-        fun fromRoute(route: String): BookShelfScreens
-        = when(route.substringBefore("/")){
+        fun fromRoute(route: String): BookShelfScreens = when (route.substringBefore("/")) {
             SplashScreen.name -> SplashScreen
             SearchScreen.name -> SearchScreen
             HomeScreen.name -> HomeScreen

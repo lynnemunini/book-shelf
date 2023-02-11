@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.navigation.BookShelfScreens
@@ -20,7 +21,11 @@ import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun CategoryScreen(navController: NavController, viewModel: SearchBookViewModel, category: String?) {
+fun CategoryScreen(
+    navController: NavController,
+    viewModel: SearchBookViewModel,
+    category: String?
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +49,9 @@ fun CategoryScreen(navController: NavController, viewModel: SearchBookViewModel,
             Text(
                 category.toString(),
                 fontFamily = poppinsFamily,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 30.dp)
             )
 
         }

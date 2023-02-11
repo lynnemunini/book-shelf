@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.screens.search
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +22,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -37,7 +35,7 @@ import com.grayseal.bookshelf.utils.convertToMutableList
 
 @Composable
 fun SearchScreen(
-    navController: NavHostController,
+    navController: NavController,
     viewModel: SearchBookViewModel
 ) {
     val userId = Firebase.auth.currentUser?.uid
@@ -198,11 +196,11 @@ fun Results(viewModel: SearchBookViewModel) {
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             items(items = listOfBooks) { item ->
-                var title = ""
-                var author = ""
+                var title = "Title information unavailable"
+                var author = "Author names not on record"
                 var imageUrl =
                     "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                var previewText = ""
+                var previewText = "Preview information not provided"
                 if (item.imageLinks.toString().isNotEmpty()) {
                     imageUrl = item.imageLinks.thumbnail.toString().trim()
                     imageUrl = imageUrl.replace("http", "https")
@@ -213,10 +211,9 @@ fun Results(viewModel: SearchBookViewModel) {
                 if (item.authors[0].isNotEmpty()) {
                     author = item.authors.joinToString(separator = ", ")
                 }
-                if (item.searchInfo.isNotEmpty()) {
+                if (item.description.isNotEmpty()) {
                     previewText = item.description
                 }
-                Log.d("MY IMAGE", "Results: $imageUrl")
                 SearchCard(
                     bookTitle = title,
                     bookAuthor = author,

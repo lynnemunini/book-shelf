@@ -425,7 +425,7 @@ fun Category(category: String, image: Int, onClick: () -> Unit) {
         Surface(
             modifier = Modifier
                 .size(50.dp)
-                .background(color = Pink200, shape = CircleShape)
+                .background(color = MaterialTheme.colorScheme.secondary, shape = CircleShape)
                 .clickable(onClick = onClick),
             shape = CircleShape,
             color = MaterialTheme.colorScheme.secondary
