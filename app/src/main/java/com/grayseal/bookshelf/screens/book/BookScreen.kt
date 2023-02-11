@@ -4,14 +4,17 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.KeyboardBackspace
+import androidx.compose.material.icons.sharp.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,14 +28,55 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.ui.theme.Pink200
+import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookScreen(navController: NavController) {
-    Details()
+    val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+    val scope = rememberCoroutineScope()
+    val sheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = sheetState
+    )
+
+    BottomSheetScaffold(
+        scaffoldState = sheetScaffoldState,
+        sheetElevation = 10.dp,
+        sheetBackgroundColor = Yellow,
+        sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
+        floatingActionButton = {
+                FloatingActionButton(
+                    modifier = Modifier.padding(bottom = 30.dp),
+                    onClick = {
+                        scope.launch {
+                            if(sheetState.isCollapsed) {
+                                sheetState.expand()
+                            }
+                            else{
+                                sheetState.collapse()
+                            }
+                        }
+                    },
+                    backgroundColor = Yellow
+                )
+                {
+                    Icon(
+                        imageVector = Icons.Sharp.Edit,
+                        contentDescription = "Add Note",
+                        tint = Color.White
+                    )
+                }
+        },
+        sheetContent = {
+                BottomSheetContent()
+            }
+    ) {
+        Details()
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun Details() {
     Column(
@@ -101,7 +145,14 @@ fun BookDescription(
     genre: String = "Fiction",
     description: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor dignissim convallis aenean et tortor. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Sed id semper risus in hendrerit gravida rutrum quisque. Nulla posuere sollicitudin aliquam ultrices. Quisque id diam vel quam elementum pulvinar. Eros in cursus turpis massa tincidunt dui. Est velit egestas dui id ornare arcu. Dui sapien eget mi proin sed. Volutpat lacus laoreet non curabitur. Ullamcorper eget nulla facilisi etiam. Pharetra convallis posuere morbi leo urna molestie at elementum. Tortor posuere ac ut consequat semper viverra."
 ) {
-    Surface(modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))) {
+    Surface(
+        modifier = Modifier.clip(
+            shape = RoundedCornerShape(
+                topStart = 15.dp,
+                topEnd = 15.dp
+            )
+        )
+    ) {
         Column(
             modifier = Modifier
                 .padding(20.dp)
@@ -218,4 +269,51 @@ fun BookDescription(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BottomSheetContent() {
+        Column(
+            modifier = Modifier.height(200.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            Text(
+                text = "Add to Shelf",
+                fontFamily = poppinsFamily,
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Divider(
+                modifier = Modifier.padding(5.dp)
+            )
+            Text(
+                "Reading now",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Divider(
+                modifier = Modifier.padding(5.dp)
+            )
+            Text(
+                "To Read",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Divider(
+                modifier = Modifier.padding(5.dp)
+            )
+            Text(
+                "Have Read",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Divider(
+                modifier = Modifier.padding(5.dp)
+            )
+        }
 }

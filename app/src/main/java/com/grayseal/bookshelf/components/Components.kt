@@ -446,14 +446,15 @@ fun Category(category: String, image: Int, onClick: () -> Unit) {
 }
 
 @Composable
-fun Reading(bookAuthor: String, bookTitle: String, image: Int) {
+fun Reading(bookAuthor: String, bookTitle: String, image: Int, onClick: () -> Unit) {
     Column {
         Surface(
             shape = RoundedCornerShape(15.dp),
             modifier = Modifier
                 .weight(1f, fill = false)
                 .aspectRatio(1f)
-                .align(Alignment.CenterHorizontally),
+                .align(Alignment.CenterHorizontally)
+                .clickable (onClick = onClick),
             color = Color.Transparent
         ) {
             Image(

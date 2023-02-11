@@ -240,7 +240,9 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                     }
                     MainCard()
                     Categories(navController = navController)
-                    ReadingList()
+                    ReadingList(onClick = {
+                        navController.navigate(route = BookShelfScreens.BookScreen.name)
+                    })
                 }
             },
                 bottomBar = {
@@ -463,7 +465,7 @@ fun Categories(navController: NavController) {
 }
 
 @Composable
-fun ReadingList() {
+fun ReadingList(onClick: () -> Unit) {
     Text(
         "Reading List",
         fontFamily = poppinsFamily,
@@ -484,13 +486,15 @@ fun ReadingList() {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
-                    image = R.drawable.profile
+                    image = R.drawable.profile,
+                    onClick = onClick
                 )
             } else {
                 Reading(
                     bookAuthor = "Dan Brown",
                     bookTitle = "Deception Point",
-                    image = R.drawable.profile
+                    image = R.drawable.profile,
+                    onClick = onClick
                 )
             }
         }
