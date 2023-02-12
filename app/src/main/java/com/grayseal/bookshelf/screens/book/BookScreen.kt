@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,10 +18,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
@@ -108,47 +105,20 @@ fun Details(navController: NavController) {
                 .fillMaxSize()
         ) {
             TopSection(navController = navController)
-            ConstraintLayout() {
-                val (favourite, description) = createRefs()
-                Favourite(modifier = Modifier.constrainAs(favourite){
-
-                })
-                BookDescription(modifier = Modifier.constrainAs(description){
-
-                })
-            }
+            BookDescription()
         }
     }
 
 }
 
 @Composable
-fun Favourite(modifier: Modifier){
-    Surface(
-        modifier = Modifier
-            .size(70.dp)
-            .clip(CircleShape)
-            .clickable(enabled = true, onClick = {}),
-        shape = CircleShape,
-        color = MaterialTheme.colorScheme.secondary,
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.favourite),
-            contentDescription = "Favourite",
-            modifier = Modifier
-                .size(60.dp)
-                .padding(5.dp)
-                .clip(CircleShape)
-                .background(color = Color.Transparent, shape = CircleShape),
-            colorFilter = ColorFilter.tint(Pink700)
-        )
-    }
-}
-
-@Composable
 fun TopSection(navController: NavController) {
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceBetween) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(50.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(50.dp)
+        ) {
             Surface(
                 modifier = Modifier
                     .size(48.dp)
@@ -199,7 +169,6 @@ fun TopSection(navController: NavController) {
 
 @Composable
 fun BookDescription(
-    modifier: Modifier
     bookTitle: String = "Deception Point",
     bookAuthor: String = "Dan Brown",
     rating: String = "17-12-2003",
