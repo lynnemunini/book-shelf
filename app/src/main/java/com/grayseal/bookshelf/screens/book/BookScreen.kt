@@ -100,31 +100,33 @@ fun Details(navController: NavController) {
             contentDescription = "backgroundImage",
             modifier = Modifier.fillMaxWidth()
         )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Column {
             TopSection(navController = navController)
-            BookDescription()
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+            ) {
+                BookImage()
+                BookDescription()
+            }
         }
     }
-
 }
 
 @Composable
 fun TopSection(navController: NavController) {
-    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceBetween) {
+    Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(50.dp)
+            horizontalArrangement = Arrangement.spacedBy(70.dp)
         ) {
             Surface(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
                     .clickable(enabled = true, onClick = {
-                        navController.navigate(route = BookShelfScreens.HomeScreen.name)
+                        navController.popBackStack()
                     }),
                 shape = CircleShape,
                 color = Color.Transparent,
@@ -152,6 +154,12 @@ fun TopSection(navController: NavController) {
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
+    }
+}
+
+@Composable
+fun BookImage(){
+    Column(modifier = Modifier.padding(20.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Image(
                 painter = painterResource(id = R.drawable.book),
@@ -165,8 +173,8 @@ fun TopSection(navController: NavController) {
             )
         }
     }
-}
 
+}
 @Composable
 fun BookDescription(
     bookTitle: String = "Deception Point",
@@ -261,7 +269,7 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                     )
                     Text(
-                        pages,
+                        "$pages pages",
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
@@ -294,7 +302,6 @@ fun BookDescription(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
             ) {
                 Row {
                     Text(
@@ -313,12 +320,12 @@ fun BookDescription(
                         fontFamily = loraFamily,
                         textAlign = TextAlign.Justify,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 65.sp,
+                            fontSize = 80.sp,
                             fontWeight = FontWeight.ExtraBold
                         ),
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
-                            .padding(end = 20.dp)
+                            .padding(end = 15.dp)
                             .align(Alignment.CenterVertically)
                     )
                     Text(
@@ -339,6 +346,7 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

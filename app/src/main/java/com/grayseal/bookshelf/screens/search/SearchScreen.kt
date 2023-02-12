@@ -138,7 +138,7 @@ fun Search(
                 .size(30.dp)
                 .clip(CircleShape)
                 .clickable(enabled = true, onClick = {
-                    navController.navigate(route = BookShelfScreens.HomeScreen.name)
+                    navController.popBackStack()
                 })
         )
         Text(
