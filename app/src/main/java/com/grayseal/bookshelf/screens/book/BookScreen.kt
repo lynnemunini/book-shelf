@@ -45,29 +45,23 @@ fun BookScreen(navController: NavController) {
 
     BottomSheetScaffold(
         scaffoldState = sheetScaffoldState,
-        sheetElevation = 10.dp,
-        sheetBackgroundColor = Yellow,
+        sheetElevation = 40.dp,
+        sheetBackgroundColor = Color.White,
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
         floatingActionButton = {
-            if (isFabVisible) { // modify this line
+            if (isFabVisible) {
                 ExtendedFloatingActionButton(
                     text = {
                         Text(
                             "Add to Shelf",
                             fontFamily = poppinsFamily,
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.White
                         )
                     },
                     modifier = Modifier.padding(bottom = 100.dp),
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Sharp.Edit,
-                            contentDescription = "Add to Shelf",
-                            tint = Color.White
-                        )
-                    },
                     onClick = {
                         isFabVisible = false
                         scope.launch {
@@ -76,7 +70,7 @@ fun BookScreen(navController: NavController) {
                             }
                         }
                     },
-                    backgroundColor = Yellow,
+                    backgroundColor = Pink200,
                     shape = RoundedCornerShape(15.dp),
                     elevation = FloatingActionButtonDefaults.elevation(4.dp)
                 )
@@ -102,7 +96,7 @@ fun Details() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(color = Yellow)
     ) {
         TopSection()
         BookDescription()
@@ -161,8 +155,10 @@ fun TopSection() {
 fun BookDescription(
     bookTitle: String = "Deception Point",
     bookAuthor: String = "Dan Brown",
-    publishedDate: String = "17-12-2003",
+    rating: String = "17-12-2003",
     genre: String = "Fiction",
+    pages: String = "467",
+    time: String = "128 min",
     description: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor dignissim convallis aenean et tortor. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Sed id semper risus in hendrerit gravida rutrum quisque. Nulla posuere sollicitudin aliquam ultrices. Quisque id diam vel quam elementum pulvinar. Eros in cursus turpis massa tincidunt dui. Est velit egestas dui id ornare arcu. Dui sapien eget mi proin sed. Volutpat lacus laoreet non curabitur. Ullamcorper eget nulla facilisi etiam. Pharetra convallis posuere morbi leo urna molestie at elementum. Tortor posuere ac ut consequat semper viverra."
 ) {
     // Split the description paragraph after the first three sentences
@@ -173,10 +169,11 @@ fun BookDescription(
     Surface(
         modifier = Modifier.clip(
             shape = RoundedCornerShape(
-                topStart = 15.dp,
-                topEnd = 15.dp
+                topStart = 30.dp,
+                topEnd = 30.dp
             )
-        )
+        ),
+        color = Color(0xFFfbf2f0)
     ) {
         Column(
             modifier = Modifier
@@ -185,7 +182,7 @@ fun BookDescription(
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(5.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -193,29 +190,22 @@ fun BookDescription(
                     Text(
                         bookTitle,
                         fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onBackground
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                     Text(
-                        bookAuthor,
+                        text = "by $bookAuthor",
                         fontFamily = poppinsFamily,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
-                    Text(
-                        publishedDate,
-                        fontFamily = poppinsFamily,
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                    )
-
                 }
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Pink200, shape = RoundedCornerShape(5.dp)),
+                    .fillMaxWidth().padding(5.dp)
+                    .background(color = Color(0xFFf9f9f9), shape = RoundedCornerShape(10.dp)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -227,13 +217,14 @@ fun BookDescription(
                         "Genre",
                         fontFamily = poppinsFamily,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                     )
                     Text(
                         genre,
                         fontFamily = poppinsFamily,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
                 Image(
@@ -245,16 +236,17 @@ fun BookDescription(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Genre",
+                        "Pages",
                         fontFamily = poppinsFamily,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                     )
                     Text(
-                        genre,
+                        pages,
                         fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
                 Image(
@@ -266,16 +258,17 @@ fun BookDescription(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Genre",
+                        "Time",
                         fontFamily = poppinsFamily,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                     )
                     Text(
-                        genre,
+                        time,
                         fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
             }
@@ -305,7 +298,9 @@ fun BookDescription(
                             fontWeight = FontWeight.ExtraBold
                         ),
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(end = 20.dp).align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                            .align(Alignment.CenterVertically)
                     )
                     Text(
                         text = firstThreeSentences.drop(1),
@@ -335,44 +330,59 @@ fun BookDescription(
 fun BottomSheetContent() {
     Column(
         modifier = Modifier.height(200.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceAround
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Top
+        ) {
+            Divider(
+                Modifier
+                    .width(60.dp)
+                    .height(5.dp)
+                    .clip(RoundedCornerShape(15.dp)))
+        }
         Text(
-            text = "Add to Shelf",
+            text = "Add to book shelf?",
             fontFamily = poppinsFamily,
-            fontSize = 20.sp,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 20.dp)
         )
         Divider(
-            modifier = Modifier.padding(5.dp)
+            modifier = Modifier.padding(vertical = 10.dp)
         )
         Text(
-            "Reading now",
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Divider(
-            modifier = Modifier.padding(5.dp)
-        )
-        Text(
-            "To Read",
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Divider(
-            modifier = Modifier.padding(5.dp)
-        )
-        Text(
-            "Have Read",
+            "Reading now 📖",
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 20.dp)
         )
         Divider(
-            modifier = Modifier.padding(5.dp)
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+        Text(
+            "To Read 📌",
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+        Text(
+            "Have Read 📚",
+            fontFamily = poppinsFamily,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 10.dp)
         )
     }
 }
