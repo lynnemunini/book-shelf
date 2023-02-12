@@ -6,9 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.KeyboardBackspace
-import androidx.compose.material.icons.sharp.Edit
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,10 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Pink200
-import com.grayseal.bookshelf.ui.theme.Yellow
+import com.grayseal.bookshelf.ui.theme.Pink700
 import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.launch
@@ -81,7 +82,7 @@ fun BookScreen(navController: NavController) {
             BottomSheetContent()
         }
     ) {
-        Details()
+        Details(navController)
     }
     LaunchedEffect(sheetState.isCollapsed) {
         if (sheetState.isCollapsed) {
@@ -92,49 +93,94 @@ fun BookScreen(navController: NavController) {
 }
 
 @Composable
-fun Details() {
-    Column(
+fun Details(navController: NavController) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Yellow)
     ) {
-        TopSection()
-        BookDescription()
+        Image(
+            painter = painterResource(id = R.drawable.sky),
+            contentDescription = "backgroundImage",
+            modifier = Modifier.fillMaxWidth()
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            TopSection(navController = navController)
+            ConstraintLayout() {
+                val (favourite, description) = createRefs()
+                Favourite(modifier = Modifier.constrainAs(favourite){
+
+                })
+                BookDescription(modifier = Modifier.constrainAs(description){
+
+                })
+            }
+        }
     }
 
 }
 
 @Composable
-fun TopSection() {
+fun Favourite(modifier: Modifier){
+    Surface(
+        modifier = Modifier
+            .size(70.dp)
+            .clip(CircleShape)
+            .clickable(enabled = true, onClick = {}),
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.secondary,
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.favourite),
+            contentDescription = "Favourite",
+            modifier = Modifier
+                .size(60.dp)
+                .padding(5.dp)
+                .clip(CircleShape)
+                .background(color = Color.Transparent, shape = CircleShape),
+            colorFilter = ColorFilter.tint(Pink700)
+        )
+    }
+}
+
+@Composable
+fun TopSection(navController: NavController) {
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.SpaceBetween) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(50.dp)) {
             Surface(
                 modifier = Modifier
-                    .size(30.dp)
-                    .clickable(onClick = {}),
-                shape = CircleShape
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .clickable(enabled = true, onClick = {
+                        navController.navigate(route = BookShelfScreens.HomeScreen.name)
+                    }),
+                shape = CircleShape,
+                color = Color.Transparent,
+                border = BorderStroke(
+                    width = 0.9.dp,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.KeyboardBackspace,
-                    contentDescription = "Back Icon",
+                Image(
+                    painter = painterResource(id = R.drawable.arrow),
+                    contentDescription = "Back",
                     modifier = Modifier
                         .size(30.dp)
-                        .background(color = Color.Transparent)
+                        .padding(10.dp)
+                        .clip(CircleShape)
+                        .background(color = Color.Transparent, shape = CircleShape),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
             }
-            Surface(
-                modifier = Modifier
-                    .clickable(onClick = {}),
-                shape = CircleShape
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Favorite,
-                    contentDescription = "Back Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .background(color = Color.Transparent)
-                )
-            }
+            Text(
+                "Book details",
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Image(
@@ -153,6 +199,7 @@ fun TopSection() {
 
 @Composable
 fun BookDescription(
+    modifier: Modifier
     bookTitle: String = "Deception Point",
     bookAuthor: String = "Dan Brown",
     rating: String = "17-12-2003",
@@ -182,7 +229,9 @@ fun BookDescription(
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(5.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -204,7 +253,8 @@ fun BookDescription(
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth().padding(5.dp)
+                    .fillMaxWidth()
+                    .padding(5.dp)
                     .background(color = Color(0xFFf9f9f9), shape = RoundedCornerShape(10.dp)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
@@ -325,11 +375,10 @@ fun BookDescription(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun BottomSheetContent() {
     Column(
-        modifier = Modifier.height(200.dp),
+        modifier = Modifier.height(220.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
@@ -341,7 +390,8 @@ fun BottomSheetContent() {
                 Modifier
                     .width(60.dp)
                     .height(5.dp)
-                    .clip(RoundedCornerShape(15.dp)))
+                    .clip(RoundedCornerShape(15.dp))
+            )
         }
         Text(
             text = "Add to book shelf?",
@@ -349,10 +399,12 @@ fun BottomSheetContent() {
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(horizontal = 20.dp)
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = 10.dp)
         )
         Divider(
-            modifier = Modifier.padding(vertical = 10.dp)
+            modifier = Modifier.padding(vertical = 20.dp)
         )
         Text(
             "Reading now 📖",
