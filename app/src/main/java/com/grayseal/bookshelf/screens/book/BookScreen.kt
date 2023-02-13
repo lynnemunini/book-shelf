@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,17 +18,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
-import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Pink200
-import com.grayseal.bookshelf.ui.theme.Pink700
+import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.launch
@@ -158,7 +160,7 @@ fun TopSection(navController: NavController) {
 }
 
 @Composable
-fun BookImage(){
+fun BookImage() {
     Column(modifier = Modifier.padding(20.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Image(
@@ -175,11 +177,12 @@ fun BookImage(){
     }
 
 }
+
 @Composable
 fun BookDescription(
     bookTitle: String = "Deception Point",
     bookAuthor: String = "Dan Brown",
-    rating: String = "17-12-2003",
+    rating: String = "4.5",
     genre: String = "Fiction",
     pages: String = "467",
     time: String = "128 min",
@@ -207,8 +210,7 @@ fun BookDescription(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -228,10 +230,50 @@ fun BookDescription(
                     )
                 }
             }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                for (i in 0 until rating.toFloat().toInt()) {
+                    Icon(Icons.Rounded.Star, contentDescription = "star", tint = Yellow)
+                }
+                if ((5 - rating.toFloat().toInt()) > 0) {
+                    Icon(Icons.Rounded.Star, contentDescription = "star", tint = Color.LightGray)
+                }
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = poppinsFamily,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                            )
+                        ) {
+                            append(rating.toFloat().toString())
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = poppinsFamily,
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
+                            )
+                        ) {
+                            append(" / 5.0")
+                        }
+                    },
+                    modifier = Modifier.padding(start = 5.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp)
                     .background(color = Color(0xFFf9f9f9), shape = RoundedCornerShape(10.dp)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
@@ -311,7 +353,7 @@ fun BookDescription(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
+                        modifier = Modifier.padding(top = 10.dp)
                     )
                 }
                 Row {
