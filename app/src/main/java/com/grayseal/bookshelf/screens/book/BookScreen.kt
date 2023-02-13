@@ -1,6 +1,8 @@
 package com.grayseal.bookshelf.screens.book
 
+import android.telecom.Call
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -50,6 +53,15 @@ fun BookScreen(navController: NavController) {
         sheetBackgroundColor = Color.White,
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
+        // To dismiss bottomSheet when clicking outside on the screen
+        modifier = Modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onPress = {
+                    if (sheetState.isExpanded) {
+                        sheetState.collapse()
+                    }
+                })
+            },
         floatingActionButton = {
             if (isFabVisible) {
                 ExtendedFloatingActionButton(
@@ -163,7 +175,10 @@ fun TopSection(navController: NavController) {
 @Composable
 fun BookImage() {
     Column(modifier = Modifier.padding(20.dp)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.book),
                 contentDescription = "Book Image",
@@ -274,7 +289,9 @@ fun BookDescription(
                                 fontFamily = poppinsFamily,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                                color = MaterialTheme.colorScheme.onBackground.copy(
+                                    alpha = 0.4f
+                                )
                             )
                         ) {
                             append(rating.toFloat().toString())
@@ -283,7 +300,9 @@ fun BookDescription(
                             style = SpanStyle(
                                 fontFamily = poppinsFamily,
                                 fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
+                                color = MaterialTheme.colorScheme.onBackground.copy(
+                                    alpha = 0.2f
+                                )
                             )
                         ) {
                             append(" / 5.0")
@@ -297,7 +316,10 @@ fun BookDescription(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp)
-                    .background(color = Color(0xFFf9f9f9), shape = RoundedCornerShape(10.dp)),
+                    .background(
+                        color = Color(0xFFf9f9f9),
+                        shape = RoundedCornerShape(10.dp)
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
