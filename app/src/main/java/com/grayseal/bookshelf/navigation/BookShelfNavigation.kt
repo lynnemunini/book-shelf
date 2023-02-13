@@ -35,8 +35,14 @@ fun BookShelfNavigation(){
         composable(BookShelfScreens.HomeScreen.name,) {
             HomeScreen(navController = navController)
         }
-        composable(BookShelfScreens.BookScreen.name) {
-            BookScreen(navController = navController)
+
+        val bookRoute = BookShelfScreens.BookScreen.name
+        composable("$bookRoute/{bookId}", arguments = listOf(navArgument(name = "bookId") {
+            type = NavType.StringType
+        })) { navBack ->
+            navBack.arguments?.getString("bookId").let { bookId ->
+                BookScreen(navController = navController, searchBookViewModel = searchViewModel, bookId = bookId)
+            }
         }
         composable(BookShelfScreens.SearchScreen.name) {
             SearchScreen(navController = navController, searchViewModel)

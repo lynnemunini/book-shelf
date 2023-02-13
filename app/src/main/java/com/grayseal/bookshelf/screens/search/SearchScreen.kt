@@ -214,13 +214,14 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                 if (item.description.isNotEmpty()) {
                     previewText = item.description
                 }
+                val bookId = item.bookID
                 SearchCard(
                     bookTitle = title,
                     bookAuthor = author,
                     previewText = previewText,
                     imageUrl = imageUrl,
                     onClick = {
-                        navController.navigate(route = BookShelfScreens.BookScreen.name)
+                        navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
                     }
                 )
             }

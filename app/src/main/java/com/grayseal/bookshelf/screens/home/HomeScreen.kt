@@ -241,7 +241,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                     MainCard()
                     Categories(navController = navController)
                     ReadingList(onClick = {
-                        navController.navigate(route = BookShelfScreens.BookScreen.name)
+                        navController.navigate(route = BookShelfScreens.BookScreen.name + "/bookId")
                     })
                 }
             },

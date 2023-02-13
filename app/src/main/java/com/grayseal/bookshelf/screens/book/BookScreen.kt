@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
@@ -39,7 +40,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BookScreen(navController: NavController) {
+fun BookScreen(navController: NavController, searchBookViewModel: SearchBookViewModel, bookId: String?) {
     val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scope = rememberCoroutineScope()
     val sheetScaffoldState = rememberBottomSheetScaffoldState(
