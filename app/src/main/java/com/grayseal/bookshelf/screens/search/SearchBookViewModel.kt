@@ -42,8 +42,6 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
             }
             if (listOfBooks.value.isNotEmpty()) resultsState.value.loading =
                 false
-            Log.d("LOADING", "searchBooks: ${resultsState.value.loading}")
-            Log.d("RESULTS", "searchBooks: ${listOfBooks.value}")
         }
     }
 }

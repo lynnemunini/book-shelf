@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.grayseal.bookshelf.screens.SplashScreen
 import com.grayseal.bookshelf.screens.book.BookScreen
+import com.grayseal.bookshelf.screens.book.BookViewModel
 import com.grayseal.bookshelf.screens.category.CategoryScreen
 import com.grayseal.bookshelf.screens.home.HomeScreen
 import com.grayseal.bookshelf.screens.login.LoginScreen
@@ -28,6 +29,7 @@ NavHost to handle navigation between different screens using the provided startD
 fun BookShelfNavigation(){
     val navController = rememberNavController()
     val searchViewModel: SearchBookViewModel = hiltViewModel()
+    val bookViewModel: BookViewModel = hiltViewModel()
     NavHost(navController = navController, startDestination = BookShelfScreens.SplashScreen.name) {
         composable(BookShelfScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
@@ -41,7 +43,7 @@ fun BookShelfNavigation(){
             type = NavType.StringType
         })) { navBack ->
             navBack.arguments?.getString("bookId").let { bookId ->
-                BookScreen(navController = navController, searchBookViewModel = searchViewModel, bookId = bookId)
+                BookScreen(navController = navController, bookViewModel = bookViewModel, bookId = bookId)
             }
         }
         composable(BookShelfScreens.SearchScreen.name) {

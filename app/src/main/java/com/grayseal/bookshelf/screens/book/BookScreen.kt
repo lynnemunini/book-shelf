@@ -1,6 +1,6 @@
 package com.grayseal.bookshelf.screens.book
 
-import android.telecom.Call
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -30,17 +31,30 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
-import com.grayseal.bookshelf.screens.search.SearchBookViewModel
+import com.grayseal.bookshelf.data.DataOrException
+import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BookScreen(navController: NavController, searchBookViewModel: SearchBookViewModel, bookId: String?) {
+fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookId: String?) {
+    val bookInfo = produceState<DataOrException<Book, Boolean, Exception>>(
+        initialValue = DataOrException(loading = (true))
+    ) {
+        value = bookId?.let { bookViewModel.getBookInfo(it) }!!
+    }.value
+    Log.d("BOOKINFO", "BookScreen: $bookInfo")
+    // Book Data
+    val book = bookInfo.data
+
     val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scope = rememberCoroutineScope()
     val sheetScaffoldState = rememberBottomSheetScaffoldState(
@@ -95,7 +109,7 @@ fun BookScreen(navController: NavController, searchBookViewModel: SearchBookView
             BottomSheetContent()
         }
     ) {
-        Details(navController)
+        Details(navController, book)
     }
     LaunchedEffect(sheetState.isCollapsed) {
         if (sheetState.isCollapsed) {
@@ -106,7 +120,43 @@ fun BookScreen(navController: NavController, searchBookViewModel: SearchBookView
 }
 
 @Composable
-fun Details(navController: NavController) {
+fun Details(navController: NavController, book: Book?) {
+    var bookTitle: String = "Unavailable"
+    var bookAuthor: String = "Unavailable"
+    var rating: String = "0"
+    var genre: String = "Unavailable"
+    var pages: String = "0"
+    var time: String = "0"
+    var description: String = "Preview information not provided"
+    var imageUrl =
+        "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+
+    // Check if data is available
+    if (book != null) {
+        if (book.title.isNotEmpty()) {
+            bookTitle = book.title
+        }
+        if (book.authors[0].isNotEmpty()) {
+            bookAuthor = book.authors.joinToString(separator = ", ")
+        }
+        if (book.ratingsCount.toString().isNotEmpty()) {
+            rating = book.averageRating.toString()
+        }
+        if (book.categories[0].isNotEmpty()) {
+            genre = book.categories[0]
+        }
+        if (book.pageCount.toString().isNotEmpty()) {
+            pages = book.pageCount.toString()
+        }
+        if (book.description.isNotEmpty()) {
+            description = book.description
+        }
+        if (book.imageLinks.toString().isNotEmpty()) {
+            imageUrl = book.imageLinks.thumbnail.toString().trim()
+            imageUrl = imageUrl.replace("http", "https")
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +164,8 @@ fun Details(navController: NavController) {
         Image(
             painter = painterResource(id = R.drawable.sky),
             contentDescription = "backgroundImage",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillBounds
         )
         Column {
             TopSection(navController = navController)
@@ -122,8 +173,21 @@ fun Details(navController: NavController) {
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
             ) {
-                BookImage()
-                BookDescription()
+                if(book != null) {
+                    BookImage(imageUrl = imageUrl)
+                    BookDescription(
+                        bookTitle = bookTitle,
+                        bookAuthor = bookAuthor,
+                        rating = rating,
+                        genre = genre,
+                        pages = pages,
+                        time = time,
+                        description = description
+                    )
+                }
+                else{
+                    CircularProgressIndicator(color = Yellow)
+                }
             }
         }
     }
@@ -174,21 +238,23 @@ fun TopSection(navController: NavController) {
 }
 
 @Composable
-fun BookImage() {
+fun BookImage(imageUrl: String) {
     Column(modifier = Modifier.padding(20.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.book),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .build(),
                 contentDescription = "Book Image",
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .background(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(5.dp)
-                    ),
-                contentScale = ContentScale.Fit
+                    )
             )
         }
     }
@@ -197,13 +263,13 @@ fun BookImage() {
 
 @Composable
 fun BookDescription(
-    bookTitle: String = "Deception Point",
-    bookAuthor: String = "Dan Brown",
-    rating: String = "1.1",
-    genre: String = "Fiction",
-    pages: String = "467",
-    time: String = "128 min",
-    description: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor dignissim convallis aenean et tortor. Rhoncus mattis rhoncus urna neque viverra justo nec ultrices. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Sed id semper risus in hendrerit gravida rutrum quisque. Nulla posuere sollicitudin aliquam ultrices. Quisque id diam vel quam elementum pulvinar. Eros in cursus turpis massa tincidunt dui. Est velit egestas dui id ornare arcu. Dui sapien eget mi proin sed. Volutpat lacus laoreet non curabitur. Ullamcorper eget nulla facilisi etiam. Pharetra convallis posuere morbi leo urna molestie at elementum. Tortor posuere ac ut consequat semper viverra."
+    bookTitle: String,
+    bookAuthor: String,
+    rating: String,
+    genre: String,
+    pages: String,
+    time: String,
+    description: String
 ) {
     // Split the description paragraph after the first three sentences
     val firstThreeSentences =
@@ -211,7 +277,7 @@ fun BookDescription(
     val remainingDescription = description.substringAfter(firstThreeSentences)
 
     Surface(
-        modifier = Modifier.clip(
+        modifier = Modifier.fillMaxSize().clip(
             shape = RoundedCornerShape(
                 topStart = 30.dp,
                 topEnd = 30.dp

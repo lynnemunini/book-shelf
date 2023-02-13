@@ -1,5 +1,6 @@
 package com.grayseal.bookshelf.screens.search
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -215,6 +216,7 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                     previewText = item.description
                 }
                 val bookId = item.bookID
+                Log.d("BOOKID", "$bookId")
                 SearchCard(
                     bookTitle = title,
                     bookAuthor = author,
