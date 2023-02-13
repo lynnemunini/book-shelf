@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarHalf
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -182,7 +183,7 @@ fun BookImage() {
 fun BookDescription(
     bookTitle: String = "Deception Point",
     bookAuthor: String = "Dan Brown",
-    rating: String = "4.5",
+    rating: String = "1.1",
     genre: String = "Fiction",
     pages: String = "467",
     time: String = "128 min",
@@ -241,8 +242,30 @@ fun BookDescription(
                 for (i in 0 until rating.toFloat().toInt()) {
                     Icon(Icons.Rounded.Star, contentDescription = "star", tint = Yellow)
                 }
-                if ((5 - rating.toFloat().toInt()) > 0) {
-                    Icon(Icons.Rounded.Star, contentDescription = "star", tint = Color.LightGray)
+                if ((5 - rating.toFloat()) > 0) {
+                    val unrated = 5 - rating.toFloat().toInt()
+                    if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
+                        Icon(
+                            Icons.Rounded.StarHalf,
+                            contentDescription = "star",
+                            tint = Yellow
+                        )
+                        for (i in 0 until unrated - 1) {
+                            Icon(
+                                Icons.Rounded.Star,
+                                contentDescription = "star",
+                                tint = Color.LightGray
+                            )
+                        }
+                    } else {
+                        for (i in 0 until unrated) {
+                            Icon(
+                                Icons.Rounded.Star,
+                                contentDescription = "star",
+                                tint = Color.LightGray
+                            )
+                        }
+                    }
                 }
                 Text(
                     buildAnnotatedString {
