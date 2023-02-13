@@ -586,9 +586,9 @@ fun SearchInputField(
 }
 
 @Composable
-fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, imageUrl: String) {
+fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, imageUrl: String, onClick: () -> Unit) {
     Surface(modifier = Modifier
-        .clickable { }
+        .clickable(onClick = onClick)
         .fillMaxWidth()
         .height(100.dp),
         shape = RectangleShape) {

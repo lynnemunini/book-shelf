@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.search.Results
 import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
@@ -59,6 +58,6 @@ fun CategoryScreen(
         if (category != null) {
             viewModel.searchBooks(category)
         }
-        Results(viewModel = viewModel)
+        Results(viewModel = viewModel, navController = navController)
     }
 }

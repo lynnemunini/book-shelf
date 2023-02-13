@@ -108,7 +108,7 @@ fun SearchScreen(
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Results(viewModel = viewModel)
+        Results(viewModel = viewModel, navController = navController)
     }
 }
 
@@ -166,12 +166,12 @@ fun Search(
 
 
 @Composable
-fun Results(viewModel: SearchBookViewModel) {
+fun Results(viewModel: SearchBookViewModel, navController: NavController) {
     val searchResults = viewModel.resultsState.value
     val listOfBooks = viewModel.listOfBooks.value
 
     if (searchResults.loading == true) {
-            CircularProgressIndicator(color = Yellow)
+        CircularProgressIndicator(color = Yellow)
     }
     if (searchResults.loading == null) {
         androidx.compose.material3.Text(
@@ -218,7 +218,10 @@ fun Results(viewModel: SearchBookViewModel) {
                     bookTitle = title,
                     bookAuthor = author,
                     previewText = previewText,
-                    imageUrl = imageUrl
+                    imageUrl = imageUrl,
+                    onClick = {
+                        navController.navigate(route = BookShelfScreens.BookScreen.name)
+                    }
                 )
             }
         }
