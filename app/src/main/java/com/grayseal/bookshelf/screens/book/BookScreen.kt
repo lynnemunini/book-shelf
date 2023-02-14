@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -149,7 +150,8 @@ fun Details(navController: NavController, book: Book?) {
             pages = book.pageCount.toString()
         }
         if (book.description.isNotEmpty()) {
-            description = book.description
+            val cleanDescription = HtmlCompat.fromHtml(book.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            description = cleanDescription.toString()
         }
         if (book.imageLinks.toString().isNotEmpty()) {
             imageUrl = book.imageLinks.thumbnail.toString().trim()

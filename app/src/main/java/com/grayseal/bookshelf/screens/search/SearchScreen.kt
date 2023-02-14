@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -213,7 +214,8 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                     author = item.authors.joinToString(separator = ", ")
                 }
                 if (item.description.isNotEmpty()) {
-                    previewText = item.description
+                    val cleanDescription = HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    previewText = item.searchInfo
                 }
                 val bookId = item.bookID
                 Log.d("BOOKID", "$bookId")
