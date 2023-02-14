@@ -395,7 +395,7 @@ fun BookDescription(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
-                    .padding(vertical = 10.dp, horizontal = 5.dp)
+                    .padding(vertical = 10.dp)
                     .background(
                         color = Color(0xFFf9f9f9),
                         shape = RoundedCornerShape(10.dp)

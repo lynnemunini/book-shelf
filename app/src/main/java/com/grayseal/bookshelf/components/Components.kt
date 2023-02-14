@@ -590,7 +590,7 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
     Surface(modifier = Modifier
         .clickable(onClick = onClick)
         .fillMaxWidth()
-        .height(100.dp),
+        .height(IntrinsicSize.Min),
         shape = RectangleShape) {
         Row(
             modifier = Modifier
