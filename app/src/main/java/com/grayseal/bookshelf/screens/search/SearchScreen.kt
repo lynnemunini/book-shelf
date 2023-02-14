@@ -218,7 +218,6 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                     previewText = item.searchInfo
                 }
                 val bookId = item.bookID
-                Log.d("BOOKID", "$bookId")
                 SearchCard(
                     bookTitle = title,
                     bookAuthor = author,

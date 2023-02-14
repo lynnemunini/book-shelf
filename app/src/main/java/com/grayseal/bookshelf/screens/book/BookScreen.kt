@@ -27,6 +27,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +43,6 @@ import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -145,13 +145,21 @@ fun Details(navController: NavController, book: Book?) {
         }
         if (book.categories[0].isNotEmpty()) {
             genre = book.categories[0]
+            val words = genre.split("/")
+                .map { it.trim() } // split the string by "/" and remove extra whitespace
+            val smallestWord =
+                words.minByOrNull { it.length } // find the smallest word based on length
+            genre = smallestWord ?: "" // if there are no words, return an empty string
+
         }
         if (book.pageCount.toString().isNotEmpty()) {
             pages = book.pageCount.toString()
         }
         if (book.description.isNotEmpty()) {
-            val cleanDescription = HtmlCompat.fromHtml(book.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            val cleanDescription =
+                HtmlCompat.fromHtml(book.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
             description = cleanDescription.toString()
+            Log.d("DESCRIPTION", description)
         }
         if (book.imageLinks.toString().isNotEmpty()) {
             imageUrl = book.imageLinks.thumbnail.toString().trim()
@@ -175,7 +183,7 @@ fun Details(navController: NavController, book: Book?) {
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
             ) {
-                if(book != null) {
+                if (book != null) {
                     BookImage(imageUrl = imageUrl)
                     BookDescription(
                         bookTitle = bookTitle,
@@ -186,8 +194,7 @@ fun Details(navController: NavController, book: Book?) {
                         time = time,
                         description = description
                     )
-                }
-                else{
+                } else {
                     CircularProgressIndicator(color = Yellow)
                 }
             }
@@ -273,18 +280,17 @@ fun BookDescription(
     time: String,
     description: String
 ) {
-    // Split the description paragraph after the first three sentences
-    val firstThreeSentences =
-        description.substringBefore(".").substringBefore(".").substringBefore(".") + "."
-    val remainingDescription = description.substringAfter(firstThreeSentences)
+    var restOfText by remember { mutableStateOf("") }
 
     Surface(
-        modifier = Modifier.fillMaxSize().clip(
-            shape = RoundedCornerShape(
-                topStart = 30.dp,
-                topEnd = 30.dp
-            )
-        ),
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(
+                shape = RoundedCornerShape(
+                    topStart = 30.dp,
+                    topEnd = 30.dp
+                )
+            ),
         color = Color(0xFFfbf2f0)
     ) {
         Column(
@@ -304,12 +310,14 @@ fun BookDescription(
                         bookTitle,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                     Text(
                         text = "by $bookAuthor",
                         fontFamily = poppinsFamily,
+                        textAlign = TextAlign.Center,
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
@@ -384,7 +392,8 @@ fun BookDescription(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp)
+                    .height(IntrinsicSize.Min)
+                    .padding(vertical = 10.dp, horizontal = 5.dp)
                     .background(
                         color = Color(0xFFf9f9f9),
                         shape = RoundedCornerShape(10.dp)
@@ -393,6 +402,9 @@ fun BookDescription(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Column(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .padding(top = 10.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -404,17 +416,24 @@ fun BookDescription(
                     )
                     Text(
                         genre,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Clip,
                         fontFamily = poppinsFamily,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.line),
-                    contentDescription = "Separator"
+                Divider(
+                    modifier = Modifier
+                        .fillMaxHeight()  //fill the max height
+                        .width(1.dp)
+                        .padding(vertical = 5.dp)
                 )
                 Column(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .padding(top = 10.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -426,17 +445,23 @@ fun BookDescription(
                     )
                     Text(
                         "$pages pages",
+                        textAlign = TextAlign.Center,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.line),
-                    contentDescription = "Separator"
+                Divider(
+                    modifier = Modifier
+                        .fillMaxHeight()  //fill the max height
+                        .width(1.dp)
+                        .padding(vertical = 5.dp)
                 )
                 Column(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .padding(top = 10.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -448,6 +473,7 @@ fun BookDescription(
                     )
                     Text(
                         time,
+                        textAlign = TextAlign.Center,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
@@ -472,7 +498,7 @@ fun BookDescription(
                 }
                 Row {
                     Text(
-                        text = firstThreeSentences.first().toString(),
+                        text = description.first().toString(),
                         fontFamily = loraFamily,
                         textAlign = TextAlign.Justify,
                         style = MaterialTheme.typography.headlineLarge.copy(
@@ -484,18 +510,27 @@ fun BookDescription(
                             .padding(end = 15.dp)
                             .align(Alignment.CenterVertically)
                     )
+
                     Text(
-                        text = firstThreeSentences.drop(1),
+                        text = description.drop(1),
                         textAlign = TextAlign.Justify,
                         fontFamily = poppinsFamily,
+                        maxLines = 4,
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically),
+                        onTextLayout = { layoutResult ->
+                            if (layoutResult.lineCount > 3) {
+                                // get the text beyond the 4 lines
+                                restOfText = description.drop(1).substring(layoutResult.getLineEnd(3))
+                            }
+                        }
                     )
                 }
-                Row {
+                if (restOfText.isNotEmpty()) {
                     Text(
-                        text = remainingDescription,
+                        text = restOfText,
                         fontFamily = poppinsFamily,
                         textAlign = TextAlign.Justify,
                         fontSize = 13.sp,
