@@ -127,7 +127,6 @@ fun Details(navController: NavController, book: Book?) {
     var rating: String = "0"
     var genre: String = "Unavailable"
     var pages: String = "0"
-    var time: String = "0"
     var description: String = "Preview information not provided"
     var imageUrl =
         "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
@@ -191,7 +190,6 @@ fun Details(navController: NavController, book: Book?) {
                         rating = rating,
                         genre = genre,
                         pages = pages,
-                        time = time,
                         description = description
                     )
                 } else {
@@ -277,9 +275,9 @@ fun BookDescription(
     rating: String,
     genre: String,
     pages: String,
-    time: String,
     description: String
 ) {
+    val time = (pages.toInt() * 1.7).toInt().toString()
     var restOfText by remember { mutableStateOf("") }
     val firstParagraph = description.substringBefore("\n\n")
     val remainingDescription = description.substringAfter(firstParagraph).substringAfter("\n\n")
@@ -405,7 +403,7 @@ fun BookDescription(
             ) {
                 Column(
                     modifier = Modifier
-                        .width(70.dp)
+                        .width(100.dp)
                         .padding(top = 10.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -434,7 +432,7 @@ fun BookDescription(
                 )
                 Column(
                     modifier = Modifier
-                        .width(70.dp)
+                        .width(100.dp)
                         .padding(top = 10.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -462,7 +460,7 @@ fun BookDescription(
                 )
                 Column(
                     modifier = Modifier
-                        .width(70.dp)
+                        .width(100.dp)
                         .padding(top = 10.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -474,7 +472,7 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                     )
                     Text(
-                        time,
+                        time + "min",
                         textAlign = TextAlign.Center,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
