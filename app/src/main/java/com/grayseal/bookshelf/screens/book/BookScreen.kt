@@ -177,7 +177,7 @@ fun Details(navController: NavController, book: Book?) {
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.FillBounds
         )
-        Column {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
             TopSection(navController = navController)
             Column(
                 modifier = Modifier
@@ -195,7 +195,7 @@ fun Details(navController: NavController, book: Book?) {
                         description = description
                     )
                 } else {
-                    CircularProgressIndicator(color = Yellow)
+                    CircularProgressIndicator(color = Color.White)
                 }
             }
         }
@@ -281,6 +281,8 @@ fun BookDescription(
     description: String
 ) {
     var restOfText by remember { mutableStateOf("") }
+    val firstParagraph = description.substringBefore("\n\n")
+    val remainingDescription = description.substringAfter(firstParagraph).substringAfter("\n\n")
 
     Surface(
         modifier = Modifier
@@ -498,7 +500,7 @@ fun BookDescription(
                 }
                 Row {
                     Text(
-                        text = description.first().toString(),
+                        text = firstParagraph.first().toString(),
                         fontFamily = loraFamily,
                         textAlign = TextAlign.Justify,
                         style = MaterialTheme.typography.headlineLarge.copy(
@@ -512,7 +514,7 @@ fun BookDescription(
                     )
 
                     Text(
-                        text = description.drop(1),
+                        text = firstParagraph.drop(1),
                         textAlign = TextAlign.Justify,
                         fontFamily = poppinsFamily,
                         maxLines = 4,
@@ -523,7 +525,8 @@ fun BookDescription(
                         onTextLayout = { layoutResult ->
                             if (layoutResult.lineCount > 3) {
                                 // get the text beyond the 4 lines
-                                restOfText = description.drop(1).substring(layoutResult.getLineEnd(3))
+                                restOfText =
+                                    firstParagraph.drop(1).substring(layoutResult.getLineEnd(3))
                             }
                         }
                     )
@@ -537,6 +540,13 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
+                Text(
+                    text = remainingDescription,
+                    fontFamily = poppinsFamily,
+                    textAlign = TextAlign.Justify,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.height(50.dp))
             }
         }
