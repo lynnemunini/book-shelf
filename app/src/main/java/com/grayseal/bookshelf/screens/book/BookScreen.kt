@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -90,7 +91,7 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                             color = Color.White
                         )
                     },
-                    modifier = Modifier.padding(bottom = 100.dp),
+                    modifier = Modifier.padding(bottom = 90.dp),
                     onClick = {
                         isFabVisible = false
                         scope.launch {
@@ -206,7 +207,7 @@ fun TopSection(navController: NavController) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(70.dp)
+            horizontalArrangement = Arrangement.spacedBy(80.dp)
         ) {
             Surface(
                 modifier = Modifier
@@ -248,7 +249,9 @@ fun TopSection(navController: NavController) {
 fun BookImage(imageUrl: String) {
     Column(modifier = Modifier.padding(20.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 40.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             AsyncImage(
@@ -256,16 +259,18 @@ fun BookImage(imageUrl: String) {
                     .data(imageUrl)
                     .build(),
                 contentDescription = "Book Image",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Inside,
                 modifier = Modifier
+                    .padding(vertical = 10.dp)
                     .background(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(5.dp)
                     )
+                    .scale(2.5f)
             )
+
         }
     }
-
 }
 
 @Composable
@@ -472,7 +477,7 @@ fun BookDescription(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                     )
                     Text(
-                        time + "min",
+                        "$time min",
                         textAlign = TextAlign.Center,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
