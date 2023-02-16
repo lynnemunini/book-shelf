@@ -29,6 +29,11 @@ class ResourceConverter {
     }
 }
 
+/**
+* Parses an Item object that represents a book resource and returns a Book object with its properties populated.
+* @param bookResource an Item object representing a book resource
+* @return a Book object with its properties populated based on the bookResource object
+ */
 fun parseBookResource(bookResource: Item): Book {
     val id = bookResource.id ?: ""
     val authors = bookResource.volumeInfo?.authors?.toList() ?: listOf("")
@@ -51,7 +56,7 @@ fun parseBookResource(bookResource: Item): Book {
             type = ""
         )
     )
-
+    // Creates and returns a Book object with the extracted properties
     return Book(
         bookID = id,
         authors = authors as List<String>,
