@@ -2,6 +2,7 @@ package com.grayseal.bookshelf.screens.login
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
@@ -57,9 +58,17 @@ fun LoginScreen(
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
-    var loading by remember {
-        mutableStateOf(false)
+
+    // Create a local mutable state to hold the value of the loading flag
+    var loading by remember { mutableStateOf(false) }
+
+    // Observe the value of the loading LiveData and update the local state accordingly
+    viewModel.loading.observeForever {
+        loading = it
     }
+
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -119,10 +128,12 @@ fun LoginScreen(
                         isCreateAccount = false
                     ) { email, password ->
                         // Login to Firebase Account
-                        loading = true
-                        viewModel.signInWithEmailAndPassword(email, password) {
-                            navController.navigate(BookShelfScreens.HomeScreen.name)
-                        }
+                        viewModel.signInWithEmailAndPassword(email, password,
+                            home = { navController.navigate(BookShelfScreens.HomeScreen.name) },
+                            onError = {
+                                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                            }
+                        )
                     }
                     else {
                         UserForm(
@@ -132,7 +143,6 @@ fun LoginScreen(
                             loading = loading,
                             isCreateAccount = true
                         ) { email, password ->
-                            loading = true
                             // Create FireBase Account
                             viewModel.createUserWithEmailAndPassword(email, password) {
                                 navController.navigate(BookShelfScreens.HomeScreen.name)
