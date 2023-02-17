@@ -22,29 +22,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-/**
-
-The LoginScreenViewModel class is responsible for handling the login and registration process for the application. It uses FirebaseAuth to authenticate and create users, and it also uses a StateFlow and MutableLiveData to keep track of the user's name and loading status.
- * @param application the application context
- * @property auth the FirebaseAuth instance used for authentication
- * @property _loading a MutableLiveData object that keeps track of the loading status
- * @property loading a LiveData object that is exposed for observing the loading status
- * @property context the application context
- * @property dataStore a StoreUserName object that is used to store the user's name
- * @property _name a MutableStateFlow object that keeps track of the user's name
- * @property name a StateFlow object that is exposed for observing the user's name
- * @constructor Creates a new LoginScreenViewModel instance with the specified application context.
- * @function createUserWithEmailAndPassword creates a new user with the specified email and password, and also creates a new user in the FirebaseFirestore database with the specified display name.
- * @param email the email of the new user
- * @param password the password of the new user
- * @param home a lambda function that is called when the user is successfully created
- * @function createUser creates a new user in the FirebaseFirestore database with the specified display name.
- * @param displayName the display name of the new user
- * @function signInWithEmailAndPassword signs in the user with the specified email and password, and calls the specified lambda function when the sign in is successful.
- * @param email the email of the user
- * @param password the password of the user
- * @param home a lambda function that is called when the user is successfully signed in
- */
 class LoginScreenViewModel(application: Application) : AndroidViewModel(application) {
     private val auth: FirebaseAuth = Firebase.auth
 

@@ -89,49 +89,49 @@ fun NameInput(
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default
 ) {
-        var icon by remember {
-            mutableStateOf(Icons.Outlined.SentimentSatisfied)
-        }
-        OutlinedTextField(
-            value = nameState.value,
-            onValueChange = {
-                nameState.value = it
-                icon = Icons.Outlined.InsertEmoticon
-            },
-            placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
-            leadingIcon = {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "Name Icon"
-                )
-            },
-            singleLine = true,
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                fontFamily = poppinsFamily
-            ),
-            modifier = Modifier
-                .fillMaxWidth(),
-            enabled = enabled,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = imeAction
-            ),
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = Color.Black,
-                cursorColor = Yellow,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = iconColor,
-                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                unfocusedLeadingIconColor = iconColor,
-                placeholderColor = Gray700.copy(alpha = 0.4f),
-                selectionColors = TextSelectionColors(
-                    handleColor = Yellow,
-                    backgroundColor = Pink200
-                )
+    var icon by remember {
+        mutableStateOf(Icons.Outlined.SentimentSatisfied)
+    }
+    OutlinedTextField(
+        value = nameState.value,
+        onValueChange = {
+            nameState.value = it
+            icon = Icons.Outlined.InsertEmoticon
+        },
+        placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Name Icon"
+            )
+        },
+        singleLine = true,
+        textStyle = TextStyle(
+            fontSize = 14.sp,
+            fontFamily = poppinsFamily
+        ),
+        modifier = Modifier
+            .fillMaxWidth(),
+        enabled = enabled,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = imeAction
+        ),
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = Color.Black,
+            cursorColor = Yellow,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = iconColor,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+            unfocusedLeadingIconColor = iconColor,
+            placeholderColor = Gray700.copy(alpha = 0.4f),
+            selectionColors = TextSelectionColors(
+                handleColor = Yellow,
+                backgroundColor = Pink200
             )
         )
+    )
 }
 
 /**
@@ -170,53 +170,53 @@ fun PasswordInput(
         )
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-        OutlinedTextField(
-            value = passwordState.value,
-            onValueChange = {
-                passwordState.value = it
-                error = passwordState.value.length < 6
-            },
-            placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Lock,
-                    contentDescription = "Lock Icon"
-                )
-            },
-            singleLine = true,
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                fontFamily = poppinsFamily
-            ),
-            modifier = Modifier
-                .fillMaxWidth(),
-            enabled = enabled,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = imeAction
-            ),
-            visualTransformation = visualTransformation,
-            trailingIcon = {
-                PasswordVisibility(passwordVisibility = passwordVisibility)
-            },
-            keyboardActions = KeyboardActions {
-                keyboardController?.hide()
-            },
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = Color.Black,
-                cursorColor = Yellow,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                unfocusedLeadingIconColor = iconColor,
-                unfocusedBorderColor = iconColor,
-                placeholderColor = Gray700.copy(alpha = 0.4f),
-                selectionColors = TextSelectionColors(
-                    handleColor = Yellow,
-                    backgroundColor = Pink200
-                )
+    OutlinedTextField(
+        value = passwordState.value,
+        onValueChange = {
+            passwordState.value = it
+            error = passwordState.value.length < 6
+        },
+        placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Lock,
+                contentDescription = "Lock Icon"
+            )
+        },
+        singleLine = true,
+        textStyle = TextStyle(
+            fontSize = 14.sp,
+            fontFamily = poppinsFamily
+        ),
+        modifier = Modifier
+            .fillMaxWidth(),
+        enabled = enabled,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = imeAction
+        ),
+        visualTransformation = visualTransformation,
+        trailingIcon = {
+            PasswordVisibility(passwordVisibility = passwordVisibility)
+        },
+        keyboardActions = KeyboardActions {
+            keyboardController?.hide()
+        },
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = Color.Black,
+            cursorColor = Yellow,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+            unfocusedLeadingIconColor = iconColor,
+            unfocusedBorderColor = iconColor,
+            placeholderColor = Gray700.copy(alpha = 0.4f),
+            selectionColors = TextSelectionColors(
+                handleColor = Yellow,
+                backgroundColor = Pink200
             )
         )
+    )
 }
 
 /**
@@ -283,46 +283,47 @@ fun EmailInputField(
             modifier = Modifier.fillMaxWidth()
         )
     }
-        OutlinedTextField(
-            value = valueState.value,
-            onValueChange = {
-                valueState.value = it
-                error = !isValidEmail(valueState.value)
-            },
-            placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.AlternateEmail,
-                    contentDescription = "Email Icon"
-                )
-            },
-            singleLine = isSingleLine,
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                fontFamily = poppinsFamily
-            ),
-            modifier = Modifier
-                .fillMaxWidth(),
-            enabled = enabled,
-            keyboardActions = KeyboardActions {
-                keyboardController?.hide()
-            },
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = Color.Black,
-                cursorColor = Yellow,
-                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                unfocusedLeadingIconColor = iconColor,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = iconColor,
-                placeholderColor = Gray700.copy(alpha = 0.4f),
-                selectionColors = TextSelectionColors(
-                    handleColor = Yellow,
-                    backgroundColor = Pink200
-                ),
+    OutlinedTextField(
+        value = valueState.value,
+        onValueChange = {
+            valueState.value = it
+            error = !isValidEmail(valueState.value)
+        },
+        placeholder = { Text(text = labelId, fontFamily = poppinsFamily, fontSize = 14.sp) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Rounded.AlternateEmail,
+                contentDescription = "Email Icon"
             )
+        },
+        singleLine = isSingleLine,
+        textStyle = TextStyle(
+            fontSize = 14.sp,
+            fontFamily = poppinsFamily
+        ),
+        modifier = Modifier
+            .fillMaxWidth(),
+        enabled = enabled,
+        keyboardActions = KeyboardActions {
+            keyboardController?.hide()
+        },
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = Color.Black,
+            cursorColor = Yellow,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+            unfocusedLeadingIconColor = iconColor,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = iconColor,
+            placeholderColor = Gray700.copy(alpha = 0.4f),
+            selectionColors = TextSelectionColors(
+                handleColor = Yellow,
+                backgroundColor = Pink200
+            ),
         )
-    }
+    )
+}
+
 /**
 
 SubmitButton is a composable function that creates a button for submitting a form.
@@ -334,37 +335,37 @@ SubmitButton is a composable function that creates a button for submitting a for
  */
 @Composable
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
-        Button(
-            onClick = onClick, modifier = Modifier
-                .fillMaxWidth(),
-            enabled = !loading && validInputs, shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                disabledContainerColor = Color.LightGray
-            ),
-            elevation = ButtonDefaults.buttonElevation(10.dp)
-        ) {
-            if (loading) CircularProgressIndicator(color = Yellow) else
-                if (validInputs) {
-                    Text(
-                        text = textId,
-                        fontFamily = poppinsFamily,
-                        modifier = Modifier.padding(5.dp),
-                        fontSize = 15.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                } else {
-                    Text(
-                        text = textId,
-                        fontFamily = poppinsFamily,
-                        modifier = Modifier.padding(5.dp),
-                        fontSize = 15.sp,
-                        color = iconColor,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-        }
+    Button(
+        onClick = onClick, modifier = Modifier
+            .fillMaxWidth(),
+        enabled = !loading && validInputs, shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.LightGray
+        ),
+        elevation = ButtonDefaults.buttonElevation(10.dp)
+    ) {
+        if (loading) CircularProgressIndicator(color = Yellow) else
+            if (validInputs) {
+                Text(
+                    text = textId,
+                    fontFamily = poppinsFamily,
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
+            } else {
+                Text(
+                    text = textId,
+                    fontFamily = poppinsFamily,
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 15.sp,
+                    color = iconColor,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+    }
 }
 
 /**
@@ -556,12 +557,20 @@ fun SearchInputField(
 }
 
 @Composable
-fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, imageUrl: String, onClick: () -> Unit) {
-    Surface(modifier = Modifier
-        .clickable(onClick = onClick)
-        .fillMaxWidth()
-        .height(IntrinsicSize.Min),
-        shape = RectangleShape) {
+fun SearchCard(
+    bookTitle: String,
+    bookAuthor: String,
+    previewText: String,
+    imageUrl: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min),
+        shape = RectangleShape
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),

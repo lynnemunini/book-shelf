@@ -4,7 +4,9 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -83,8 +85,7 @@ fun LoginScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            var text = ""
-            text = if (showLoginForm.value) {
+            val text: String = if (showLoginForm.value) {
                 "Welcome Back"
             } else {
                 "Create Account"
@@ -164,7 +165,6 @@ Composable function to display a user form for login or account creation.
  * @param showLoginForm A MutableState that holds a boolean indicating whether the login form should be shown or not.
  * @param launcher The ManagedActivityResultLauncher used to handle activity results.
  * @param dataStore The dataStore used to store and retrieve user information.
- * @param textIntro The introduction text to be displayed above the form
  * @param loading A boolean indicating whether the form is in loading state or not.
  * @param isCreateAccount A boolean indicating whether the form is for account creation or login.
  * @param onDone A function to be called when the form is submitted, takes in email and password as arguments.
@@ -191,9 +191,8 @@ fun UserForm(
         mutableStateOf(false)
     }
     val passwordFocusRequest = FocusRequester.Default
-    var valid = false
 
-    valid = if (!isCreateAccount) {
+    val valid: Boolean = if (!isCreateAccount) {
         remember(email.value, password.value) {
             (email.value.trim().isNotEmpty()
                     && password.value.trim().isNotEmpty()
