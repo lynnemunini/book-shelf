@@ -91,12 +91,6 @@ fun NameInput(
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default
 ) {
-    Card(
-        modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
-        shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
         var icon by remember {
             mutableStateOf(Icons.Outlined.SentimentSatisfied)
         }
@@ -129,8 +123,8 @@ fun NameInput(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = Color.Black,
                 cursorColor = Yellow,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = iconColor,
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedLeadingIconColor = iconColor,
                 placeholderColor = Gray700.copy(alpha = 0.4f),
@@ -140,7 +134,6 @@ fun NameInput(
                 )
             )
         )
-    }
 }
 
 /**
@@ -179,12 +172,6 @@ fun PasswordInput(
         )
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-    Card(
-        modifier = Modifier.padding(bottom = 10.dp),
-        shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
         OutlinedTextField(
             value = passwordState.value,
             onValueChange = {
@@ -221,10 +208,10 @@ fun PasswordInput(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = Color.Black,
                 cursorColor = Yellow,
-                focusedBorderColor = Color.Transparent,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedLeadingIconColor = iconColor,
-                unfocusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = iconColor,
                 placeholderColor = Gray700.copy(alpha = 0.4f),
                 selectionColors = TextSelectionColors(
                     handleColor = Yellow,
@@ -232,7 +219,6 @@ fun PasswordInput(
                 )
             )
         )
-    }
 }
 
 /**
@@ -299,12 +285,6 @@ fun EmailInputField(
             modifier = Modifier.fillMaxWidth()
         )
     }
-    Card(
-        modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
-        shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
         OutlinedTextField(
             value = valueState.value,
             onValueChange = {
@@ -335,8 +315,8 @@ fun EmailInputField(
                 cursorColor = Yellow,
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedLeadingIconColor = iconColor,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = iconColor,
                 placeholderColor = Gray700.copy(alpha = 0.4f),
                 selectionColors = TextSelectionColors(
                     handleColor = Yellow,
@@ -345,8 +325,6 @@ fun EmailInputField(
             )
         )
     }
-}
-
 /**
 
 SubmitButton is a composable function that creates a button for submitting a form.
@@ -358,12 +336,6 @@ SubmitButton is a composable function that creates a button for submitting a for
  */
 @Composable
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 15.dp, bottom = 10.dp),
-        shape = RoundedCornerShape(10.dp)
-    ) {
         Button(
             onClick = onClick, modifier = Modifier
                 .fillMaxWidth(),
@@ -371,7 +343,8 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 disabledContainerColor = Color.LightGray
-            )
+            ),
+            elevation = ButtonDefaults.buttonElevation(10.dp)
         ) {
             if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp)) else
                 if (validInputs) {
@@ -394,7 +367,6 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
                     )
                 }
         }
-    }
 }
 
 /**
@@ -454,7 +426,7 @@ fun Reading(bookAuthor: String, bookTitle: String, image: Int, onClick: () -> Un
                 .weight(1f, fill = false)
                 .aspectRatio(1f)
                 .align(Alignment.CenterHorizontally)
-                .clickable (onClick = onClick),
+                .clickable(onClick = onClick),
             color = Color.Transparent
         ) {
             Image(
@@ -639,7 +611,10 @@ fun SearchCard(bookTitle: String, bookAuthor: String, previewText: String, image
 @Composable
 fun HistoryCard(text: String, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.height(30.dp).padding(end = 10.dp).clickable(onClick = onClick),
+        modifier = Modifier
+            .height(30.dp)
+            .padding(end = 10.dp)
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Yellow),
         elevation = CardDefaults.cardElevation(4.dp)

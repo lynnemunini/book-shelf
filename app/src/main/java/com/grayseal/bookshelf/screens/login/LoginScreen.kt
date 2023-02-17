@@ -31,6 +31,7 @@ import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.*
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Gray500
+import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.isValidEmail
 import kotlinx.coroutines.launch
@@ -81,7 +82,7 @@ fun LoginScreen(
             )
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.BottomStart
+                contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.wave),
@@ -90,14 +91,13 @@ fun LoginScreen(
                 )
                 Column(
                     modifier = Modifier
-                        .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+                        .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (showLoginForm.value) UserForm(
                         showLoginForm = showLoginForm,
                         launcher = launcher,
                         dataStore = dataStore,
-                        textIntro = "Welcome Back,",
                         loading = false,
                         isCreateAccount = false
                     ) { email, password ->
@@ -111,7 +111,6 @@ fun LoginScreen(
                             showLoginForm = showLoginForm,
                             launcher = launcher,
                             dataStore = dataStore,
-                            textIntro = "Create Your Account",
                             isCreateAccount = true
                         ) { email, password ->
                             // Create FireBase Account
@@ -128,7 +127,6 @@ fun LoginScreen(
 }
 
 /**
-
 Composable function to display a user form for login or account creation.
  * @param showLoginForm A MutableState that holds a boolean indicating whether the login form should be shown or not.
  * @param launcher The ManagedActivityResultLauncher used to handle activity results.
@@ -143,7 +141,6 @@ fun UserForm(
     showLoginForm: MutableState<Boolean>,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     dataStore: StoreUserName,
-    textIntro: String,
     loading: Boolean = false,
     isCreateAccount: Boolean = false,
     onDone: (String, String) -> Unit = { email, password -> }
@@ -176,23 +173,9 @@ fun UserForm(
             .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center
     ) {
-        /*Text(
-            textIntro,
-            fontFamily = poppinsFamily,
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            textDesc,
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = Gray500
-        )*/
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (isCreateAccount) {
                     NameInput(nameState = name, enabled = !loading)
@@ -208,7 +191,6 @@ fun UserForm(
                 if (isCreateAccount) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
                             buildAnnotatedString {
@@ -223,7 +205,7 @@ fun UserForm(
                                 }
                                 withStyle(
                                     style = SpanStyle(
-                                        color = MaterialTheme.colorScheme.primary,
+                                        color = Yellow,
                                         fontSize = 12.sp,
                                         fontFamily = poppinsFamily
                                     )
@@ -241,7 +223,7 @@ fun UserForm(
                                 }
                                 withStyle(
                                     style = SpanStyle(
-                                        color = MaterialTheme.colorScheme.primary,
+                                        color = Yellow,
                                         fontSize = 12.sp,
                                         fontFamily = poppinsFamily
                                     )
@@ -272,7 +254,7 @@ fun UserForm(
                     verticalArrangement = Arrangement.spacedBy(5.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
+                    /*Text(
                         if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
                         fontFamily = poppinsFamily,
                         fontSize = 13.sp,
@@ -289,9 +271,9 @@ fun UserForm(
                             val googleSignInClient = GoogleSignIn.getClient(context, gso)
                             launcher.launch(googleSignInClient.signInIntent)
                         }
-                    }
+                    }*/
                     Row(
-                        modifier = Modifier.padding(top = 8.dp),
+                        modifier = Modifier.padding(top = 8.dp, bottom = 30.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         val text = if (showLoginForm.value) "Sign Up" else "Log in"
@@ -318,6 +300,5 @@ fun UserForm(
             }
         }
     }
-}
 
 

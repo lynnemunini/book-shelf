@@ -2,7 +2,7 @@ package com.grayseal.bookshelf.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple700 = Color(0xFF3c41d7)
+val Purple700 = Color(0xFF6059c7)
 val Purple500 = Color(0xFF7345fb)
 val Purple200 = Color(0xFF7f75b7)
 
