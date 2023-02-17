@@ -5,12 +5,14 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -56,7 +58,8 @@ fun LoginScreen(
     }
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.login_background),
@@ -84,18 +87,21 @@ fun LoginScreen(
                 color = Color.White
             )
             Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                contentAlignment = Alignment.BottomStart
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.wave),
                     contentDescription = "backgroundImage",
                     contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxWidth().height((IntrinsicSize.Min))
                 )
                 Column(
                     modifier = Modifier
-                        .padding(top = 60.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .padding(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (showLoginForm.value) UserForm(
                         showLoginForm = showLoginForm,
@@ -276,7 +282,7 @@ fun UserForm(
                     }
                 }
                 Row(
-                    modifier = Modifier.padding(top = 8.dp, bottom = 30.dp),
+                    modifier = Modifier.padding(top = 8.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     val text = if (showLoginForm.value) "Sign Up" else "Log in"
