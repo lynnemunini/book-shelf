@@ -191,11 +191,23 @@ fun UserForm(
         mutableStateOf(false)
     }
     val passwordFocusRequest = FocusRequester.Default
-    val valid = remember(email.value, password.value) {
-        (email.value.trim().isNotEmpty()
-                && password.value.trim().isNotEmpty()
-                && password.value.length >= 6) && isValidEmail(email.value)
+    var valid = false
+
+    valid = if (!isCreateAccount) {
+        remember(email.value, password.value) {
+            (email.value.trim().isNotEmpty()
+                    && password.value.trim().isNotEmpty()
+                    && password.value.length >= 6) && isValidEmail(email.value)
+        }
+    } else {
+        remember(email.value, password.value, name.value) {
+            (email.value.trim().isNotEmpty()
+                    && password.value.trim().isNotEmpty()
+                    && name.value.trim().isNotEmpty()
+                    && password.value.length >= 6) && isValidEmail(email.value)
+        }
     }
+
     val token = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
 
