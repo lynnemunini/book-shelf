@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.RuntimeExecutionException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -79,20 +78,47 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
      * @param password The password for the new user account.
      * @param home A function to be called upon successful creation of the user account.
      */
-    fun createUserWithEmailAndPassword(email: String, password: String, home: () -> Unit) {
-        if (_loading.value == false) {
-            _loading.value = true
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val displayName = name.value
-                        createUser(displayName)
-                        home()
-                    } else {
-                        Log.e("TAG", "createUserWithEmailAndPassword: ${task.result}")
+    fun createUserWithEmailAndPassword(
+        email: String,
+        password: String,
+        home: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val displayName = name.value
+                            createUser(displayName)
+                            // HomeScreen
+                            home()
+                        }
+                        _loading.value = false
                     }
-                    _loading.value = false
-                }
+                    .addOnFailureListener { exception ->
+                        // Handle network errors, including timeouts
+                        when (exception) {
+                            is FirebaseAuthException -> {
+                                if (exception.message?.contains("email address is already in use") == true) {
+                                    onError("Email already exists")
+                                } else {
+                                    onError("Unknown error: ${exception.localizedMessage}")
+                                }
+                            }
+                            is FirebaseNetworkException -> {
+                                onError("Network error: ${exception.localizedMessage}")
+                            }
+                            else -> {
+                                onError("Unknown error: ${exception.localizedMessage}")
+                            }
+                        }
+                        _loading.value = false
+                    }
+            } catch (e: Exception) {
+                Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
+            }
         }
     }
 
@@ -141,7 +167,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
         password: String,
         home: () -> Unit,
         onError: (String) -> Unit
-    ) =
+    ) {
         viewModelScope.launch {
             try {
                 _loading.value = true
@@ -178,8 +204,9 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
                         }
                         _loading.value = false
                     }
-            } catch (e: RuntimeExecutionException) {
+            } catch (e: Exception) {
                 Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
             }
         }
+    }
 }

@@ -1,7 +1,6 @@
 package com.grayseal.bookshelf.screens.login
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
@@ -144,10 +143,14 @@ fun LoginScreen(
                             isCreateAccount = true
                         ) { email, password ->
                             // Create FireBase Account
-                            viewModel.createUserWithEmailAndPassword(email, password) {
-                                navController.navigate(BookShelfScreens.HomeScreen.name)
-                            }
-                            Log.d("LOADING", "LoginScreen: ${viewModel.loading.value}")
+                            viewModel.createUserWithEmailAndPassword(email, password,
+                                home = {
+                                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                                },
+                                onError = {
+                                    Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                                }
+                            )
                         }
                     }
                 }
