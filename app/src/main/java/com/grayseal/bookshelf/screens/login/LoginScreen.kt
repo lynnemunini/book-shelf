@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.screens.login
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
@@ -56,6 +57,9 @@ fun LoginScreen(
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
+    var loading by remember {
+        mutableStateOf(false)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -87,14 +91,18 @@ fun LoginScreen(
                 color = Color.White
             )
             Box(
-                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
                 contentAlignment = Alignment.BottomStart
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.wave),
                     contentDescription = "backgroundImage",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth().height((IntrinsicSize.Min))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height((IntrinsicSize.Min))
                 )
                 Column(
                     modifier = Modifier
@@ -107,10 +115,11 @@ fun LoginScreen(
                         showLoginForm = showLoginForm,
                         launcher = launcher,
                         dataStore = dataStore,
-                        loading = false,
+                        loading = loading,
                         isCreateAccount = false
                     ) { email, password ->
                         // Login to Firebase Account
+                        loading = true
                         viewModel.signInWithEmailAndPassword(email, password) {
                             navController.navigate(BookShelfScreens.HomeScreen.name)
                         }
@@ -120,17 +129,19 @@ fun LoginScreen(
                             showLoginForm = showLoginForm,
                             launcher = launcher,
                             dataStore = dataStore,
+                            loading = loading,
                             isCreateAccount = true
                         ) { email, password ->
+                            loading = true
                             // Create FireBase Account
                             viewModel.createUserWithEmailAndPassword(email, password) {
                                 navController.navigate(BookShelfScreens.HomeScreen.name)
                             }
+                            Log.d("LOADING", "LoginScreen: ${viewModel.loading.value}")
                         }
                     }
                 }
             }
-
         }
     }
 }
@@ -150,7 +161,7 @@ fun UserForm(
     showLoginForm: MutableState<Boolean>,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     dataStore: StoreUserName,
-    loading: Boolean = false,
+    loading: Boolean,
     isCreateAccount: Boolean = false,
     onDone: (String, String) -> Unit = { email, password -> }
 ) {

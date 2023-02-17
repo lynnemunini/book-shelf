@@ -83,7 +83,6 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val displayName = name.value
-                        Log.e("DISPLAY NAME", "createUserWithEmailAndPassword: $displayName")
                         createUser(displayName)
                         home()
                     } else {
@@ -137,6 +136,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
     fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) =
         viewModelScope.launch {
             try {
+                _loading.value = true
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -145,6 +145,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
                         } else {
                             Log.e("TAG", "signInWithEmailAndPassword: ${task.result}")
                         }
+                        _loading.value = false
                     }
             } catch (e: java.lang.Exception) {
                 Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
