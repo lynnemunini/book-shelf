@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,43 +53,76 @@ fun LoginScreen(
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
     }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (showLoginForm.value) UserForm(
-            showLoginForm = showLoginForm,
-            launcher = launcher,
-            dataStore = dataStore,
-            textIntro = "Welcome Back,",
-            textDesc = "Log in to continue",
-            loading = false,
-            isCreateAccount = false
-        ) { email, password ->
-            // Login to Firebase Account
-            viewModel.signInWithEmailAndPassword(email, password) {
-                navController.navigate(BookShelfScreens.HomeScreen.name)
+        Image(
+            painter = painterResource(id = R.drawable.login_background),
+            contentDescription = "backgroundImage",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
+        Column(modifier = Modifier.align(Alignment.BottomCenter), verticalArrangement = Arrangement.SpaceBetween) {
+            var text = ""
+            text = if (showLoginForm.value){
+                "Welcome Back"
+            } else{
+                "Create Account"
             }
-        }
-        else {
-            UserForm(
-                showLoginForm = showLoginForm,
-                launcher = launcher,
-                dataStore = dataStore,
-                textIntro = "Create Your Account",
-                textDesc = "Sign up and get started",
-                loading = false,
-                isCreateAccount = true
-            ) { email, password ->
-                // Create FireBase Account
-                viewModel.createUserWithEmailAndPassword(email, password) {
-                    navController.navigate(BookShelfScreens.HomeScreen.name)
+            Text(
+                text,
+                fontFamily = poppinsFamily,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp),
+                color = Color.White
+            )
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.wave),
+                    contentDescription = "backgroundImage",
+                    contentScale = ContentScale.FillBounds,
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    if (showLoginForm.value) UserForm(
+                        showLoginForm = showLoginForm,
+                        launcher = launcher,
+                        dataStore = dataStore,
+                        textIntro = "Welcome Back,",
+                        loading = false,
+                        isCreateAccount = false
+                    ) { email, password ->
+                        // Login to Firebase Account
+                        viewModel.signInWithEmailAndPassword(email, password) {
+                            navController.navigate(BookShelfScreens.HomeScreen.name)
+                        }
+                    }
+                    else {
+                        UserForm(
+                            showLoginForm = showLoginForm,
+                            launcher = launcher,
+                            dataStore = dataStore,
+                            textIntro = "Create Your Account",
+                            isCreateAccount = true
+                        ) { email, password ->
+                            // Create FireBase Account
+                            viewModel.createUserWithEmailAndPassword(email, password) {
+                                navController.navigate(BookShelfScreens.HomeScreen.name)
+                            }
+                        }
+                    }
                 }
             }
+
         }
     }
 }
@@ -99,7 +134,6 @@ Composable function to display a user form for login or account creation.
  * @param launcher The ManagedActivityResultLauncher used to handle activity results.
  * @param dataStore The dataStore used to store and retrieve user information.
  * @param textIntro The introduction text to be displayed above the form
- * @param textDesc The description text to be displayed above the form
  * @param loading A boolean indicating whether the form is in loading state or not.
  * @param isCreateAccount A boolean indicating whether the form is for account creation or login.
  * @param onDone A function to be called when the form is submitted, takes in email and password as arguments.
@@ -110,7 +144,6 @@ fun UserForm(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     dataStore: StoreUserName,
     textIntro: String,
-    textDesc: String,
     loading: Boolean = false,
     isCreateAccount: Boolean = false,
     onDone: (String, String) -> Unit = { email, password -> }
@@ -143,7 +176,7 @@ fun UserForm(
             .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
+        /*Text(
             textIntro,
             fontFamily = poppinsFamily,
             fontSize = 25.sp,
@@ -154,23 +187,10 @@ fun UserForm(
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
             color = Gray500
-        )
+        )*/
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (isCreateAccount) {
-                Image(
-                    painter = painterResource(id = R.drawable.loginillustration_transformed),
-                    contentDescription = "Login Illustration",
-                    modifier = Modifier.size(200.dp)
-                )
-            } else {
-                Image(
-                    painter = painterResource(id = R.drawable.loginillustration_transformed),
-                    contentDescription = "Login Illustration",
-                    modifier = Modifier.size(300.dp)
-                )
-            }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
