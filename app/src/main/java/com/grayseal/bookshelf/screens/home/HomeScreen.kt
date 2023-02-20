@@ -47,6 +47,7 @@ import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
 import com.grayseal.bookshelf.screens.login.StoreUserName
+import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
@@ -55,7 +56,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: LoginScreenViewModel = hiltViewModel()
+    viewModel: LoginScreenViewModel = hiltViewModel(),
+    searchBookViewModel: SearchBookViewModel
 ) {
     var user by remember { mutableStateOf(Firebase.auth.currentUser) }
     val scope = rememberCoroutineScope()
@@ -78,13 +80,18 @@ fun HomeScreen(
     } else {
         val name = dataStore.getName.collectAsState(initial = "")
         // Main Screen Content
-        HomeContent(user = user!!, name = name.value, navController)
+        HomeContent(user = user!!, name = name.value, navController, searchBookViewModel)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeContent(user: FirebaseUser, name: String?, navController: NavController) {
+fun HomeContent(
+    user: FirebaseUser,
+    name: String?,
+    navController: NavController,
+    searchBookViewModel: SearchBookViewModel
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val items = mapOf(
@@ -233,7 +240,7 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 20.dp)
                 ) {
-                    TopHeader(navController) {
+                    TopHeader(navController, searchBookViewModel) {
                         scope.launch {
                             drawerState.open()
                         }
@@ -253,7 +260,11 @@ fun HomeContent(user: FirebaseUser, name: String?, navController: NavController)
 }
 
 @Composable
-fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
+fun TopHeader(
+    navController: NavController,
+    viewModel: SearchBookViewModel,
+    onProfileClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -286,6 +297,7 @@ fun TopHeader(navController: NavController, onProfileClick: () -> Unit) {
                     .size(48.dp)
                     .clip(CircleShape)
                     .clickable(enabled = true, onClick = {
+                        viewModel.listOfBooks.value = listOf()
                         navController.navigate(route = BookShelfScreens.SearchScreen.name)
                     }),
                 shape = CircleShape,
@@ -453,7 +465,12 @@ fun Categories(navController: NavController) {
         itemsIndexed(items = keysList) { index: Int, item: String ->
             if (index == 0) {
                 Spacer(modifier = Modifier.width(20.dp))
-                categories[item]?.let { Category(category = item, image = it, onClick = { navController.navigate(route = BookShelfScreens.CategoryScreen.name + "/$item") }) }
+                categories[item]?.let {
+                    Category(
+                        category = item,
+                        image = it,
+                        onClick = { navController.navigate(route = BookShelfScreens.CategoryScreen.name + "/$item") })
+                }
             } else {
                 Category(
                     category = item,

@@ -35,7 +35,7 @@ fun BookShelfNavigation(){
             SplashScreen(navController = navController)
         }
         composable(BookShelfScreens.HomeScreen.name,) {
-            HomeScreen(navController = navController)
+            HomeScreen(navController = navController, searchBookViewModel = searchViewModel)
         }
 
         val bookRoute = BookShelfScreens.BookScreen.name

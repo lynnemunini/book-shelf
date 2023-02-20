@@ -56,6 +56,7 @@ fun CategoryScreen(
         }
         Spacer(modifier = Modifier.height(30.dp))
         if (category != null) {
+            viewModel.loading.value = true
             viewModel.searchBooks(category)
         }
         Results(viewModel = viewModel, navController = navController)
