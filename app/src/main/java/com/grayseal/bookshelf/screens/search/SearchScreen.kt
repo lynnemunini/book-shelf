@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
@@ -30,6 +29,8 @@ import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.components.HistoryCard
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
+import com.grayseal.bookshelf.data.DataOrException
+import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
@@ -71,6 +72,7 @@ fun SearchScreen(
             .padding(20.dp)
     ) {
         Search(navController = navController, viewModel = viewModel) { query ->
+            viewModel.loading.value = true
             viewModel.searchBooks(query)
             // Get user and add searched value to fireStore
             if (userId != null) {
@@ -92,7 +94,7 @@ fun SearchScreen(
                     fontFamily = poppinsFamily,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
                     val lastThree = if (previousSearches.size >= 4) {
                         previousSearches.subList(previousSearches.size - 3, previousSearches.size)
                     } else {
@@ -141,6 +143,7 @@ fun Search(
                 .clip(CircleShape)
                 .clickable(enabled = true, onClick = {
                     navController.popBackStack()
+                    viewModel.loading.value = false
                 })
         )
         Text(
@@ -170,28 +173,22 @@ fun Search(
 @Composable
 fun Results(viewModel: SearchBookViewModel, navController: NavController) {
     val searchResults = viewModel.resultsState.value
+
     val listOfBooks = viewModel.listOfBooks.value
 
-    if (searchResults.loading == true) {
-        CircularProgressIndicator(color = Yellow)
+    if (listOfBooks.isNotEmpty()){
+        viewModel.loading.value = false
     }
-    if (searchResults.loading == null) {
-        androidx.compose.material3.Text(
-            "Error fetching data",
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-    }
-    if (searchResults.loading == false && searchResults.e == null) {
-        if (listOfBooks.isEmpty()) {
-            androidx.compose.material3.Text(
-                "No results found for your search. Please try again with different keywords or try searching again.",
-                fontFamily = poppinsFamily,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+
+    val loading = viewModel.loading.value
+
+    if (loading) {
+        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+            CircularProgressIndicator(color = Yellow)
         }
+    }
+
+    if (!loading && searchResults.e == null && searchResults.data != null) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
@@ -215,7 +212,7 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                 }
                 if (item.description.isNotEmpty()) {
                     val cleanDescription = HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                    previewText = item.searchInfo
+                    previewText = cleanDescription.toString()
                 }
                 val bookId = item.bookID
                 SearchCard(

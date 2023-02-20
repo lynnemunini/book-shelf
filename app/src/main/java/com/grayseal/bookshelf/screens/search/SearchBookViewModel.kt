@@ -23,9 +23,7 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
 
     var listOfBooks: MutableState<List<Book>> = mutableStateOf(listOf())
 
-    private fun loadBooks(query: String) {
-        searchBooks(query)
-    }
+    var loading: MutableState<Boolean> = mutableStateOf(false)
 
     fun searchBooks(query: String) {
         viewModelScope.launch {
@@ -34,14 +32,11 @@ class SearchBookViewModel @Inject constructor(private val repository: BookReposi
             }
             // Clear items from the previous search
             listOfBooks.value = listOf()
-            resultsState.value.loading = true
             resultsState.value = repository.getBooks(query)
 
             if (resultsState.value.data != null) {
                 listOfBooks.value = resultsState.value.data!!
             }
-            if (listOfBooks.value.isNotEmpty()) resultsState.value.loading =
-                false
         }
     }
 }

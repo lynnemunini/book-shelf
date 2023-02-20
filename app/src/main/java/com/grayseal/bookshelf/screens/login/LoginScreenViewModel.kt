@@ -117,6 +117,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
         val searchHistory: MutableList<String> = mutableListOf()
         val reviews: List<Review> = mutableListOf()
         val favourites: List<Book> = readingList
+        Log.d("USERID", "$userId")
         if (userId != null) {
             val user = MyUser(
                 userID = userId.toString(),

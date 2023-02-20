@@ -179,11 +179,21 @@ fun Details(navController: NavController, book: Book?) {
         )
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
             TopSection(navController = navController)
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-            ) {
-                if (book != null) {
+            if (book == null) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    LinearProgressIndicator(color = Color.White)
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                ) {
                     BookImage(imageUrl = imageUrl)
                     BookDescription(
                         bookTitle = bookTitle,
@@ -193,8 +203,6 @@ fun Details(navController: NavController, book: Book?) {
                         pages = pages,
                         description = description
                     )
-                } else {
-                    CircularProgressIndicator(color = Color.White)
                 }
             }
         }
