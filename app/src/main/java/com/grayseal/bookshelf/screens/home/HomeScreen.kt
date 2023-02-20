@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.screens.home
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.*
@@ -11,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Card
@@ -100,6 +102,9 @@ fun HomeContent(
         "Delete Account" to R.drawable.delete
     )
     val selectedItem = remember { mutableStateOf(items["Settings"]) }
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -169,9 +174,10 @@ fun HomeContent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         "Hi, ${name}!", fontFamily = loraFamily,
-                        fontSize = 21.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
                 Column(
@@ -180,23 +186,50 @@ fun HomeContent(
                         .padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Spacer(Modifier.height(15.dp))
+                    Spacer(Modifier.height(20.dp))
                     Text(
                         "16 books in your reading list", fontFamily = poppinsFamily,
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                    Spacer(Modifier.height(15.dp))
+                    Spacer(Modifier.height(10.dp))
                     Divider(color = MaterialTheme.colorScheme.onBackground)
                     Spacer(Modifier.height(20.dp))
                     items.forEach { item ->
+                        val selectedValue = selectedItem.value
+                        val selectedKey = items.entries.find { it.value == selectedValue }?.key
+                        AlertDialog(
+                            openDialog = openDialog,
+                            title = if (selectedKey == "Log Out") {
+                                "Confirm Logout"
+                            } else {
+                                "Delete Account"
+                            },
+                            details = if (selectedKey == "Log Out") {
+                                "Are you sure you want to end your session?"
+                            } else {
+                                "You are about to delete your account. Is this what you want?"
+                            },
+                            onDismiss = {
+                                openDialog = false
+                            },
+                            onClick = {
+                                if (selectedKey == "Log Out") {
+                                    Firebase.auth.signOut()
+                                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                                } else {
+                                    user.delete()
+                                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                                }
+                            }
+                        )
                         BookShelfNavigationDrawerItem(
                             icon = {
                                 androidx.compose.material3.Icon(
                                     painter = painterResource(id = item.value),
                                     contentDescription = item.key,
                                     modifier = Modifier
-                                        .size(30.dp)
+                                        .size(40.dp)
                                         .background(color = Color.Transparent)
                                 )
                             },
@@ -211,13 +244,8 @@ fun HomeContent(
                             selected = item.value == selectedItem.value,
                             onClick = {
                                 selectedItem.value = item.value
-                                scope.launch { drawerState.close() }
-                                if (item.key == "Log Out") {
-                                    Firebase.auth.signOut()
-                                    navController.navigate(BookShelfScreens.HomeScreen.name)
-                                } else if (item.key == "Delete Account") {
-                                    user.delete()
-                                    navController.navigate(BookShelfScreens.HomeScreen.name)
+                                if (item.key == "Log Out" || item.key == "Delete Account") {
+                                    openDialog = true
                                 }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
@@ -413,32 +441,17 @@ fun MainCard() {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.End
                         ) {
-                            if (isSystemInDarkTheme()) {
-                                Surface(
-                                    modifier = Modifier.size(60.dp),
-                                    shape = CircleShape,
-                                    color = Color.Transparent
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.darkchart),
-                                        contentDescription = "Add",
-                                        modifier = Modifier
-                                            .background(color = Color.Transparent)
-                                    )
-                                }
-                            } else {
-                                Surface(
-                                    modifier = Modifier.size(60.dp),
-                                    shape = CircleShape,
-                                    color = Color.Transparent
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.lightchart),
-                                        contentDescription = "Add",
-                                        modifier = Modifier
-                                            .background(color = Color.Transparent)
-                                    )
-                                }
+                            Surface(
+                                modifier = Modifier.size(60.dp),
+                                shape = CircleShape,
+                                color = Color.Transparent
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.lightchart),
+                                    contentDescription = "Add",
+                                    modifier = Modifier
+                                        .background(color = Color.Transparent)
+                                )
                             }
                         }
                     }
@@ -519,3 +532,69 @@ fun ReadingList(onClick: () -> Unit) {
     }
 }
 
+@Composable
+fun AlertDialog(
+    openDialog: Boolean,
+    title: String,
+    details: String,
+    onDismiss: () -> Unit,
+    onClick: () -> Unit
+) {
+    if (openDialog) {
+        AlertDialog(
+            /* Dismiss the dialog when the user clicks outside the dialog or on the back
+                   button. */
+            onDismissRequest = onDismiss,
+            title = {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                        contentDescription = "Info",
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Text(
+                        title,
+                        fontSize = 18.sp,
+                        fontFamily = poppinsFamily,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            text = {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = details,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center
+                )
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = onClick) {
+                    Text(
+                        "Confirm",
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(onClick = onDismiss) {
+                    Text(
+                        "Cancel",
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        )
+    }
+}
