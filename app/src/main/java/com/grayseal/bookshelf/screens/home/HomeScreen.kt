@@ -297,6 +297,7 @@ fun TopHeader(
                     .size(48.dp)
                     .clip(CircleShape)
                     .clickable(enabled = true, onClick = {
+                        viewModel.loading.value = false
                         viewModel.listOfBooks.value = listOf()
                         navController.navigate(route = BookShelfScreens.SearchScreen.name)
                     }),
