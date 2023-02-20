@@ -1,9 +1,15 @@
 package com.grayseal.bookshelf.screens.home
 
 import android.content.Intent
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Card
@@ -26,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -105,6 +111,22 @@ fun HomeContent(
     var openDialog by remember {
         mutableStateOf(false)
     }
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val context = LocalContext.current
+    val bitmap = remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+    // Retrieve an image from the device gallery
+    val launcher = rememberLauncherForActivityResult(
+        contract =
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+    }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -131,21 +153,36 @@ fun HomeContent(
                                 .constrainAs(profile) {
                                     top.linkTo(parent.top)
                                     start.linkTo(parent.start)
-                                },
+                                }
+                                .clickable(onClick = {
+                                    launcher.launch("image/*")
+                                }),
                             shape = CircleShape,
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.profile),
-                                contentDescription = "Profile Picture",
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .clickable(onClick = {
-                                        scope.launch {
-                                            drawerState.close()
-                                        }
-                                    }),
-                                contentScale = ContentScale.FillBounds
-                            )
+                            // Convert the image to a byte array
+                            imageUri?.let {
+                                if (Build.VERSION.SDK_INT < 28) {
+                                    bitmap.value = MediaStore.Images
+                                        .Media.getBitmap(context.contentResolver, it)
+
+                                } else {
+                                    val source = ImageDecoder
+                                        .createSource(context.contentResolver, it)
+                                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                                }
+                                bitmap.value?.let { bitmap ->
+                                    Image(
+                                        bitmap = bitmap.asImageBitmap(),
+                                        contentDescription = "Profile Picture",
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .clickable(onClick = {
+                                                launcher.launch("image/*")
+                                            }),
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                                }
+                            }
                         }
                         Surface(
                             modifier = Modifier
@@ -546,7 +583,11 @@ fun AlertDialog(
                    button. */
             onDismissRequest = onDismiss,
             title = {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Image(
                         painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                         contentDescription = "Info",
