@@ -104,6 +104,7 @@ fun SearchScreen(
                     items.forEach {
                         if (it != "") {
                             HistoryCard(text = it, onClick = {
+                                viewModel.loading.value = true
                                 viewModel.searchBooks(it)
                             })
                         }
