@@ -1,6 +1,8 @@
 package com.grayseal.bookshelf.screens.login
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
@@ -40,6 +42,7 @@ import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.isValidEmail
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 
 /**
 
@@ -67,7 +70,6 @@ fun LoginScreen(
     viewModel.loading.observeForever {
         loading = it
     }
-
     val context = LocalContext.current
 
     Box(

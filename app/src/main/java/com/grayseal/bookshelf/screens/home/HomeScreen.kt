@@ -2,10 +2,12 @@ package com.grayseal.bookshelf.screens.home
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -45,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
@@ -60,6 +63,8 @@ import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.util.*
 
 @Composable
 fun HomeScreen(
@@ -67,9 +72,30 @@ fun HomeScreen(
     viewModel: LoginScreenViewModel = hiltViewModel(),
     searchBookViewModel: SearchBookViewModel
 ) {
+    val userId = Firebase.auth.currentUser?.uid
     var user by remember { mutableStateOf(Firebase.auth.currentUser) }
-    val scope = rememberCoroutineScope()
+    var avatarString = ""
     val context = LocalContext.current
+
+    val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.profile)
+    val outputStream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+    var avatar:ByteArray  = outputStream.toByteArray()
+
+    // Retrieve avatar from firestore
+    if (userId != null) {
+        val db = FirebaseFirestore.getInstance().collection("users").document(userId).get()
+        db.addOnSuccessListener {
+            avatarString = db.result.get("avatar").toString()
+            if(avatarString != "Image not set"){
+                // Encode the string fetched from firestore
+                val decoder: Base64.Decoder = Base64.getDecoder()
+                avatar = decoder.decode(avatarString)
+            }
+        }
+    }
+
+    val scope = rememberCoroutineScope()
     val dataStore = StoreUserName(context)
     val launcher: ManagedActivityResultLauncher<Intent, ActivityResult> =
         rememberFirebaseAuthLauncher(
@@ -88,7 +114,7 @@ fun HomeScreen(
     } else {
         val name = dataStore.getName.collectAsState(initial = "")
         // Main Screen Content
-        HomeContent(user = user!!, name = name.value, navController, searchBookViewModel)
+        HomeContent(user = user!!, name = name.value, avatar = avatar, navController, searchBookViewModel)
     }
 }
 
@@ -97,6 +123,7 @@ fun HomeScreen(
 fun HomeContent(
     user: FirebaseUser,
     name: String?,
+    avatar: ByteArray,
     navController: NavController,
     searchBookViewModel: SearchBookViewModel
 ) {
@@ -182,6 +209,11 @@ fun HomeContent(
                                         contentScale = ContentScale.FillBounds
                                     )
                                 }
+                                val outputStream = ByteArrayOutputStream()
+                                bitmap.value?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                                val byteArray = outputStream.toByteArray()
+                                val encoder: Base64.Encoder = Base64.getEncoder()
+                                val avatarString = encoder.encodeToString(byteArray)
                             }
                         }
                         Surface(
@@ -305,7 +337,7 @@ fun HomeContent(
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 20.dp)
                 ) {
-                    TopHeader(navController, searchBookViewModel) {
+                    TopHeader(navController, searchBookViewModel, avatar = avatar) {
                         scope.launch {
                             drawerState.open()
                         }
@@ -328,8 +360,13 @@ fun HomeContent(
 fun TopHeader(
     navController: NavController,
     viewModel: SearchBookViewModel,
+    avatar: ByteArray,
     onProfileClick: () -> Unit
 ) {
+    Log.d("AVATAR", "$avatar")
+    // Convert avatar: ByteArray to bitmap
+    val bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
+    Log.d("BITMAP", "$bitmap")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -343,7 +380,7 @@ fun TopHeader(
             shape = CircleShape,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.profile),
+                bitmap = bitmap.asImageBitmap(),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .clip(CircleShape)
