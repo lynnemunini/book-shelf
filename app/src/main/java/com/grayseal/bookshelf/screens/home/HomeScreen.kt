@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseUser
@@ -72,37 +73,30 @@ fun HomeScreen(
     viewModel: LoginScreenViewModel = hiltViewModel(),
     searchBookViewModel: SearchBookViewModel
 ) {
-    val userId = Firebase.auth.currentUser?.uid
     var user by remember { mutableStateOf(Firebase.auth.currentUser) }
-    var avatarString = ""
+
     val context = LocalContext.current
 
     val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.profile)
     val outputStream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-    var avatar:ByteArray  = outputStream.toByteArray()
+    var avatar: ByteArray = outputStream.toByteArray()
 
-    // Retrieve avatar from firestore
-    if (userId != null) {
-        val db = FirebaseFirestore.getInstance().collection("users").document(userId).get()
-        db.addOnSuccessListener {
-            avatarString = db.result.get("avatar").toString()
-            if(avatarString != "Image not set"){
-                // Encode the string fetched from firestore
-                val decoder: Base64.Decoder = Base64.getDecoder()
-                avatar = decoder.decode(avatarString)
-            }
-        }
-    }
+    // Retrieve avatar from dataStore is user has set any
+    val imageDataStore = StoreProfileImage(context)
+    val imageString = imageDataStore.getImage.collectAsState(initial = "").value
+
+
 
     val scope = rememberCoroutineScope()
-    val dataStore = StoreUserName(context)
+    // Retrieve user name from dataStore
+    val nameDataStore = StoreUserName(context)
     val launcher: ManagedActivityResultLauncher<Intent, ActivityResult> =
         rememberFirebaseAuthLauncher(
             onAuthComplete = { result ->
                 user = result.user
                 scope.launch {
-                    user?.displayName?.let { dataStore.saveName(it) }
+                    user?.displayName?.let { nameDataStore.saveName(it) }
                 }
             },
             onAuthError = {
@@ -110,11 +104,18 @@ fun HomeScreen(
             }
         )
     if (user == null) {
-        LoginScreen(navController, launcher, viewModel, dataStore)
+        LoginScreen(navController, launcher, viewModel, nameDataStore)
     } else {
-        val name = dataStore.getName.collectAsState(initial = "")
+        val name = nameDataStore.getName.collectAsState(initial = "")
         // Main Screen Content
-        HomeContent(user = user!!, name = name.value, avatar = avatar, navController, searchBookViewModel)
+        HomeContent(
+            user = user!!,
+            name = name.value,
+            avatar = avatar,
+            navController = navController,
+            searchBookViewModel = searchBookViewModel,
+            imageDataStore = imageDataStore
+        )
     }
 }
 
@@ -125,7 +126,8 @@ fun HomeContent(
     name: String?,
     avatar: ByteArray,
     navController: NavController,
-    searchBookViewModel: SearchBookViewModel
+    searchBookViewModel: SearchBookViewModel,
+    imageDataStore: StoreProfileImage,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -144,7 +146,7 @@ fun HomeContent(
     }
     val context = LocalContext.current
     val bitmap = remember {
-        mutableStateOf<Bitmap?>(null)
+        mutableStateOf<Bitmap>(BitmapFactory.decodeByteArray(avatar, 0, avatar.size))
     }
     // Retrieve an image from the device gallery
     val launcher = rememberLauncherForActivityResult(
@@ -152,6 +154,31 @@ fun HomeContent(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
+    }
+
+    // Convert the image to a byte array
+    imageUri?.let {
+        if (Build.VERSION.SDK_INT < 28) {
+            bitmap.value = MediaStore.Images
+                .Media.getBitmap(context.contentResolver, it)
+
+        } else {
+            val source = ImageDecoder
+                .createSource(context.contentResolver, it)
+            bitmap.value = ImageDecoder.decodeBitmap(source)
+        }
+        val outputStream = ByteArrayOutputStream()
+        bitmap.value.compress(
+            Bitmap.CompressFormat.JPEG,
+            100,
+            outputStream
+        )
+        val byteArray = outputStream.toByteArray()
+
+        // Update user profile image on dataStore
+        scope.launch {
+            imageDataStore.saveImage(byteArray)
+        }
     }
 
     ModalNavigationDrawer(
@@ -186,35 +213,16 @@ fun HomeContent(
                                 }),
                             shape = CircleShape,
                         ) {
-                            // Convert the image to a byte array
-                            imageUri?.let {
-                                if (Build.VERSION.SDK_INT < 28) {
-                                    bitmap.value = MediaStore.Images
-                                        .Media.getBitmap(context.contentResolver, it)
-
-                                } else {
-                                    val source = ImageDecoder
-                                        .createSource(context.contentResolver, it)
-                                    bitmap.value = ImageDecoder.decodeBitmap(source)
-                                }
-                                bitmap.value?.let { bitmap ->
-                                    Image(
-                                        bitmap = bitmap.asImageBitmap(),
-                                        contentDescription = "Profile Picture",
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .clickable(onClick = {
-                                                launcher.launch("image/*")
-                                            }),
-                                        contentScale = ContentScale.FillBounds
-                                    )
-                                }
-                                val outputStream = ByteArrayOutputStream()
-                                bitmap.value?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                                val byteArray = outputStream.toByteArray()
-                                val encoder: Base64.Encoder = Base64.getEncoder()
-                                val avatarString = encoder.encodeToString(byteArray)
-                            }
+                            Image(
+                                bitmap = bitmap.value.asImageBitmap(),
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable(onClick = {
+                                        launcher.launch("image/*")
+                                    }),
+                                contentScale = ContentScale.FillBounds
+                            )
                         }
                         Surface(
                             modifier = Modifier
@@ -226,7 +234,10 @@ fun HomeContent(
                                     end.linkTo(profile.absoluteRight)
                                     baseline.linkTo(profile.baseline)
                                     bottom.linkTo(profile.bottom)
-                                },
+                                }
+                                .clickable(onClick = {
+                                    launcher.launch("image/*")
+                                }),
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
                             border = BorderStroke(width = 1.dp, color = Color.White)
