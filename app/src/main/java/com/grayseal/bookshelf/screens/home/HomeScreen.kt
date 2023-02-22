@@ -63,9 +63,15 @@ import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
 import kotlinx.coroutines.launch
-import java.io.File
 import java.util.*
 
+/**
+ * Composable function that displays the Home Screen of the app.
+ *
+ * @param navController The NavController object for navigating between screens.
+ * @param viewModel The LoginScreenViewModel object for managing user login and authentication.
+ * @param searchBookViewModel The SearchBookViewModel object for managing book search functionality.
+ */
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -85,21 +91,25 @@ fun HomeScreen(
     val session = StoreSession(context)
     val imagePath = imageDataStore.getImagePath.collectAsState(initial = "").value
 
-    if(imagePath != "") {
+    if (imagePath != "") {
         val imageUri = Uri.parse(imagePath)
 
         if (!session.isFirstTime) {
-            // convert imageUri to bitmap
-            imageUri?.let {
-                avatar = if (Build.VERSION.SDK_INT < 28) {
-                    MediaStore.Images
-                        .Media.getBitmap(context.contentResolver, it)
+            try {
+                // convert imageUri to bitmap
+                imageUri?.let {
+                    avatar = if (Build.VERSION.SDK_INT < 28) {
+                        MediaStore.Images
+                            .Media.getBitmap(context.contentResolver, it)
 
-                } else {
-                    val source = ImageDecoder
-                        .createSource(context.contentResolver, it)
-                    ImageDecoder.decodeBitmap(source)
+                    } else {
+                        val source = ImageDecoder
+                            .createSource(context.contentResolver, it)
+                        ImageDecoder.decodeBitmap(source)
+                    }
                 }
+            }catch(e: Exception){
+                Toast.makeText(context, "Failed to fetch stored profile Image", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -136,6 +146,19 @@ fun HomeScreen(
     }
 }
 
+/**
+ * A composable function that displays the home screen for the user, including a drawer that contains
+ * the options to log out, delete the account, and open the user settings. This composable function
+ * takes several parameters to display user data and allow the user to interact with the app.
+ *
+ * @param user the FirebaseUser object that represents the user that is currently logged in
+ * @param name a String object that represents the name of the user
+ * @param avatar a Bitmap object that represents the user's profile image
+ * @param navController a NavController object that controls navigation within the app
+ * @param searchBookViewModel a SearchBookViewModel object that allows the user to search for books within the app
+ * @param imageDataStore a StoreProfileImage object that stores the user's profile image
+ * @param session a StoreSession object that stores the user's session information
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
@@ -180,7 +203,11 @@ fun HomeContent(
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             } catch (e: SecurityException) {
-                Toast.makeText(context, "Failed to take permission: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Failed to take permission: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         imageUri = uri
@@ -198,7 +225,7 @@ fun HomeContent(
         }
         // Update user profile image on dataStore and set firstSession to false
         scope.launch {
-            val path = imageUri?: return@launch
+            val path = imageUri ?: return@launch
             Log.d("PATH", "$path")
             imageDataStore.saveImagePath(path)
             session.setIsFirstTimeLaunch(false)
@@ -237,9 +264,9 @@ fun HomeContent(
                                 }),
                             shape = CircleShape,
                         ) {
-                            val image = if(session.isFirstTime){
+                            val image = if (session.isFirstTime) {
                                 bitmap.value
-                            } else{
+                            } else {
                                 avatar
                             }
                             Image(
@@ -396,6 +423,16 @@ fun HomeContent(
     )
 }
 
+/**
+ * A composable function that displays the top header of a bookshelf app with a profile picture
+ * and a search button. Clicking on the profile picture opens the user's profile, and clicking
+ * on the search button navigates to the search screen.
+ *
+ * @param navController The NavController object used to navigate between different screens.
+ * @param viewModel The SearchBookViewModel object that contains the state of the search screen.
+ * @param avatar The Bitmap object that represents the user's profile picture.
+ * @param onProfileClick A lambda function that is executed when the user clicks on the profile picture.
+ */
 @Composable
 fun TopHeader(
     navController: NavController,
@@ -461,7 +498,11 @@ fun TopHeader(
     }
 }
 
-@Preview
+/**
+
+* A composable function that creates a main card UI element.
+* The card displays an image with the title "Track your reading activity" and a book with a title and a "Continue reading" text.
+ */
 @Composable
 fun MainCard() {
     Card(
@@ -472,21 +513,12 @@ fun MainCard() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            if (isSystemInDarkTheme()) {
-                Image(
-                    painter = painterResource(id = R.drawable.darkcard),
-                    contentDescription = null,
-                    modifier = Modifier.matchParentSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
                 Image(
                     painter = painterResource(id = R.drawable.card),
                     contentDescription = null,
                     modifier = Modifier.matchParentSize(),
                     contentScale = ContentScale.Crop
                 )
-            }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     "Track your", fontFamily = poppinsFamily,
@@ -571,6 +603,11 @@ fun MainCard() {
     }
 }
 
+/**
+* A composable function that displays a list of categories using a LazyRow layout. Each category is
+* represented by a Category composable that is clickable and navigates to the corresponding screen.
+* @param navController The NavController used for navigating between screens.
+ */
 @Composable
 fun Categories(navController: NavController) {
     Text(
@@ -604,6 +641,13 @@ fun Categories(navController: NavController) {
         }
     }
 }
+
+/**
+
+* Composable function that displays the user's reading list, with the book cover images,
+* the title and author of the book, and an onClick listener that navigates to a book detail screen.
+* @param onClick The function that handles clicks on the reading list items.
+ * */
 
 @Composable
 fun ReadingList(onClick: () -> Unit) {
@@ -642,6 +686,15 @@ fun ReadingList(onClick: () -> Unit) {
     }
 }
 
+/**
+* A composable function that displays an alert dialog with a title, details, a confirm button,
+* and a cancel button.
+* @param openDialog A boolean that represents whether the alert dialog should be displayed.
+* @param title A string representing the title of the alert dialog.
+* @param details A string representing the details of the alert dialog.
+* @param onDismiss A lambda function that is called when the user dismisses the alert dialog.
+* @param onClick A lambda function that is called when the user confirms the alert dialog.
+ */
 @Composable
 fun AlertDialog(
     openDialog: Boolean,

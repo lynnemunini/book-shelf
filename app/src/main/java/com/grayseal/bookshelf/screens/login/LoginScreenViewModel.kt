@@ -54,6 +54,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
      * @param email The email to be associated with the new user account.
      * @param password The password for the new user account.
      * @param home A function to be called upon successful creation of the user account.
+     * @param onError: (String) -> Unit, a lambda function that represents the action to be taken when an error occurs.
      */
     fun createUserWithEmailAndPassword(
         email: String,
@@ -138,6 +139,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
      * @param email: String, the user's email address
      * @param password: String, the user's password
      * @param home: () -> Unit, a lambda function that represents the action to be taken when the sign in is successful.
+     * @param onError: (String) -> Unit, a lambda function that represents the action to be taken when an error occurs.
      * @return None
      */
     fun signInWithEmailAndPassword(

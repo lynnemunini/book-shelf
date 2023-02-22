@@ -45,7 +45,6 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 /**
-
 Composable function to display a login screen.
  * @param navController The NavController used to navigate to different screens.
  * @param launcher The ManagedActivityResultLauncher used to handle activity results.
