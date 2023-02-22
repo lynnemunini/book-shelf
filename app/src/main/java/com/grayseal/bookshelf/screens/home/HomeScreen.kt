@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -84,12 +85,8 @@ fun HomeScreen(
     val session = StoreSession(context)
     val imagePath = imageDataStore.getImagePath.collectAsState(initial = "").value
 
-    /* ------------YOU STOPPED HERE❗❗❗❗------------------ */
-
     if(imagePath != "") {
-        Log.d("IMAGEPATH", imagePath)
         val imageUri = Uri.parse(imagePath)
-        Log.d("IMAGEURI", "$imageUri")
 
         if (!session.isFirstTime) {
             // convert imageUri to bitmap
@@ -106,7 +103,6 @@ fun HomeScreen(
             }
         }
     }
-    /* ------------------------------------------------ */
 
     val scope = rememberCoroutineScope()
     // Retrieve user name from dataStore
@@ -128,7 +124,6 @@ fun HomeScreen(
     } else {
         val name = nameDataStore.getName.collectAsState(initial = "")
         // Main Screen Content
-
         HomeContent(
             user = user!!,
             name = name.value,
@@ -174,10 +169,21 @@ fun HomeContent(
     // Retrieve an image from the device gallery
     val launcher = rememberLauncherForActivityResult(
         contract =
-        ActivityResultContracts.GetContent()
+        ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
+        // take a persistable URI permission to access the content of the URI outside of the scope of app's process
+        val contentResolver = context.contentResolver
+        if (uri != null) {
+            try {
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (e: SecurityException) {
+                Toast.makeText(context, "Failed to take permission: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
         imageUri = uri
-        Log.d("IMAGEURILAUNCHER", "$uri and ${uri?.path}")
     }
 
     imageUri?.let {
@@ -227,17 +233,22 @@ fun HomeContent(
                                     start.linkTo(parent.start)
                                 }
                                 .clickable(onClick = {
-                                    launcher.launch("image/*")
+                                    launcher.launch(arrayOf("image/*"))
                                 }),
                             shape = CircleShape,
                         ) {
+                            val image = if(session.isFirstTime){
+                                bitmap.value
+                            } else{
+                                avatar
+                            }
                             Image(
-                                bitmap = bitmap.value.asImageBitmap(),
+                                bitmap = image.asImageBitmap(),
                                 contentDescription = "Profile Picture",
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .clickable(onClick = {
-                                        launcher.launch("image/*")
+                                        launcher.launch(arrayOf("image/*"))
                                     }),
                                 contentScale = ContentScale.FillBounds
                             )
@@ -254,7 +265,7 @@ fun HomeContent(
                                     bottom.linkTo(profile.bottom)
                                 }
                                 .clickable(onClick = {
-                                    launcher.launch("image/*")
+                                    launcher.launch(arrayOf("image/*"))
                                 }),
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
