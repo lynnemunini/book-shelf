@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.screens.search
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,13 +28,17 @@ import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.components.HistoryCard
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
-import com.grayseal.bookshelf.data.DataOrException
-import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.convertToMutableList
 
+/**
+A composable function that displays the Search Screen where users can search for books, display their recent search history
+ * and see the results of their search.
+ * @param navController A NavController that manages app navigation
+ * @param viewModel A SearchBookViewModel that handles search and retrieving search results
+ */
 @Composable
 fun SearchScreen(
     navController: NavController,
@@ -94,7 +97,11 @@ fun SearchScreen(
                     fontFamily = poppinsFamily,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                ) {
                     val lastThree = if (previousSearches.size >= 4) {
                         previousSearches.subList(previousSearches.size - 3, previousSearches.size)
                     } else {
@@ -117,6 +124,12 @@ fun SearchScreen(
     }
 }
 
+/**
+Composable function that displays the search UI.
+ * @param navController the [NavController] used to navigate between screens.
+ * @param viewModel the [SearchBookViewModel] used to search for books.
+ * @param onSearch function that gets called when a user initiates a search.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Search(
@@ -170,21 +183,31 @@ fun Search(
     }
 }
 
-
+/**
+A composable function that displays the search results obtained by querying the Google Books API.
+ * @param viewModel The view model containing the search results and the list of books.
+ * @param navController The navigation controller that is responsible for handling user navigation.
+ */
 @Composable
 fun Results(viewModel: SearchBookViewModel, navController: NavController) {
     val searchResults = viewModel.resultsState.value
 
     val listOfBooks = viewModel.listOfBooks.value
 
-    if (listOfBooks.isNotEmpty()){
+    if (listOfBooks.isNotEmpty()) {
         viewModel.loading.value = false
     }
 
     val loading = viewModel.loading.value
 
     if (loading) {
-        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             CircularProgressIndicator(color = Yellow)
         }
     }
@@ -212,7 +235,8 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                     author = item.authors.joinToString(separator = ", ")
                 }
                 if (item.description.isNotEmpty()) {
-                    val cleanDescription = HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    val cleanDescription =
+                        HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
                     previewText = cleanDescription.toString()
                 }
                 val bookId = item.bookID

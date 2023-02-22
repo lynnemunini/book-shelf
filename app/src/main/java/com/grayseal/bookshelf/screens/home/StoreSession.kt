@@ -13,8 +13,8 @@ import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.flow.map
 
 /**
-* A class to store and manage the first time launch status of the application using DataStore.
-* @param context the context of the application.
+ * A class to store and manage the first time launch status of the application using DataStore.
+ * @param context the context of the application.
  */
 class StoreSession(private val context: Context) {
     /**

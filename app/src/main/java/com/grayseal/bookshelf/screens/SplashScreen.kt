@@ -20,6 +20,14 @@ import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import kotlinx.coroutines.delay
 
+/**
+A composable function that represents a splash screen in the app.
+ * The splash screen is displayed while the app is starting up, and is responsible for animating
+ * the logo image and transitioning to the HomeScreen. The animation is triggered when the function
+ * is called, and lasts for 2 seconds before transitioning to the HomeScreen. This function uses the
+ * navController to navigate between screens.
+ * @param navController The NavController used to navigate between screens.
+ */
 @Composable
 fun SplashScreen(navController: NavController) {
     var startAnimation by remember {

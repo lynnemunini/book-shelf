@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -80,7 +79,9 @@ fun LoginScreen(
             contentScale = ContentScale.FillBounds
         )
         Column(
-            modifier = Modifier.fillMaxHeight(0.7f).align(Alignment.BottomCenter),
+            modifier = Modifier
+                .fillMaxHeight(0.7f)
+                .align(Alignment.BottomCenter),
             verticalArrangement = Arrangement.SpaceAround
         ) {
             val text: String = if (showLoginForm.value) {

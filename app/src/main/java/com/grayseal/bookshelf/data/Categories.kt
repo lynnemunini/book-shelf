@@ -2,4 +2,18 @@ package com.grayseal.bookshelf.data
 
 import com.grayseal.bookshelf.R
 
-val categories = mapOf("Finance" to R.drawable.finance, "Health" to R.drawable.health, "Philosophy" to R.drawable.philosophy, "Food" to R.drawable.drink, "Computing" to R.drawable.technology, "Art" to R.drawable.art, "Games" to R.drawable.games)
+/**
+
+A map of categories to their corresponding drawable resource IDs.
+This map is used to display category icons in the BookShelf app. Each key in the map is a string representing a category name,
+and each value is an integer representing a drawable resource ID for the corresponding category icon.
+ */
+val categories = mapOf(
+    "Finance" to R.drawable.finance,
+    "Health" to R.drawable.health,
+    "Philosophy" to R.drawable.philosophy,
+    "Food" to R.drawable.drink,
+    "Computing" to R.drawable.technology,
+    "Art" to R.drawable.art,
+    "Games" to R.drawable.games
+)

@@ -13,6 +13,13 @@ import com.grayseal.bookshelf.navigation.BookShelfNavigation
 import com.grayseal.bookshelf.ui.theme.BookShelfTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+
+An Android activity that serves as the main entry point for the app.
+The activity extends [ComponentActivity], which provides a base class for activities that enables integration with Hilt.
+The activity is annotated with [@AndroidEntryPoint] to allow Hilt to provide dependencies to the activity and its related classes.
+The [onCreate] method is overridden to set the content view of the activity to the top-level UI element [MyApp], which is the entry point of the Compose UI hierarchy.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,25 +30,19 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+
+A composable function that represents the main entry point of the BookShelf application.
+It sets up the application theme using [BookShelfTheme], creates a surface that fills the entire
+screen and adds the [BookShelfNavigation] composable that handles the app's navigation logic.
+ */
 @Composable
 fun MyApp() {
     BookShelfTheme {
-        /*val db = FirebaseFirestore.getInstance()
-        val user: MutableMap<String, Any> = HashMap()
-        user["firstName"] = "Gray"
-        user["lastName"] = "Seal"*/
-        // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            /*db.collection("users")
-                .add(user)
-                .addOnSuccessListener {
-                    Log.d("DB", "onCreate: ${it.id}")
-                }.addOnFailureListener{
-                    Log.d("DB", "onFail: $it")
-                }*/
             BookShelfNavigation()
         }
     }

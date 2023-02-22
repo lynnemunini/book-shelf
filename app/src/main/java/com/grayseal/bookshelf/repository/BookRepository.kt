@@ -6,8 +6,21 @@ import com.grayseal.bookshelf.model.ResourceConverter
 import com.grayseal.bookshelf.network.BooksAPI
 import javax.inject.Inject
 
+/**
+A class that represents a repository for retrieving books from a remote API.
+ * @param api the [BooksAPI] object used to interact with the remote API.
+ */
 class BookRepository @Inject constructor(private val api: BooksAPI) {
+    /**
+    A [DataOrException] object that holds a list of books, a loading flag, and an exception, if any.
+     */
     private val dataOrException = DataOrException<List<Book>, Boolean, Exception>()
+
+    /**
+    A suspend function that retrieves a list of books that match a search query from the remote API.
+     * @param searchQuery the search query to use for finding matching books.
+     * @return a [DataOrException] object containing a list of books, a loading flag, and an exception, if any.
+     */
     suspend fun getBooks(searchQuery: String): DataOrException<List<Book>, Boolean, Exception> {
         try {
             dataOrException.loading = true
@@ -20,7 +33,16 @@ class BookRepository @Inject constructor(private val api: BooksAPI) {
         return dataOrException
     }
 
+    /**
+    A [DataOrException] object that holds a book, a loading flag, and an exception, if any.
+     */
     private val bookInfoDataOrException = DataOrException<Book, Boolean, Exception>()
+
+    /**
+    A suspend function that retrieves information for a specific book from the remote API.
+     * @param bookId the ID of the book to retrieve information for.
+     * @return a [DataOrException] object containing information for a book, a loading flag, and an exception, if any.
+     */
     suspend fun getBookInfo(bookId: String): DataOrException<Book, Boolean, Exception> {
         val response = try {
             bookInfoDataOrException.loading = true

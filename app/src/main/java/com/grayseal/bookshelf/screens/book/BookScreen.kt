@@ -45,6 +45,13 @@ import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.launch
 
+/**
+This composable function represents a screen that displays details of a book.
+* @param navController The navigation controller used to navigate between screens.
+* @param bookViewModel The ViewModel used to retrieve book information.
+* @param bookId The ID of the book to display information for.
+* @return A Composable function that displays book details and allows the user to add the book to a shelf.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookId: String?) {
@@ -118,8 +125,14 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             isFabVisible = true
         }
     }
-
 }
+
+/**
+A composable function that displays the details of a book. If the book parameter is null, it will display a loading indicator.
+* If the book is not null, the function will display the book's image, title, author, rating, genre, number of pages, and description.
+* @param navController the navigation controller used to navigate to other screens
+* @param book the book to display, or null if data is not yet available
+ */
 
 @Composable
 fun Details(navController: NavController, book: Book?) {
@@ -210,6 +223,11 @@ fun Details(navController: NavController, book: Book?) {
     }
 }
 
+
+/**
+A composable function that displays the top section of the book details screen.
+ * @param navController The NavController used to navigate back to the previous screen.
+ */
 @Composable
 fun TopSection(navController: NavController) {
     Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)) {
@@ -254,6 +272,10 @@ fun TopSection(navController: NavController) {
     }
 }
 
+/**
+A composable function that displays a book image using the provided [imageUrl].
+* @param imageUrl The URL of the book image to display.
+ */
 @Composable
 fun BookImage(imageUrl: String) {
     Column(modifier = Modifier.padding(20.dp)) {
@@ -282,6 +304,15 @@ fun BookImage(imageUrl: String) {
     }
 }
 
+/**
+A composable function that displays the details of a book.
+* @param bookTitle The title of the book.
+* @param bookAuthor The author of the book.
+* @param rating The rating of the book, out of 5.
+* @param genre The genre of the book.
+* @param pages The number of pages in the book.
+* @param description A short description of the book.
+ */
 @Composable
 fun BookDescription(
     bookTitle: String,
@@ -564,6 +595,12 @@ fun BookDescription(
         }
     }
 }
+
+/**
+Composable function that creates the content of the bottom sheet to display options for adding a book to a bookshelf.
+* The function creates a Column that contains a Row and several Text elements separated by Divider elements. The Row contains a single Divider element
+* styled with rounded corners. The Text elements display options for adding the book to various bookshelves, including "Reading now," "To Read," and "Have Read."
+ */
 
 @Composable
 fun BottomSheetContent() {

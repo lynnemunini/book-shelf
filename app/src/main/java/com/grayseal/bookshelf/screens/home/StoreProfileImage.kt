@@ -12,20 +12,19 @@ import kotlinx.coroutines.flow.map
 
 /**
 Class to store and retrieve a user's name using DataStore.
-
  * @param context The context of the application.
  */
 class StoreProfileImage(private val context: Context) {
     // to make sure there's only one instance
     companion object {
-        /*
-        * DataStore for storing the user's set profile picture.
-        */
+        /**
+         * DataStore for storing the user's set profile picture.
+         */
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("profileImage")
 
-        /*
-        * Key for storing and retrieving the user's set profile picture in the DataStore.
-        */
+        /**
+         * Key for storing and retrieving the user's set profile picture in the DataStore.
+         */
         val USER_IMAGE_KEY = stringPreferencesKey("user_image")
     }
 

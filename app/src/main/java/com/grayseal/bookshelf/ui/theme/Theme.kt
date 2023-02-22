@@ -44,7 +44,7 @@ private val LightColorPalette = lightColorScheme(
 fun BookShelfTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors: androidx.compose.material3.ColorScheme =
         if (darkTheme) {
-            DarkColorPalette
+            LightColorPalette
         } else {
             LightColorPalette
         }

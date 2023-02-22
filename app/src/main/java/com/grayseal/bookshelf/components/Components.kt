@@ -337,7 +337,8 @@ SubmitButton is a composable function that creates a button for submitting a for
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
     Button(
         onClick = onClick, modifier = Modifier
-            .fillMaxWidth().padding(top = 10.dp),
+            .fillMaxWidth()
+            .padding(top = 10.dp),
         enabled = !loading && validInputs, shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -385,6 +386,15 @@ fun ContinueGoogle(onClick: () -> Unit) {
     )
 }
 
+/**
+A Composable function that displays a category with an image and a text label.
+ * @param category the name of the category to display
+ * @param image the image resource ID to display for the category
+ * @param onClick a function to be called when the category is clicked
+The category is displayed as a Surface with a circular shape, with the provided image inside it.
+The text label for the category is displayed below the image. When the category is clicked,
+the onClick function is called.
+ */
 
 @Composable
 fun Category(category: String, image: Int, onClick: () -> Unit) {
@@ -416,6 +426,16 @@ fun Category(category: String, image: Int, onClick: () -> Unit) {
     }
 }
 
+/**
+A Composable function that displays a book with its author and image.
+ * @param bookAuthor the author of the book to display
+ * @param bookTitle the title of the book to display
+ * @param image the image resource ID to display for the book
+ * @param onClick a function to be called when the book is clicked
+The book is displayed as a Surface with a rounded corner shape, with the provided image inside it.
+The book's title and author are displayed below the image. When the book is clicked, the onClick
+function is called.
+ */
 @Composable
 fun Reading(bookAuthor: String, bookTitle: String, image: Int, onClick: () -> Unit) {
     Column {
@@ -456,6 +476,13 @@ fun Reading(bookAuthor: String, bookTitle: String, image: Int, onClick: () -> Un
     }
 }
 
+/**
+A Composable function that displays a navigation bar with clickable icons and labels.
+The navigation bar consists of four items: Home, Shelves, Favourites, and Reviews, each with an
+associated icon. The selected item is highlighted with the primary color, while the unselected
+items are displayed with the default Material Design colors. When an item is clicked, the
+selectedItem variable is updated to reflect the new selection.
+ */
 @Composable
 fun NavBar() {
     var selectedItem by remember { mutableStateOf(0) }
@@ -504,6 +531,17 @@ fun NavBar() {
     }
 }
 
+/**
+A composable function that creates a search input field with an optional modifier.
+ * @param modifier The modifier to apply to the input field. Defaults to [Modifier].
+ * @param valueState The mutable state of the search input field's value.
+ * @param labelId The string resource ID for the search input field's label.
+ * @param enabled Determines if the search input field is enabled or not.
+ * @param isSingleLine Determines if the search input field should only have a single line.
+ * @param keyBoardType The keyboard type to be used with the search input field. Defaults to [KeyboardType.Ascii].
+ * @param imeAction The IME action for the search input field. Defaults to [ImeAction.Done].
+ * @param onAction The keyboard actions to perform with the search input field. Defaults to [KeyboardActions.Default].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchInputField(
@@ -556,6 +594,17 @@ fun SearchInputField(
     )
 }
 
+/**
+
+A composable function that displays a search card with book details.
+The card contains an image, book title, author, and a preview text.
+Clicking the card triggers the onClick function.
+ * @param bookTitle The title of the book.
+ * @param bookAuthor The author of the book.
+ * @param previewText The preview text of the book.
+ * @param imageUrl The URL of the book image.
+ * @param onClick The function to be executed when the card is clicked.
+ */
 @Composable
 fun SearchCard(
     bookTitle: String,
@@ -615,6 +664,12 @@ fun SearchCard(
     }
 }
 
+/**
+
+Composable function that displays a history card.
+ * @param text the text to be displayed in the card.
+ * @param onClick a lambda function that is called when the card is clicked.
+ */
 @Composable
 fun HistoryCard(text: String, onClick: () -> Unit) {
     Card(

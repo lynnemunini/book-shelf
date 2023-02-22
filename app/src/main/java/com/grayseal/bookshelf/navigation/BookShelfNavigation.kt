@@ -1,7 +1,6 @@
 package com.grayseal.bookshelf.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -13,8 +12,6 @@ import com.grayseal.bookshelf.screens.book.BookScreen
 import com.grayseal.bookshelf.screens.book.BookViewModel
 import com.grayseal.bookshelf.screens.category.CategoryScreen
 import com.grayseal.bookshelf.screens.home.HomeScreen
-import com.grayseal.bookshelf.screens.login.LoginScreen
-import com.grayseal.bookshelf.screens.login.StoreUserName
 import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.screens.search.SearchScreen
 import com.grayseal.bookshelf.screens.shelf.ShelfScreen

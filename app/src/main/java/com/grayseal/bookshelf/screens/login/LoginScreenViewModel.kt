@@ -48,7 +48,6 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     /**
-
     Creates a new user with the provided email and password.
      * @author Lynne Munini
      * @param email The email to be associated with the new user account.
@@ -101,7 +100,6 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     /**
-
     createUser is a private function that creates a new user in Firebase Firestore.
      * @param displayName a string representing the display name of the user.
     The function first gets the userId of the current user from the auth object.

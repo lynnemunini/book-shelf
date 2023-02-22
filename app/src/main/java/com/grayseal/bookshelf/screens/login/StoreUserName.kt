@@ -22,7 +22,7 @@ class StoreUserName(private val context: Context) {
          */
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("userName")
 
-        /*
+        /**
         * Key for storing and retrieving the user's name in the DataStore.
         */
         val USER_NAME_KEY = stringPreferencesKey("user_name")

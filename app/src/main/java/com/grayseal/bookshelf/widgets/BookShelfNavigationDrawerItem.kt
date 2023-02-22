@@ -11,6 +11,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+/**
+
+Composable function that creates a single item for the BookShelf Navigation Drawer.
+The item can have an optional icon, label, and badge to display.
+The item can also be selected or not, which changes its background color and text color.
+When clicked, it calls the provided onClick lambda function.
+* @param label The label of the item, represented by a composable function.
+* @param selected Whether the item is selected or not.
+* @param onClick The lambda function that is called when the item is clicked.
+* @param modifier Additional modifier to apply to the item.
+* @param icon The icon of the item, represented by a composable function. Optional.
+* @param badge The badge of the item, represented by a composable function. Optional.
+* @param colors The colors of the item, represented by a NavigationDrawerItemColors object.
+* @param interactionSource The InteractionSource to be used for this item.
+ */
+
 @Composable
 @ExperimentalMaterial3Api
 fun BookShelfNavigationDrawerItem(

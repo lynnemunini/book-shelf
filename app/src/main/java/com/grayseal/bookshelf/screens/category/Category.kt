@@ -20,6 +20,12 @@ import com.grayseal.bookshelf.screens.search.Results
 import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
+/**
+Composable function to display books by category.
+* @param navController The NavController used for navigation.
+* @param viewModel The [SearchBookViewModel] used to retrieve books by category.
+* @param category The category of books to be displayed.
+*/
 @Composable
 fun CategoryScreen(
     navController: NavController,
