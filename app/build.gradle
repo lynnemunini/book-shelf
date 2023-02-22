@@ -126,6 +126,9 @@ dependencies {
 
     // ConstraintLayout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+    //LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 }
 
 // Allow references to generated code

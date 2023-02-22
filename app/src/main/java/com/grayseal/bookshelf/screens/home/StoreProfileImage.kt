@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.screens.home
 
 import android.content.Context
+import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -29,20 +30,20 @@ class StoreProfileImage(private val context: Context) {
     }
 
     /**
-    Flow to get the saved image from the DataStore. If no image is saved, "Gray seal" is returned.
+    Flow to get the saved image path from the DataStore. If no image is saved, "" is returned.
      */
-    val getImage: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[USER_IMAGE_KEY] ?: "Gray seal"
+    val getImagePath: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[USER_IMAGE_KEY] ?: ""
     }
 
     /**
-    Function to save an image to the DataStore.
-    @param image The image to save.
+     * Function to save a URI to the DataStore.
+     * @param uri The URI to save.
      */
-    suspend fun saveImage(image: ByteArray) {
+    suspend fun saveImagePath(uri: Uri) {
         context.dataStore.edit { preferences ->
-            // Convert image byteArray to a string before saving it in datastore
-            preferences[USER_IMAGE_KEY] = String(image)
+            // Convert URI to a string before saving it in DataStore
+            preferences[USER_IMAGE_KEY] = uri.toString()
         }
     }
 }

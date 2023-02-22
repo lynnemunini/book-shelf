@@ -43,12 +43,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
@@ -64,7 +62,7 @@ import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 
 @Composable
@@ -78,15 +76,37 @@ fun HomeScreen(
     val context = LocalContext.current
 
     val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.profile)
-    val outputStream = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-    var avatar: ByteArray = outputStream.toByteArray()
+
+    var avatar: Bitmap = bitmap
 
     // Retrieve avatar from dataStore is user has set any
     val imageDataStore = StoreProfileImage(context)
-    val imageString = imageDataStore.getImage.collectAsState(initial = "").value
+    val session = StoreSession(context)
+    val imagePath = imageDataStore.getImagePath.collectAsState(initial = "").value
 
+    /* ------------YOU STOPPED HERE❗❗❗❗------------------ */
 
+    if(imagePath != "") {
+        Log.d("IMAGEPATH", imagePath)
+        val imageUri = Uri.parse(imagePath)
+        Log.d("IMAGEURI", "$imageUri")
+
+        if (!session.isFirstTime) {
+            // convert imageUri to bitmap
+            imageUri?.let {
+                avatar = if (Build.VERSION.SDK_INT < 28) {
+                    MediaStore.Images
+                        .Media.getBitmap(context.contentResolver, it)
+
+                } else {
+                    val source = ImageDecoder
+                        .createSource(context.contentResolver, it)
+                    ImageDecoder.decodeBitmap(source)
+                }
+            }
+        }
+    }
+    /* ------------------------------------------------ */
 
     val scope = rememberCoroutineScope()
     // Retrieve user name from dataStore
@@ -108,13 +128,15 @@ fun HomeScreen(
     } else {
         val name = nameDataStore.getName.collectAsState(initial = "")
         // Main Screen Content
+
         HomeContent(
             user = user!!,
             name = name.value,
             avatar = avatar,
             navController = navController,
             searchBookViewModel = searchBookViewModel,
-            imageDataStore = imageDataStore
+            imageDataStore = imageDataStore,
+            session = session
         )
     }
 }
@@ -124,10 +146,11 @@ fun HomeScreen(
 fun HomeContent(
     user: FirebaseUser,
     name: String?,
-    avatar: ByteArray,
+    avatar: Bitmap,
     navController: NavController,
     searchBookViewModel: SearchBookViewModel,
     imageDataStore: StoreProfileImage,
+    session: StoreSession
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -146,7 +169,7 @@ fun HomeContent(
     }
     val context = LocalContext.current
     val bitmap = remember {
-        mutableStateOf<Bitmap>(BitmapFactory.decodeByteArray(avatar, 0, avatar.size))
+        mutableStateOf<Bitmap>(avatar)
     }
     // Retrieve an image from the device gallery
     val launcher = rememberLauncherForActivityResult(
@@ -154,9 +177,9 @@ fun HomeContent(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
+        Log.d("IMAGEURILAUNCHER", "$uri and ${uri?.path}")
     }
 
-    // Convert the image to a byte array
     imageUri?.let {
         if (Build.VERSION.SDK_INT < 28) {
             bitmap.value = MediaStore.Images
@@ -167,17 +190,12 @@ fun HomeContent(
                 .createSource(context.contentResolver, it)
             bitmap.value = ImageDecoder.decodeBitmap(source)
         }
-        val outputStream = ByteArrayOutputStream()
-        bitmap.value.compress(
-            Bitmap.CompressFormat.JPEG,
-            100,
-            outputStream
-        )
-        val byteArray = outputStream.toByteArray()
-
-        // Update user profile image on dataStore
+        // Update user profile image on dataStore and set firstSession to false
         scope.launch {
-            imageDataStore.saveImage(byteArray)
+            val path = imageUri?: return@launch
+            Log.d("PATH", "$path")
+            imageDataStore.saveImagePath(path)
+            session.setIsFirstTimeLaunch(false)
         }
     }
 
@@ -371,13 +389,9 @@ fun HomeContent(
 fun TopHeader(
     navController: NavController,
     viewModel: SearchBookViewModel,
-    avatar: ByteArray,
+    avatar: Bitmap,
     onProfileClick: () -> Unit
 ) {
-    Log.d("AVATAR", "$avatar")
-    // Convert avatar: ByteArray to bitmap
-    val bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
-    Log.d("BITMAP", "$bitmap")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -391,7 +405,7 @@ fun TopHeader(
             shape = CircleShape,
         ) {
             Image(
-                bitmap = bitmap.asImageBitmap(),
+                bitmap = avatar.asImageBitmap(),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .clip(CircleShape)
