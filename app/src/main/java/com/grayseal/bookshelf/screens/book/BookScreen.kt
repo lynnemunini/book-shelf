@@ -192,7 +192,8 @@ fun Details(navController: NavController, book: Book?) {
             } else {
                 Column(
                     modifier = Modifier
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     BookImage(imageUrl = imageUrl)
                     BookDescription(

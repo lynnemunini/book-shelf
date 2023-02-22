@@ -109,7 +109,7 @@ fun HomeScreen(
                     }
                 }
             }catch(e: Exception){
-                Toast.makeText(context, "Failed to fetch stored profile Image", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(context, "Failed to fetch stored profile Image", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -310,7 +310,7 @@ fun HomeContent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         "Hi, ${name}!", fontFamily = loraFamily,
-                        fontSize = 25.sp,
+                        fontSize = 23.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.align(Alignment.CenterVertically)
@@ -365,7 +365,7 @@ fun HomeContent(
                                     painter = painterResource(id = item.value),
                                     contentDescription = item.key,
                                     modifier = Modifier
-                                        .size(40.dp)
+                                        .size(35.dp)
                                         .background(color = Color.Transparent)
                                 )
                             },
@@ -374,7 +374,7 @@ fun HomeContent(
                                     item.key,
                                     fontFamily = poppinsFamily,
                                     fontWeight = FontWeight.Medium,
-                                    fontSize = 17.sp
+                                    fontSize = 15.sp
                                 )
                             },
                             selected = item.value == selectedItem.value,

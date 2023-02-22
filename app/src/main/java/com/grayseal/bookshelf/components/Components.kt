@@ -337,7 +337,7 @@ SubmitButton is a composable function that creates a button for submitting a for
 fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick: () -> Unit) {
     Button(
         onClick = onClick, modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().padding(top = 10.dp),
         enabled = !loading && validInputs, shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

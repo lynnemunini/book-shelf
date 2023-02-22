@@ -1,8 +1,6 @@
 package com.grayseal.bookshelf.screens.login
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
@@ -42,7 +40,6 @@ import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.isValidEmail
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 /**
 Composable function to display a login screen.
@@ -83,8 +80,8 @@ fun LoginScreen(
             contentScale = ContentScale.FillBounds
         )
         Column(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxHeight(0.7f).align(Alignment.BottomCenter),
+            verticalArrangement = Arrangement.SpaceAround
         ) {
             val text: String = if (showLoginForm.value) {
                 "Welcome Back"
@@ -98,62 +95,47 @@ fun LoginScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 20.dp, end = 20.dp),
-                color = Color.White
+                color = MaterialTheme.colorScheme.primary
             )
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min),
-                contentAlignment = Alignment.BottomStart
+                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.wave),
-                    contentDescription = "backgroundImage",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height((IntrinsicSize.Min))
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (showLoginForm.value) UserForm(
+                if (showLoginForm.value) UserForm(
+                    showLoginForm = showLoginForm,
+                    launcher = launcher,
+                    dataStore = dataStore,
+                    loading = loading,
+                    isCreateAccount = false
+                ) { email, password ->
+                    // Login to Firebase Account
+                    viewModel.signInWithEmailAndPassword(email, password,
+                        home = { navController.navigate(BookShelfScreens.HomeScreen.name) },
+                        onError = {
+                            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                        }
+                    )
+                }
+                else {
+                    UserForm(
                         showLoginForm = showLoginForm,
                         launcher = launcher,
                         dataStore = dataStore,
                         loading = loading,
-                        isCreateAccount = false
+                        isCreateAccount = true
                     ) { email, password ->
-                        // Login to Firebase Account
-                        viewModel.signInWithEmailAndPassword(email, password,
-                            home = { navController.navigate(BookShelfScreens.HomeScreen.name) },
+                        // Create FireBase Account
+                        viewModel.createUserWithEmailAndPassword(email, password,
+                            home = {
+                                navController.navigate(BookShelfScreens.HomeScreen.name)
+                            },
                             onError = {
                                 Toast.makeText(context, it, Toast.LENGTH_LONG).show()
                             }
                         )
-                    }
-                    else {
-                        UserForm(
-                            showLoginForm = showLoginForm,
-                            launcher = launcher,
-                            dataStore = dataStore,
-                            loading = loading,
-                            isCreateAccount = true
-                        ) { email, password ->
-                            // Create FireBase Account
-                            viewModel.createUserWithEmailAndPassword(email, password,
-                                home = {
-                                    navController.navigate(BookShelfScreens.HomeScreen.name)
-                                },
-                                onError = {
-                                    Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                                }
-                            )
-                        }
                     }
                 }
             }
