@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.screens.book
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -69,6 +70,7 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
 
     // Get current user
     val userId = Firebase.auth.currentUser?.uid
+    val context = LocalContext.current
 
     val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scope = rememberCoroutineScope()
@@ -130,18 +132,33 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                     db.addOnSuccessListener {
                         val shelves = db.result.get("shelves") as MutableList<Map<String, Any>>
                         val shelf = shelves.find { it["name"] == shelfName }?.toMutableMap()
+                        // Index of the shelf in shelves
+                        val index = shelves.indexOfFirst { it["name"] == shelfName }
                         if (shelf != null) {
-                            Log.d("SHELF", "$shelf")
                             val books = shelf["books"] as MutableList<Book>
                             if (book != null) {
                                 books.add(book)
                             }
-                            Log.d("Books","$books")
                             shelf["books"] = books
-                            Log.d("NEW SHELF", "$shelf")
+                            // Update shelves
+                            shelves[index] = shelf
+                            FirebaseFirestore.getInstance().collection("users").document(userId)
+                                .update("shelves", shelves).addOnSuccessListener {
+                                    Toast.makeText(context, "Successfully added book to $shelfName shelf", Toast.LENGTH_SHORT).show()
+                                }.addOnFailureListener {
+                                    Toast.makeText(context, "Failed to add book to $shelfName shelf", Toast.LENGTH_SHORT).show()
+                                }
                         }
-
+                        else{
+                            Toast.makeText(context, "Failed to add book to $shelfName shelf", Toast.LENGTH_SHORT).show()
+                        }
                     }
+                        .addOnFailureListener {
+                            Toast.makeText(context, "Failed to add book to $shelfName shelf", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                else{
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }
             })
         }
@@ -637,7 +654,7 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top
         ) {
