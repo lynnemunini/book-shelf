@@ -126,7 +126,6 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             BottomSheetContent(onSave = { shelfName ->
                 // Add book to shelf
                 if (userId != null) {
-                    // Save to searchHistory
                     val db =
                         FirebaseFirestore.getInstance().collection("users").document(userId).get()
                     db.addOnSuccessListener {

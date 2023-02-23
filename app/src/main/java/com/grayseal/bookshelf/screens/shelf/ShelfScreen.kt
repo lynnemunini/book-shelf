@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.screens.shelf
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,7 +38,7 @@ import com.grayseal.bookshelf.ui.theme.poppinsFamily
 @Composable
 fun ShelfScreen(navController: NavController) {
     val userId = Firebase.auth.currentUser?.uid
-    var shelves: List<Shelf> by remember{
+    var shelves: List<Shelf> by remember {
         mutableStateOf(mutableListOf())
     }
     var loading by remember {
@@ -116,13 +115,14 @@ fun ShelfScreen(navController: NavController) {
 fun BookShelf(navController: NavController, shelves: List<Shelf>) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize().padding(top = 30.dp),
+            .fillMaxSize()
+            .padding(top = 30.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(items = shelves) { shelf ->
             com.grayseal.bookshelf.screens.shelf.Shelf(
                 shelfName = shelf.name,
-                books = shelf.books.size,
+                total = shelf.books.size
             ) {
             }
         }
@@ -132,7 +132,7 @@ fun BookShelf(navController: NavController, shelves: List<Shelf>) {
 @Composable
 fun Shelf(
     shelfName: String,
-    books: Int,
+    total: Int,
     onClick: () -> Unit
 ) {
     Surface(
@@ -145,7 +145,8 @@ fun Shelf(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth().padding(vertical = 2.dp),
+                .fillMaxWidth()
+                .padding(vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -155,10 +156,9 @@ fun Shelf(
                 elevation = CardDefaults.cardElevation(2.dp)
             ) {
                 var image = R.drawable.shelfcover
-                if (shelfName == "Reading Now 📖"){
+                if (shelfName == "Reading Now 📖") {
                     image = R.drawable.readingcover
-                }
-                else if (shelfName == "To Read 📌"){
+                } else if (shelfName == "To Read 📌") {
                     image = R.drawable.readcover
                 }
                 Image(
@@ -180,7 +180,7 @@ fun Shelf(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             androidx.compose.material3.Text(
-                "($books)",
+                "($total)",
                 overflow = TextOverflow.Ellipsis,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Medium,
