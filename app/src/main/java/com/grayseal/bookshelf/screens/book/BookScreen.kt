@@ -36,6 +36,9 @@ import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Book
@@ -47,10 +50,10 @@ import kotlinx.coroutines.launch
 
 /**
 This composable function represents a screen that displays details of a book.
-* @param navController The navigation controller used to navigate between screens.
-* @param bookViewModel The ViewModel used to retrieve book information.
-* @param bookId The ID of the book to display information for.
-* @return A Composable function that displays book details and allows the user to add the book to a shelf.
+ * @param navController The navigation controller used to navigate between screens.
+ * @param bookViewModel The ViewModel used to retrieve book information.
+ * @param bookId The ID of the book to display information for.
+ * @return A Composable function that displays book details and allows the user to add the book to a shelf.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -60,9 +63,12 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
     ) {
         value = bookId?.let { bookViewModel.getBookInfo(it) }!!
     }.value
-    Log.d("BOOKINFO", "BookScreen: $bookInfo")
+
     // Book Data
     val book = bookInfo.data
+
+    // Get current user
+    val userId = Firebase.auth.currentUser?.uid
 
     val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scope = rememberCoroutineScope()
@@ -115,7 +121,29 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
         },
         floatingActionButtonPosition = FabPosition.End,
         sheetContent = {
-            BottomSheetContent()
+            BottomSheetContent(onSave = { shelfName ->
+                // Add book to shelf
+                if (userId != null) {
+                    // Save to searchHistory
+                    val db =
+                        FirebaseFirestore.getInstance().collection("users").document(userId).get()
+                    db.addOnSuccessListener {
+                        val shelves = db.result.get("shelves") as MutableList<Map<String, Any>>
+                        val shelf = shelves.find { it["name"] == shelfName }?.toMutableMap()
+                        if (shelf != null) {
+                            Log.d("SHELF", "$shelf")
+                            val books = shelf["books"] as MutableList<Book>
+                            if (book != null) {
+                                books.add(book)
+                            }
+                            Log.d("Books","$books")
+                            shelf["books"] = books
+                            Log.d("NEW SHELF", "$shelf")
+                        }
+
+                    }
+                }
+            })
         }
     ) {
         Details(navController, book)
@@ -129,9 +157,9 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
 
 /**
 A composable function that displays the details of a book. If the book parameter is null, it will display a loading indicator.
-* If the book is not null, the function will display the book's image, title, author, rating, genre, number of pages, and description.
-* @param navController the navigation controller used to navigate to other screens
-* @param book the book to display, or null if data is not yet available
+ * If the book is not null, the function will display the book's image, title, author, rating, genre, number of pages, and description.
+ * @param navController the navigation controller used to navigate to other screens
+ * @param book the book to display, or null if data is not yet available
  */
 
 @Composable
@@ -274,7 +302,7 @@ fun TopSection(navController: NavController) {
 
 /**
 A composable function that displays a book image using the provided [imageUrl].
-* @param imageUrl The URL of the book image to display.
+ * @param imageUrl The URL of the book image to display.
  */
 @Composable
 fun BookImage(imageUrl: String) {
@@ -306,12 +334,12 @@ fun BookImage(imageUrl: String) {
 
 /**
 A composable function that displays the details of a book.
-* @param bookTitle The title of the book.
-* @param bookAuthor The author of the book.
-* @param rating The rating of the book, out of 5.
-* @param genre The genre of the book.
-* @param pages The number of pages in the book.
-* @param description A short description of the book.
+ * @param bookTitle The title of the book.
+ * @param bookAuthor The author of the book.
+ * @param rating The rating of the book, out of 5.
+ * @param genre The genre of the book.
+ * @param pages The number of pages in the book.
+ * @param description A short description of the book.
  */
 @Composable
 fun BookDescription(
@@ -598,12 +626,12 @@ fun BookDescription(
 
 /**
 Composable function that creates the content of the bottom sheet to display options for adding a book to a bookshelf.
-* The function creates a Column that contains a Row and several Text elements separated by Divider elements. The Row contains a single Divider element
-* styled with rounded corners. The Text elements display options for adding the book to various bookshelves, including "Reading now," "To Read," and "Have Read."
+ * The function creates a Column that contains a Row and several Text elements separated by Divider elements. The Row contains a single Divider element
+ * styled with rounded corners. The Text elements display options for adding the book to various bookshelves, including "Reading now," "To Read," and "Have Read."
  */
 
 @Composable
-fun BottomSheetContent() {
+fun BottomSheetContent(onSave: (String) -> Unit) {
     Column(
         modifier = Modifier.height(220.dp),
         verticalArrangement = Arrangement.SpaceBetween
@@ -633,33 +661,51 @@ fun BottomSheetContent() {
         Divider(
             modifier = Modifier.padding(vertical = 20.dp)
         )
-        Text(
-            "Reading Now 📖",
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onSave("Reading Now 📖")
+            })) {
+            Text(
+                "Reading Now 📖",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         Divider(
             modifier = Modifier.padding(vertical = 10.dp)
         )
-        Text(
-            "To Read 📌",
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onSave("To Read 📌")
+            })) {
+            Text(
+                "To Read 📌",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         Divider(
             modifier = Modifier.padding(vertical = 10.dp)
         )
-        Text(
-            "Have Read 📚",
-            fontFamily = poppinsFamily,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onSave("Have Read 📚")
+            })) {
+            Text(
+                "Have Read 📚",
+                fontFamily = poppinsFamily,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         Divider(
             modifier = Modifier.padding(vertical = 10.dp)
         )

@@ -108,7 +108,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
      */
     private fun createUser(displayName: String) {
         val userId = Firebase.auth.currentUser?.uid
-        val bookList: List<Book> = mutableListOf(
+        val bookList: MutableList<Book> = mutableListOf(
         )
         val shelves: MutableList<Shelf> = mutableListOf(
             Shelf("Reading Now 📖", bookList),
