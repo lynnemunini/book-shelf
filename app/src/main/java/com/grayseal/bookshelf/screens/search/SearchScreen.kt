@@ -61,8 +61,8 @@ fun SearchScreen(
         db.addOnSuccessListener {
             val data = db.result.get("searchHistory")
             if (data != null) {
-                for (i in data as MutableList<String>) {
-                    previousSearches.add(i)
+                for (i in data as MutableList<*>) {
+                    previousSearches.add(i as String)
                 }
                 displayPreviousHistory = previousSearches.isNotEmpty()
             }

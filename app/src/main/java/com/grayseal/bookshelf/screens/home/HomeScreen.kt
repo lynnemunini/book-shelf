@@ -416,7 +416,7 @@ fun HomeContent(
                 }
             },
                 bottomBar = {
-                    NavBar()
+                    NavBar(navController)
                 })
         }
     )
@@ -556,12 +556,12 @@ fun MainCard() {
                                 .background(color = Color.Transparent, shape = CircleShape),
                             shape = CircleShape,
                             border = BorderStroke(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.secondary
+                                width = 0.dp,
+                                color = Pink200
                             )
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.wall_burst),
+                                painter = painterResource(id = R.drawable.readingcover),
                                 contentDescription = "Book Picture"
                             )
                         }

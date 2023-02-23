@@ -10,10 +10,11 @@ and each value is an integer representing a drawable resource ID for the corresp
  */
 val categories = mapOf(
     "Finance" to R.drawable.finance,
+    "Education" to R.drawable.education,
     "Health" to R.drawable.health,
     "Philosophy" to R.drawable.philosophy,
     "Food" to R.drawable.drink,
-    "Computing" to R.drawable.technology,
-    "Art" to R.drawable.art,
+    "Technology" to R.drawable.technology,
+    "Space" to R.drawable.space,
     "Games" to R.drawable.games
 )

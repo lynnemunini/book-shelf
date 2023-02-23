@@ -634,7 +634,7 @@ fun BottomSheetContent() {
             modifier = Modifier.padding(vertical = 20.dp)
         )
         Text(
-            "Reading now 📖",
+            "Reading Now 📖",
             fontFamily = poppinsFamily,
             fontSize = 13.sp,
             color = MaterialTheme.colorScheme.onBackground,

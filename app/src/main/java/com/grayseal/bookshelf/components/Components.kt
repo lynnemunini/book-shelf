@@ -33,9 +33,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
 
@@ -484,7 +486,7 @@ items are displayed with the default Material Design colors. When an item is cli
 selectedItem variable is updated to reflect the new selection.
  */
 @Composable
-fun NavBar() {
+fun NavBar(navController: NavController) {
     var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("Home", "Shelves", "Favourites", "Reviews")
     val navBarItems = mapOf(
@@ -517,6 +519,9 @@ fun NavBar() {
                 selected = selectedItem == index,
                 onClick = {
                     selectedItem = index
+                    if(item == "Shelves"){
+                        navController.navigate(route = BookShelfScreens.ShelfScreen.name)
+                    }
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
