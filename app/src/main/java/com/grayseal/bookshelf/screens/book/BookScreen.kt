@@ -1,5 +1,6 @@
 package com.grayseal.bookshelf.screens.book
 
+import android.telecom.Call
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
@@ -40,9 +41,11 @@ import coil.request.ImageRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.gson.GsonBuilder
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Book
+import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
@@ -126,21 +129,26 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             BottomSheetContent(onSave = { shelfName ->
                 // Add book to shelf
                 if (userId != null) {
+                    // Save to searchHistory
                     val db =
                         FirebaseFirestore.getInstance().collection("users").document(userId).get()
                     db.addOnSuccessListener {
-                        val shelves = db.result.get("shelves") as MutableList<Map<String, Any>>
-                        val shelf = shelves.find { it["name"] == shelfName }?.toMutableMap()
+                        val shelves: MutableList<Shelf> = db.result.get("shelves") as MutableList<Shelf>
+                        val shelf: Shelf? = shelves.find { it.name == shelfName }
                         // Index of the shelf in shelves
-                        val index = shelves.indexOfFirst { it["name"] == shelfName }
+                        val index = shelves.indexOfFirst { it.name == shelfName }
                         if (shelf != null) {
-                            val books = shelf["books"] as MutableList<Book>
+                            val books: MutableList<Book> = shelf.books as MutableList<Book>
+                            Log.d("SHELF BOOKS", "$books")
                             if (book != null) {
                                 books.add(book)
                             }
-                            shelf["books"] = books
+                            shelf.books = books
+                            Log.d("SHELF BOOKS", "$books")
                             // Update shelves
                             shelves[index] = shelf
+                            Log.d("SHELF", GsonBuilder().setPrettyPrinting().create().toJson(shelf))
+                            Log.d("SHELVES", GsonBuilder().setPrettyPrinting().create().toJson(shelves))
                             FirebaseFirestore.getInstance().collection("users").document(userId)
                                 .update("shelves", shelves).addOnSuccessListener {
                                     Toast.makeText(context, "Successfully added book to $shelfName shelf", Toast.LENGTH_SHORT).show()

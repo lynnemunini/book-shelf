@@ -20,22 +20,8 @@ data class MyUser(
     val reviews: List<Review>,
     val favourites: List<Book>
 ) {
-    /**
-     * Convert the MyUser object to a Map object.
-     *
-     * @return a mutable map containing the user's information
-     */
-    fun toMap(): MutableMap<String, Any>{
-        return mutableMapOf(
-            "userID" to this.userID,
-            "displayName" to this.displayName,
-            "avatar" to this.avatar,
-            "shelves" to this.shelves,
-            "reviews" to this.reviews,
-            "favourites" to this.favourites,
-            "searchHistory" to this.searchHistory
-        )
-    }
+    // Add a no-argument constructor
+    constructor() : this("", "", "", mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())
 }
 
 
@@ -58,5 +44,8 @@ data class Review (
  */
 data class Shelf (
     val name: String,
-    val books: List<Book>
-)
+    var books: List<Book>
+){
+    // No-argument constructor required for Firestore deserialization
+    constructor() : this("", emptyList())
+}

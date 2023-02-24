@@ -47,12 +47,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.gson.GsonBuilder
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
 import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.components.Reading
 import com.grayseal.bookshelf.data.categories
+import com.grayseal.bookshelf.model.Book
+import com.grayseal.bookshelf.model.MyUser
+import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
@@ -63,6 +69,7 @@ import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Composable function that displays the Home Screen of the app.
@@ -78,8 +85,35 @@ fun HomeScreen(
     searchBookViewModel: SearchBookViewModel
 ) {
     var user by remember { mutableStateOf(Firebase.auth.currentUser) }
-
+    var readingList by remember {
+        mutableStateOf(mutableListOf<Book>())
+    }
     val context = LocalContext.current
+    val userId = user?.uid
+
+    // Get books in the reading now shelf
+    if (userId != null) {
+        val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+        db.get().addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                val shelves = documentSnapshot.toObject<MyUser>()?.shelves
+                if (shelves != null) {
+                    val shelf = shelves.find { it.name == "Reading Now 📖" }
+                    if (shelf != null) {
+                        val books = shelf.books as MutableList<Book>
+                        readingList = books
+                        Log.d("READING LIST", GsonBuilder().setPrettyPrinting().create().toJson(readingList))
+                    } else {
+                        Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                Toast.makeText(context, "User does not exist", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.profile)
 
@@ -107,7 +141,7 @@ fun HomeScreen(
                         ImageDecoder.decodeBitmap(source)
                     }
                 }
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 // Toast.makeText(context, "Failed to fetch stored profile Image", Toast.LENGTH_SHORT).show()
             }
         }
@@ -140,7 +174,8 @@ fun HomeScreen(
             navController = navController,
             searchBookViewModel = searchBookViewModel,
             imageDataStore = imageDataStore,
-            session = session
+            session = session,
+            reading = readingList
         )
     }
 }
@@ -167,9 +202,11 @@ fun HomeContent(
     navController: NavController,
     searchBookViewModel: SearchBookViewModel,
     imageDataStore: StoreProfileImage,
-    session: StoreSession
+    session: StoreSession,
+    reading: List<Book>,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val readingBooksTotal = reading.size
     val scope = rememberCoroutineScope()
     val items = mapOf(
         "Settings" to R.drawable.settings,
@@ -323,7 +360,7 @@ fun HomeContent(
                 ) {
                     Spacer(Modifier.height(20.dp))
                     Text(
-                        "16 books in your reading list", fontFamily = poppinsFamily,
+                        "$readingBooksTotal books in your reading list", fontFamily = poppinsFamily,
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -410,9 +447,7 @@ fun HomeContent(
                     }
                     MainCard()
                     Categories(navController = navController)
-                    ReadingList(onClick = {
-                        navController.navigate(route = BookShelfScreens.BookScreen.name + "/bookId")
-                    })
+                    ReadingList(onClick = { /*TODO*/ }, readingList = reading)
                 }
             },
                 bottomBar = {
@@ -499,8 +534,8 @@ fun TopHeader(
 
 /**
 
-* A composable function that creates a main card UI element.
-* The card displays an image with the title "Track your reading activity" and a book with a title and a "Continue reading" text.
+ * A composable function that creates a main card UI element.
+ * The card displays an image with the title "Track your reading activity" and a book with a title and a "Continue reading" text.
  */
 @Composable
 fun MainCard() {
@@ -512,12 +547,12 @@ fun MainCard() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-                Image(
-                    painter = painterResource(id = R.drawable.card),
-                    contentDescription = null,
-                    modifier = Modifier.matchParentSize(),
-                    contentScale = ContentScale.Crop
-                )
+            Image(
+                painter = painterResource(id = R.drawable.card),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop
+            )
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     "Track your", fontFamily = poppinsFamily,
@@ -603,9 +638,9 @@ fun MainCard() {
 }
 
 /**
-* A composable function that displays a list of categories using a LazyRow layout. Each category is
-* represented by a Category composable that is clickable and navigates to the corresponding screen.
-* @param navController The NavController used for navigating between screens.
+ * A composable function that displays a list of categories using a LazyRow layout. Each category is
+ * represented by a Category composable that is clickable and navigates to the corresponding screen.
+ * @param navController The NavController used for navigating between screens.
  */
 @Composable
 fun Categories(navController: NavController) {
@@ -643,13 +678,13 @@ fun Categories(navController: NavController) {
 
 /**
 
-* Composable function that displays the user's reading list, with the book cover images,
-* the title and author of the book, and an onClick listener that navigates to a book detail screen.
-* @param onClick The function that handles clicks on the reading list items.
+ * Composable function that displays the user's reading list, with the book cover images,
+ * the title and author of the book, and an onClick listener that navigates to a book detail screen.
+ * @param onClick The function that handles clicks on the reading list items.
  * */
 
 @Composable
-fun ReadingList(onClick: () -> Unit) {
+fun ReadingList(onClick: () -> Unit, readingList: List<Book>) {
     Text(
         "Reading List",
         fontFamily = poppinsFamily,
@@ -658,41 +693,44 @@ fun ReadingList(onClick: () -> Unit) {
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
-    val keysList = categories.keys.toList()
     LazyRow(
         modifier = Modifier
             .padding(top = 10.dp, start = 0.dp, end = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        itemsIndexed(items = keysList) { index: Int, item: String ->
+        itemsIndexed(items = readingList) { index: Int, item: Book ->
             if (index == 0) {
                 Spacer(modifier = Modifier.width(20.dp))
-                Reading(
-                    bookAuthor = "Dan Brown",
-                    bookTitle = "Deception Point",
-                    image = R.drawable.profile,
-                    onClick = onClick
-                )
+                item.imageLinks.thumbnail?.let {
+                    Reading(
+                        bookAuthor = item.authors[0],
+                        bookTitle = item.title,
+                        imageUrl = it,
+                        onClick = onClick
+                    )
+                }
             } else {
-                Reading(
-                    bookAuthor = "Dan Brown",
-                    bookTitle = "Deception Point",
-                    image = R.drawable.profile,
-                    onClick = onClick
-                )
+                item.imageLinks.thumbnail?.let {
+                    Reading(
+                        bookAuthor = item.authors[0],
+                        bookTitle = item.title,
+                        imageUrl = it,
+                        onClick = onClick
+                    )
+                }
             }
         }
     }
 }
 
 /**
-* A composable function that displays an alert dialog with a title, details, a confirm button,
-* and a cancel button.
-* @param openDialog A boolean that represents whether the alert dialog should be displayed.
-* @param title A string representing the title of the alert dialog.
-* @param details A string representing the details of the alert dialog.
-* @param onDismiss A lambda function that is called when the user dismisses the alert dialog.
-* @param onClick A lambda function that is called when the user confirms the alert dialog.
+ * A composable function that displays an alert dialog with a title, details, a confirm button,
+ * and a cancel button.
+ * @param openDialog A boolean that represents whether the alert dialog should be displayed.
+ * @param title A string representing the title of the alert dialog.
+ * @param details A string representing the details of the alert dialog.
+ * @param onDismiss A lambda function that is called when the user dismisses the alert dialog.
+ * @param onClick A lambda function that is called when the user confirms the alert dialog.
  */
 @Composable
 fun AlertDialog(

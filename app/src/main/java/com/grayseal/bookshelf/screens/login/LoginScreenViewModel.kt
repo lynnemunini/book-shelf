@@ -128,7 +128,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
                 searchHistory = searchHistory,
                 reviews = reviews,
                 favourites = favourites
-            ).toMap()
+            )
             val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
             userRef.set(user)
         }

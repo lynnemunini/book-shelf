@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
@@ -432,14 +433,14 @@ fun Category(category: String, image: Int, onClick: () -> Unit) {
 A Composable function that displays a book with its author and image.
  * @param bookAuthor the author of the book to display
  * @param bookTitle the title of the book to display
- * @param image the image resource ID to display for the book
+ * @param imageUrl the image resource ID to display for the book
  * @param onClick a function to be called when the book is clicked
 The book is displayed as a Surface with a rounded corner shape, with the provided image inside it.
 The book's title and author are displayed below the image. When the book is clicked, the onClick
 function is called.
  */
 @Composable
-fun Reading(bookAuthor: String, bookTitle: String, image: Int, onClick: () -> Unit) {
+fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: () -> Unit) {
     Column {
         Surface(
             shape = RoundedCornerShape(15.dp),
@@ -450,15 +451,18 @@ fun Reading(bookAuthor: String, bookTitle: String, image: Int, onClick: () -> Un
                 .clickable(onClick = onClick),
             color = Color.Transparent
         ) {
-            Image(
-                painter = painterResource(id = image),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .build(),
                 contentDescription = "Book Image",
+                contentScale = ContentScale.Inside,
                 modifier = Modifier
                     .background(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(15.dp)
-                    ),
-                contentScale = ContentScale.Crop
+                    )
+                    .scale(2.5f)
             )
         }
         Text(
