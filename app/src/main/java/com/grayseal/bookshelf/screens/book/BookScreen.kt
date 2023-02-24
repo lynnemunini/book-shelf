@@ -40,11 +40,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.gson.GsonBuilder
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Book
+import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
@@ -129,35 +131,54 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             BottomSheetContent(onSave = { shelfName ->
                 // Add book to shelf
                 if (userId != null) {
-                    // Save to searchHistory
-                    val db =
-                        FirebaseFirestore.getInstance().collection("users").document(userId).get()
-                    db.addOnSuccessListener {
-                        val shelves: MutableList<Shelf> = db.result.get("shelves") as MutableList<Shelf>
-                        val shelf: Shelf? = shelves.find { it.name == shelfName }
-                        // Index of the shelf in shelves
-                        val index = shelves.indexOfFirst { it.name == shelfName }
-                        if (shelf != null) {
-                            val books: MutableList<Book> = shelf.books as MutableList<Book>
-                            Log.d("SHELF BOOKS", "$books")
-                            if (book != null) {
-                                books.add(book)
-                            }
-                            shelf.books = books
-                            Log.d("SHELF BOOKS", "$books")
-                            // Update shelves
-                            shelves[index] = shelf
-                            Log.d("SHELF", GsonBuilder().setPrettyPrinting().create().toJson(shelf))
-                            Log.d("SHELVES", GsonBuilder().setPrettyPrinting().create().toJson(shelves))
-                            FirebaseFirestore.getInstance().collection("users").document(userId)
-                                .update("shelves", shelves).addOnSuccessListener {
-                                    Toast.makeText(context, "Successfully added book to $shelfName shelf", Toast.LENGTH_SHORT).show()
-                                }.addOnFailureListener {
-                                    Toast.makeText(context, "Failed to add book to $shelfName shelf", Toast.LENGTH_SHORT).show()
+                    val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+                    db.get().addOnSuccessListener { documentSnapshot ->
+                        if (documentSnapshot.exists()) {
+                            val shelves = documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
+                            Log.d(
+                                "Updated SHELVES",
+                                GsonBuilder().setPrettyPrinting().create().toJson(shelves)
+                            )
+                            val shelf: Shelf? = shelves.find { it.name == shelfName }
+                            // Index of the shelf in shelves
+                            val index = shelves.indexOfFirst { it.name == shelfName }
+                            if (shelf != null) {
+                                val books: MutableList<Book> = shelf.books as MutableList<Book>
+                                if (book != null) {
+                                    books.add(book)
                                 }
-                        }
-                        else{
-                            Toast.makeText(context, "Failed to add book to $shelfName shelf", Toast.LENGTH_SHORT).show()
+                                shelf.books = books
+                                // Update shelves
+                                shelves[index] = shelf
+                                Log.d(
+                                    "SHELF",
+                                    GsonBuilder().setPrettyPrinting().create().toJson(shelf)
+                                )
+                                Log.d(
+                                    "Updated SHELVES",
+                                    GsonBuilder().setPrettyPrinting().create().toJson(shelves)
+                                )
+                                FirebaseFirestore.getInstance().collection("users").document(userId)
+                                    .update("shelves", shelves).addOnSuccessListener {
+                                        Toast.makeText(
+                                            context,
+                                            "Successfully added book to $shelfName shelf",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            context,
+                                            "Failed to add book to $shelfName shelf",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Failed to add book to $shelfName shelf",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                         .addOnFailureListener {
@@ -170,7 +191,7 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             })
         }
     ) {
-        Details(navController, book)
+                Details(navController, book)
     }
     LaunchedEffect(sheetState.isCollapsed) {
         if (sheetState.isCollapsed) {
