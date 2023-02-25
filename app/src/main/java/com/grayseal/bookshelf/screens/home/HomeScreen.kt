@@ -182,7 +182,7 @@ fun HomeScreen(
             searchBookViewModel = searchBookViewModel,
             imageDataStore = imageDataStore,
             session = session,
-            reading = readingList,
+            reading = readingList.reversed(),
             loading = loading
         )
     }
@@ -619,7 +619,7 @@ fun MainCard(currentRead: Book, navController: NavController) {
                             modifier = Modifier
                                 .size(50.dp)
                                 .background(color = Color.Transparent, shape = CircleShape),
-                            shape = CircleShape,
+                            shape = RectangleShape,
                             border = BorderStroke(
                                 width = 0.dp,
                                 color = Pink200
@@ -645,7 +645,7 @@ fun MainCard(currentRead: Book, navController: NavController) {
                                 }
                             )
                             if (loading) {
-                                androidx.compose.material3.CircularProgressIndicator(color = Yellow)
+                                androidx.compose.material3.CircularProgressIndicator(color = Color.White)
                             }
                         }
                         Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {

@@ -568,16 +568,18 @@ fun Reading(
                         horizontalAlignment = Alignment.End) {
                         Row(modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.End),
-                        horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                            .align(Alignment.End)
+                            .clickable(onClick = onClick),
+                        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                "view more",
+                                "Read more",
                                 fontFamily = poppinsFamily,
                                 fontSize = 12.sp,
                                 color = Yellow,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
+                            Spacer(modifier = Modifier.width(5.dp))
                             androidx.compose.material.Icon(
                                 Icons.Rounded.ArrowForward,
                                 contentDescription = "Arrow",
