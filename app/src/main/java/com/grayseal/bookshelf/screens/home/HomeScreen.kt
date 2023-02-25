@@ -624,16 +624,15 @@ fun MainCard(currentRead: Book, navController: NavController) {
                             border = BorderStroke(
                                 width = 0.dp,
                                 color = Pink200
-                            )
+                            ),
+                            color = Pink200
                         ) {
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(currentRead.imageLinks.thumbnail?.replace("http", "https"))
                                     .build(),
                                 contentDescription = "Book Image",
-                                contentScale = ContentScale.Inside,
-                                modifier = Modifier
-                                    .scale(2.2f),
+                                contentScale = ContentScale.Fit,
                                 onLoading = {
                                     loading = true
                                 },
@@ -685,7 +684,7 @@ fun Categories(navController: NavController) {
     )
     val keysList = categories.keys.toList()
     LazyRow(
-        modifier = Modifier.padding(bottom = 20.dp, end = 0.dp, start = 0.dp),
+        modifier = Modifier.padding(top = 5.dp, bottom = 20.dp, end = 0.dp, start = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         itemsIndexed(items = keysList) { index: Int, item: String ->
@@ -737,7 +736,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
     } else {
         LazyRow(
             modifier = Modifier
-                .padding(start = 0.dp, end = 0.dp),
+                .padding(top = 5.dp, start = 0.dp, end = 0.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             itemsIndexed(items = readingList) { index: Int, item: Book ->

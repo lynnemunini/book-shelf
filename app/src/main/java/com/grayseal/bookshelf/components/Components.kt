@@ -458,23 +458,18 @@ fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: ()
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f, fill = false)
-                .aspectRatio(1f)
                 .padding(bottom = 3.dp)
                 .align(Alignment.Start)
                 .clip(RoundedCornerShape(3.dp))
                 .clickable(onClick = onClick),
             color = backgroundColor, // Use the extracted color as the background color
-            tonalElevation = 10.dp,
-            shadowElevation = 10.dp
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
                     .build(),
                 contentDescription = "Book Image",
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .scale(2.2f),
+                contentScale = ContentScale.Fit,
                 onLoading = {
                     loading = true
                 },
