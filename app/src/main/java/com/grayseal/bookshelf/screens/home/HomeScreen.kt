@@ -31,6 +31,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
@@ -40,17 +41,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.gson.GsonBuilder
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
 import com.grayseal.bookshelf.components.NavBar
@@ -58,7 +61,6 @@ import com.grayseal.bookshelf.components.Reading
 import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.MyUser
-import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
@@ -69,7 +71,6 @@ import com.grayseal.bookshelf.utils.rememberFirebaseAuthLauncher
 import com.grayseal.bookshelf.widgets.BookShelfNavigationDrawerItem
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * Composable function that displays the Home Screen of the app.
@@ -91,6 +92,8 @@ fun HomeScreen(
     val context = LocalContext.current
     val userId = user?.uid
 
+
+
     // Get books in the reading now shelf
     if (userId != null) {
         val db = FirebaseFirestore.getInstance().collection("users").document(userId)
@@ -102,9 +105,10 @@ fun HomeScreen(
                     if (shelf != null) {
                         val books = shelf.books as MutableList<Book>
                         readingList = books
-                        Log.d("READING LIST", GsonBuilder().setPrettyPrinting().create().toJson(readingList))
+
                     } else {
-                        Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             } else {
@@ -206,6 +210,16 @@ fun HomeContent(
     reading: List<Book>,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    var currentRead:Book by remember {
+        mutableStateOf(Book())
+    }
+    currentRead = try{
+        reading.first()
+    }
+    catch (e:Exception){
+        Book()
+    }
+
     val readingBooksTotal = reading.size
     val scope = rememberCoroutineScope()
     val items = mapOf(
@@ -438,16 +452,20 @@ fun HomeContent(
             Scaffold(content = { padding ->
                 Column(
                     modifier = Modifier
-                        .padding(top = 20.dp, bottom = 20.dp)
+                        .padding(top = 20.dp, bottom = 20.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     TopHeader(navController, searchBookViewModel, avatar = avatar) {
                         scope.launch {
                             drawerState.open()
                         }
                     }
-                    MainCard()
+                    MainCard(currentRead, navController)
                     Categories(navController = navController)
-                    ReadingList(onClick = { /*TODO*/ }, readingList = reading)
+                    ReadingList(
+                        navController,
+                        readingList = reading
+                    )
                 }
             },
                 bottomBar = {
@@ -538,7 +556,10 @@ fun TopHeader(
  * The card displays an image with the title "Track your reading activity" and a book with a title and a "Continue reading" text.
  */
 @Composable
-fun MainCard() {
+fun MainCard(currentRead: Book, navController: NavController) {
+    var loading by remember {
+        mutableStateOf(false)
+    }
     Card(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp),
         shape = RoundedCornerShape(20.dp)
@@ -575,7 +596,11 @@ fun MainCard() {
                         .background(
                             color = MaterialTheme.colorScheme.secondary,
                             shape = RoundedCornerShape(15.dp)
-                        ),
+
+                        )
+                        .clickable(onClick = {
+                            navController.navigate(route = BookShelfScreens.BookScreen.name + "/${currentRead.bookID}")
+                        }),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -595,15 +620,32 @@ fun MainCard() {
                                 color = Pink200
                             )
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.readingcover),
-                                contentDescription = "Book Picture"
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(currentRead.imageLinks.thumbnail?.replace("http", "https"))
+                                    .build(),
+                                contentDescription = "Book Image",
+                                contentScale = ContentScale.Inside,
+                                modifier = Modifier
+                                    .scale(2.2f),
+                                onLoading = {
+                                    loading = true
+                                },
+                                onSuccess = {
+                                    loading= false
+                                }
                             )
+                            if (loading) {
+                                androidx.compose.material3.CircularProgressIndicator(color = Yellow)
+                            }
                         }
                         Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
                             Text(
-                                "Book Title", fontFamily = poppinsFamily,
+                                currentRead.title,
+                                fontFamily = poppinsFamily,
                                 fontSize = 15.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.tertiary
                             )
@@ -612,23 +654,6 @@ fun MainCard() {
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.tertiary
                             )
-                        }
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            Surface(
-                                modifier = Modifier.size(60.dp),
-                                shape = CircleShape,
-                                color = Color.Transparent
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.lightchart),
-                                    contentDescription = "Add",
-                                    modifier = Modifier
-                                        .background(color = Color.Transparent)
-                                )
-                            }
                         }
                     }
                 }
@@ -654,7 +679,7 @@ fun Categories(navController: NavController) {
     )
     val keysList = categories.keys.toList()
     LazyRow(
-        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp, end = 0.dp, start = 0.dp),
+        modifier = Modifier.padding(bottom = 20.dp, end = 0.dp, start = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         itemsIndexed(items = keysList) { index: Int, item: String ->
@@ -684,7 +709,7 @@ fun Categories(navController: NavController) {
  * */
 
 @Composable
-fun ReadingList(onClick: () -> Unit, readingList: List<Book>) {
+fun ReadingList(navController: NavController, readingList: List<Book>) {
     Text(
         "Reading List",
         fontFamily = poppinsFamily,
@@ -695,8 +720,8 @@ fun ReadingList(onClick: () -> Unit, readingList: List<Book>) {
     )
     LazyRow(
         modifier = Modifier
-            .padding(top = 10.dp, start = 0.dp, end = 0.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
+            .padding(start = 0.dp, end = 0.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         itemsIndexed(items = readingList) { index: Int, item: Book ->
             if (index == 0) {
@@ -705,8 +730,8 @@ fun ReadingList(onClick: () -> Unit, readingList: List<Book>) {
                     Reading(
                         bookAuthor = item.authors[0],
                         bookTitle = item.title,
-                        imageUrl = it,
-                        onClick = onClick
+                        imageUrl = it.replace("http", "https"),
+                        onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") },
                     )
                 }
             } else {
@@ -714,8 +739,8 @@ fun ReadingList(onClick: () -> Unit, readingList: List<Book>) {
                     Reading(
                         bookAuthor = item.authors[0],
                         bookTitle = item.title,
-                        imageUrl = it,
-                        onClick = onClick
+                        imageUrl = it.replace("http", "https"),
+                        onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
                     )
                 }
             }

@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.screens.book
 
-import android.telecom.Call
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
@@ -150,14 +149,6 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                                 shelf.books = books
                                 // Update shelves
                                 shelves[index] = shelf
-                                Log.d(
-                                    "SHELF",
-                                    GsonBuilder().setPrettyPrinting().create().toJson(shelf)
-                                )
-                                Log.d(
-                                    "Updated SHELVES",
-                                    GsonBuilder().setPrettyPrinting().create().toJson(shelves)
-                                )
                                 FirebaseFirestore.getInstance().collection("users").document(userId)
                                     .update("shelves", shelves).addOnSuccessListener {
                                         Toast.makeText(

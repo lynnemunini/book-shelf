@@ -1,6 +1,8 @@
 package com.grayseal.bookshelf.utils
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Patterns
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -69,4 +71,29 @@ fun convertToMutableList(data: Any?): MutableList<String>? {
     } else {
         null
     }
+}
+
+// Function to calculate the average color of a bitmap
+fun calculateAverageColor(bitmap: Bitmap): Int {
+    var red = 0
+    var green = 0
+    var blue = 0
+    var pixelCount = 0
+
+    for (x in 0 until bitmap.width) {
+        for (y in 0 until bitmap.height) {
+            val pixel = bitmap.getPixel(x, y)
+            red +=
+                Color.red(pixel)
+            green += Color.green(pixel)
+            blue += Color.blue(pixel)
+            pixelCount++
+        }
+    }
+
+    red /= pixelCount
+    green /= pixelCount
+    blue /= pixelCount
+
+    return Color.rgb(red, green, blue)
 }

@@ -1,5 +1,6 @@
 package com.grayseal.bookshelf.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.*
@@ -16,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -34,12 +37,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.*
+import com.grayseal.bookshelf.utils.calculateAverageColor
 import com.grayseal.bookshelf.utils.isValidEmail
 
 /**
@@ -441,15 +447,25 @@ function is called.
  */
 @Composable
 fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: () -> Unit) {
-    Column {
+    var loading by remember {
+        mutableStateOf(false)
+    }
+    var backgroundColor by remember { mutableStateOf(Color.Transparent) }
+    Column(modifier = Modifier
+        .width(150.dp)
+        .padding(bottom = 3.dp)) {
         Surface(
-            shape = RoundedCornerShape(15.dp),
             modifier = Modifier
+                .fillMaxSize()
                 .weight(1f, fill = false)
                 .aspectRatio(1f)
-                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 3.dp)
+                .align(Alignment.Start)
+                .clip(RoundedCornerShape(3.dp))
                 .clickable(onClick = onClick),
-            color = Color.Transparent
+            color = backgroundColor, // Use the extracted color as the background color
+            tonalElevation = 10.dp,
+            shadowElevation = 10.dp
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -458,18 +474,35 @@ fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: ()
                 contentDescription = "Book Image",
                 contentScale = ContentScale.Inside,
                 modifier = Modifier
-                    .background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                    .scale(2.5f)
+                    .scale(2.2f),
+                onLoading = {
+                    loading = true
+                },
+                onSuccess = { result ->
+                    loading = false
+                    // Extract the Bitmap object from the AsyncImagePainter.State.Success object
+                    var bitmap = result.result.drawable.toBitmap()
+                    bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+                    // Calculate the average color of the bitmap
+                    val averageColor = calculateAverageColor(bitmap)
+
+                    // Use the average color as the background color
+                    backgroundColor = Color(averageColor)
+                }
             )
+            if (loading) {
+                androidx.compose.material3.CircularProgressIndicator(modifier = Modifier.size(25.dp),color = Yellow)
+            }
         }
+
         Text(
             bookTitle,
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onBackground,
         )
         Text(
@@ -477,6 +510,8 @@ fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: ()
             fontFamily = poppinsFamily,
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
         Spacer(modifier = Modifier.height(56.dp))
     }
@@ -523,7 +558,7 @@ fun NavBar(navController: NavController) {
                 selected = selectedItem == index,
                 onClick = {
                     selectedItem = index
-                    if(item == "Shelves"){
+                    if (item == "Shelves") {
                         navController.navigate(route = BookShelfScreens.ShelfScreen.name)
                     }
                 },
