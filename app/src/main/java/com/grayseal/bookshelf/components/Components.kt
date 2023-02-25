@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.*
@@ -40,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
@@ -451,9 +449,11 @@ fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: ()
         mutableStateOf(false)
     }
     var backgroundColor by remember { mutableStateOf(Color.Transparent) }
-    Column(modifier = Modifier
-        .width(150.dp)
-        .padding(bottom = 3.dp)) {
+    Column(
+        modifier = Modifier
+            .width(150.dp)
+            .padding(bottom = 3.dp)
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -492,7 +492,18 @@ fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: ()
                 }
             )
             if (loading) {
-                androidx.compose.material3.CircularProgressIndicator(modifier = Modifier.size(25.dp),color = Yellow)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        modifier = Modifier.size(25.dp),
+                        color = Yellow
+                    )
+                }
             }
         }
 

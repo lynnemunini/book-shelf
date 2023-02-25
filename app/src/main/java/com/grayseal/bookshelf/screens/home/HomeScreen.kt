@@ -92,7 +92,9 @@ fun HomeScreen(
     val context = LocalContext.current
     val userId = user?.uid
 
-
+    var loading by remember {
+        mutableStateOf(true)
+    }
 
     // Get books in the reading now shelf
     if (userId != null) {
@@ -114,6 +116,7 @@ fun HomeScreen(
             } else {
                 Toast.makeText(context, "User does not exist", Toast.LENGTH_SHORT).show()
             }
+            loading = false
         }.addOnFailureListener {
             Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
         }
@@ -179,7 +182,8 @@ fun HomeScreen(
             searchBookViewModel = searchBookViewModel,
             imageDataStore = imageDataStore,
             session = session,
-            reading = readingList
+            reading = readingList,
+            loading = loading
         )
     }
 }
@@ -208,6 +212,7 @@ fun HomeContent(
     imageDataStore: StoreProfileImage,
     session: StoreSession,
     reading: List<Book>,
+    loading: Boolean
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     var currentRead:Book by remember {
@@ -462,10 +467,11 @@ fun HomeContent(
                     }
                     MainCard(currentRead, navController)
                     Categories(navController = navController)
-                    ReadingList(
-                        navController,
-                        readingList = reading
-                    )
+                        ReadingList(
+                            navController,
+                            loading = loading,
+                            readingList = reading
+                        )
                 }
             },
                 bottomBar = {
@@ -709,7 +715,7 @@ fun Categories(navController: NavController) {
  * */
 
 @Composable
-fun ReadingList(navController: NavController, readingList: List<Book>) {
+fun ReadingList(navController: NavController, loading: Boolean, readingList: List<Book>) {
     Text(
         "Reading List",
         fontFamily = poppinsFamily,
@@ -718,30 +724,42 @@ fun ReadingList(navController: NavController, readingList: List<Book>) {
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
-    LazyRow(
-        modifier = Modifier
-            .padding(start = 0.dp, end = 0.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        itemsIndexed(items = readingList) { index: Int, item: Book ->
-            if (index == 0) {
-                Spacer(modifier = Modifier.width(20.dp))
-                item.imageLinks.thumbnail?.let {
-                    Reading(
-                        bookAuthor = item.authors[0],
-                        bookTitle = item.title,
-                        imageUrl = it.replace("http", "https"),
-                        onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") },
-                    )
-                }
-            } else {
-                item.imageLinks.thumbnail?.let {
-                    Reading(
-                        bookAuthor = item.authors[0],
-                        bookTitle = item.title,
-                        imageUrl = it.replace("http", "https"),
-                        onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
-                    )
+    if(loading){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            androidx.compose.material3.LinearProgressIndicator(color = Yellow)
+        }
+    } else {
+        LazyRow(
+            modifier = Modifier
+                .padding(start = 0.dp, end = 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            itemsIndexed(items = readingList) { index: Int, item: Book ->
+                if (index == 0) {
+                    Spacer(modifier = Modifier.width(20.dp))
+                    item.imageLinks.thumbnail?.let {
+                        Reading(
+                            bookAuthor = item.authors[0],
+                            bookTitle = item.title,
+                            imageUrl = it.replace("http", "https"),
+                            onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") },
+                        )
+                    }
+                } else {
+                    item.imageLinks.thumbnail?.let {
+                        Reading(
+                            bookAuthor = item.authors[0],
+                            bookTitle = item.title,
+                            imageUrl = it.replace("http", "https"),
+                            onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
+                        )
+                    }
                 }
             }
         }
