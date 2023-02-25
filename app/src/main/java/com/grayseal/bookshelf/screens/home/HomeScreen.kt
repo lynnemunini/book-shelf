@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -31,7 +32,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
@@ -215,13 +215,12 @@ fun HomeContent(
     loading: Boolean
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    var currentRead:Book by remember {
+    var currentRead: Book by remember {
         mutableStateOf(Book())
     }
-    currentRead = try{
+    currentRead = try {
         reading.first()
-    }
-    catch (e:Exception){
+    } catch (e: Exception) {
         Book()
     }
 
@@ -467,11 +466,11 @@ fun HomeContent(
                     }
                     MainCard(currentRead, navController)
                     Categories(navController = navController)
-                        ReadingList(
-                            navController,
-                            loading = loading,
-                            readingList = reading
-                        )
+                    ReadingList(
+                        navController,
+                        loading = loading,
+                        readingList = reading
+                    )
                 }
             },
                 bottomBar = {
@@ -629,7 +628,12 @@ fun MainCard(currentRead: Book, navController: NavController) {
                         ) {
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
-                                    .data(currentRead.imageLinks.thumbnail?.replace("http", "https"))
+                                    .data(
+                                        currentRead.imageLinks.thumbnail?.replace(
+                                            "http",
+                                            "https"
+                                        )
+                                    )
                                     .build(),
                                 contentDescription = "Book Image",
                                 contentScale = ContentScale.Fit,
@@ -637,7 +641,7 @@ fun MainCard(currentRead: Book, navController: NavController) {
                                     loading = true
                                 },
                                 onSuccess = {
-                                    loading= false
+                                    loading = false
                                 }
                             )
                             if (loading) {
@@ -716,14 +720,14 @@ fun Categories(navController: NavController) {
 @Composable
 fun ReadingList(navController: NavController, loading: Boolean, readingList: List<Book>) {
     Text(
-        "Reading List",
+        "My Reading List",
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
-    if(loading){
+    if (loading) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -734,31 +738,30 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
             androidx.compose.material3.LinearProgressIndicator(color = Yellow)
         }
     } else {
-        LazyRow(
+        LazyColumn(
             modifier = Modifier
-                .padding(top = 5.dp, start = 0.dp, end = 0.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(top = 5.dp, start = 20.dp, end = 20.dp, bottom = 56.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             itemsIndexed(items = readingList) { index: Int, item: Book ->
-                if (index == 0) {
-                    Spacer(modifier = Modifier.width(20.dp))
-                    item.imageLinks.thumbnail?.let {
-                        Reading(
-                            bookAuthor = item.authors[0],
-                            bookTitle = item.title,
-                            imageUrl = it.replace("http", "https"),
-                            onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") },
-                        )
-                    }
-                } else {
-                    item.imageLinks.thumbnail?.let {
-                        Reading(
-                            bookAuthor = item.authors[0],
-                            bookTitle = item.title,
-                            imageUrl = it.replace("http", "https"),
-                            onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
-                        )
-                    }
+                var genre = item.categories[0]
+                val words = genre.split("/")
+                    .map { it.trim() } // split the string by "/" and remove extra whitespace
+                val smallestWord =
+                    words.minByOrNull { it.length } // find the smallest word based on length
+                genre = smallestWord ?: "" // if there are no words, return Unavailable
+                if(genre == ""){
+                    genre = "Unavailable"
+                }
+                item.imageLinks.thumbnail?.let {
+                    Reading(
+                        genre = genre,
+                        bookAuthor = item.authors[0],
+                        bookTitle = item.title,
+                        imageUrl = it.replace("http", "https"),
+                        rating = item.averageRating.toString(),
+                        onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
+                    )
                 }
             }
         }

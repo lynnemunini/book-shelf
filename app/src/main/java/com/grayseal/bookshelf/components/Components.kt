@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -17,8 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
@@ -36,14 +33,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.*
-import com.grayseal.bookshelf.utils.calculateAverageColor
 import com.grayseal.bookshelf.utils.isValidEmail
 
 /**
@@ -444,46 +439,43 @@ The book's title and author are displayed below the image. When the book is clic
 function is called.
  */
 @Composable
-fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: () -> Unit) {
+fun Reading(
+    genre: String,
+    bookAuthor: String,
+    bookTitle: String,
+    imageUrl: String,
+    rating: String,
+    onClick: () -> Unit
+) {
     var loading by remember {
         mutableStateOf(false)
     }
-    var backgroundColor by remember { mutableStateOf(Color.Transparent) }
-    Column(
+    Surface(
         modifier = Modifier
-            .width(150.dp)
-            .padding(bottom = 3.dp)
+            .clickable(onClick = onClick)
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min),
+        shape = RoundedCornerShape(5.dp),
+        color = Color(0xFFfbf2f0)
     ) {
-        Surface(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .weight(1f, fill = false)
-                .padding(bottom = 3.dp)
-                .align(Alignment.Start)
-                .clip(RoundedCornerShape(3.dp))
-                .clickable(onClick = onClick),
-            color = backgroundColor, // Use the extracted color as the background color
+                .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
                     .build(),
                 contentDescription = "Book Image",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Inside,
                 onLoading = {
                     loading = true
                 },
-                onSuccess = { result ->
+                onSuccess = {
                     loading = false
-                    // Extract the Bitmap object from the AsyncImagePainter.State.Success object
-                    var bitmap = result.result.drawable.toBitmap()
-                    bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-
-                    // Calculate the average color of the bitmap
-                    val averageColor = calculateAverageColor(bitmap)
-
-                    // Use the average color as the background color
-                    backgroundColor = Color(averageColor)
                 }
             )
             if (loading) {
@@ -500,26 +492,77 @@ fun Reading(bookAuthor: String, bookTitle: String, imageUrl: String, onClick: ()
                     )
                 }
             }
+            Column {
+                Text(
+                    genre,
+                    fontFamily = poppinsFamily,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    bookTitle,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    "by $bookAuthor",
+                    fontFamily = poppinsFamily,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    for (i in 0 until rating.toFloat().toInt()) {
+                        androidx.compose.material.Icon(
+                            Icons.Rounded.Star,
+                            contentDescription = "star",
+                            tint = Yellow,
+                            modifier = Modifier.size(15.dp)
+                        )
+                    }
+                    if ((5 - rating.toFloat()) > 0) {
+                        val unrated = 5 - rating.toFloat().toInt()
+                        if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
+                            androidx.compose.material.Icon(
+                                Icons.Rounded.StarHalf,
+                                contentDescription = "star",
+                                tint = Yellow,
+                                modifier = Modifier.size(15.dp)
+                            )
+                            for (i in 0 until unrated - 1) {
+                                androidx.compose.material.Icon(
+                                    Icons.Rounded.Star,
+                                    contentDescription = "star",
+                                    tint = Color.LightGray,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                        } else {
+                            for (i in 0 until unrated) {
+                                androidx.compose.material.Icon(
+                                    Icons.Rounded.Star,
+                                    contentDescription = "star",
+                                    tint = Color.LightGray,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        Text(
-            bookTitle,
-            fontFamily = poppinsFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 13.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Text(
-            bookAuthor,
-            fontFamily = poppinsFamily,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(modifier = Modifier.height(56.dp))
     }
 }
 
