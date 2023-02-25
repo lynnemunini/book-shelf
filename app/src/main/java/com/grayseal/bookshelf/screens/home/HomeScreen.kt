@@ -680,15 +680,15 @@ fun MainCard(currentRead: Book, navController: NavController) {
 fun Categories(navController: NavController) {
     Text(
         "Categories",
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 17.sp,
+        fontFamily = loraFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)
     )
     val keysList = categories.keys.toList()
     LazyRow(
-        modifier = Modifier.padding(top = 5.dp, bottom = 20.dp, end = 0.dp, start = 0.dp),
+        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp, end = 0.dp, start = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         itemsIndexed(items = keysList) { index: Int, item: String ->
@@ -721,9 +721,9 @@ fun Categories(navController: NavController) {
 fun ReadingList(navController: NavController, loading: Boolean, readingList: List<Book>) {
     Text(
         "My Reading List",
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 17.sp,
+        fontFamily = loraFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
@@ -740,7 +740,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
     } else {
         LazyColumn(
             modifier = Modifier
-                .padding(top = 5.dp, start = 20.dp, end = 20.dp, bottom = 56.dp),
+                .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 56.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             itemsIndexed(items = readingList) { index: Int, item: Book ->

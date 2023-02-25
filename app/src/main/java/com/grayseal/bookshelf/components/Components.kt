@@ -492,11 +492,11 @@ fun Reading(
                     )
                 }
             }
-            Column {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     genre,
                     fontFamily = poppinsFamily,
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -521,43 +521,69 @@ fun Reading(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    for (i in 0 until rating.toFloat().toInt()) {
-                        androidx.compose.material.Icon(
-                            Icons.Rounded.Star,
-                            contentDescription = "star",
-                            tint = Yellow,
-                            modifier = Modifier.size(15.dp)
-                        )
+                    Column(modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.Start) {
+                        Row {
+                            for (i in 0 until rating.toFloat().toInt()) {
+                                androidx.compose.material.Icon(
+                                    Icons.Rounded.Star,
+                                    contentDescription = "star",
+                                    tint = Yellow,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                            if ((5 - rating.toFloat()) > 0) {
+                                val unrated = 5 - rating.toFloat().toInt()
+                                if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
+                                    androidx.compose.material.Icon(
+                                        Icons.Rounded.StarHalf,
+                                        contentDescription = "star",
+                                        tint = Yellow,
+                                        modifier = Modifier.size(15.dp)
+                                    )
+                                    for (i in 0 until unrated - 1) {
+                                        androidx.compose.material.Icon(
+                                            Icons.Rounded.Star,
+                                            contentDescription = "star",
+                                            tint = Color.LightGray,
+                                            modifier = Modifier.size(15.dp)
+                                        )
+                                    }
+                                } else {
+                                    for (i in 0 until unrated) {
+                                        androidx.compose.material.Icon(
+                                            Icons.Rounded.Star,
+                                            contentDescription = "star",
+                                            tint = Color.LightGray,
+                                            modifier = Modifier.size(15.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
-                    if ((5 - rating.toFloat()) > 0) {
-                        val unrated = 5 - rating.toFloat().toInt()
-                        if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
+                    Column(modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.End) {
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.End),
+                        horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "view more",
+                                fontFamily = poppinsFamily,
+                                fontSize = 12.sp,
+                                color = Yellow,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
                             androidx.compose.material.Icon(
-                                Icons.Rounded.StarHalf,
-                                contentDescription = "star",
+                                Icons.Rounded.ArrowForward,
+                                contentDescription = "Arrow",
                                 tint = Yellow,
                                 modifier = Modifier.size(15.dp)
                             )
-                            for (i in 0 until unrated - 1) {
-                                androidx.compose.material.Icon(
-                                    Icons.Rounded.Star,
-                                    contentDescription = "star",
-                                    tint = Color.LightGray,
-                                    modifier = Modifier.size(15.dp)
-                                )
-                            }
-                        } else {
-                            for (i in 0 until unrated) {
-                                androidx.compose.material.Icon(
-                                    Icons.Rounded.Star,
-                                    contentDescription = "star",
-                                    tint = Color.LightGray,
-                                    modifier = Modifier.size(15.dp)
-                                )
-                            }
                         }
                     }
                 }
