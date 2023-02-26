@@ -615,6 +615,9 @@ fun MainCard(currentRead: Book, navController: NavController) {
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        if (loading) {
+                            androidx.compose.material3.CircularProgressIndicator(color = Color.White)
+                        }
                         Surface(
                             modifier = Modifier
                                 .size(50.dp)
@@ -644,25 +647,27 @@ fun MainCard(currentRead: Book, navController: NavController) {
                                     loading = false
                                 }
                             )
-                            if (loading) {
-                                androidx.compose.material3.CircularProgressIndicator(color = Color.White)
-                            }
                         }
-                        Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
-                            Text(
-                                currentRead.title,
-                                fontFamily = poppinsFamily,
-                                fontSize = 15.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
-                            Text(
-                                "Continue reading", fontFamily = poppinsFamily,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
+                        if (!loading) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp)
+                            ) {
+                                Text(
+                                    currentRead.title,
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 15.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                                Text(
+                                    "Continue reading", fontFamily = poppinsFamily,
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                            }
                         }
                     }
                 }

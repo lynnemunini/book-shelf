@@ -204,6 +204,7 @@ fun PasswordInput(
         keyboardActions = KeyboardActions {
             keyboardController?.hide()
         },
+
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = Color.Black,
