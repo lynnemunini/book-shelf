@@ -464,7 +464,7 @@ fun HomeContent(
                             drawerState.open()
                         }
                     }
-                    MainCard(currentRead, navController)
+                    MainCard(currentRead, navController, readingList = reading)
                     Categories(navController = navController)
                     ReadingList(
                         navController,
@@ -561,9 +561,12 @@ fun TopHeader(
  * The card displays an image with the title "Track your reading activity" and a book with a title and a "Continue reading" text.
  */
 @Composable
-fun MainCard(currentRead: Book, navController: NavController) {
+fun MainCard(currentRead: Book, navController: NavController, readingList: List<Book>) {
     var loading by remember {
         mutableStateOf(false)
+    }
+    if(readingList.isEmpty()){
+        loading = false
     }
     Card(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp),
@@ -618,6 +621,22 @@ fun MainCard(currentRead: Book, navController: NavController) {
                         if (loading) {
                             androidx.compose.material3.CircularProgressIndicator(color = Color.White)
                         }
+                        else if(readingList.isEmpty()){
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "You're not currently reading any book.",
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 13.sp,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                            }
+                        }
                         Surface(
                             modifier = Modifier
                                 .size(50.dp)
@@ -648,9 +667,10 @@ fun MainCard(currentRead: Book, navController: NavController) {
                                 }
                             )
                         }
-                        if (!loading) {
+                        if (!loading && readingList.isNotEmpty()) {
                             Column(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .padding(start = 10.dp, end = 10.dp)
                             ) {
                                 Text(
@@ -743,30 +763,60 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
             androidx.compose.material3.LinearProgressIndicator(color = Yellow)
         }
     } else {
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 56.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            itemsIndexed(items = readingList) { index: Int, item: Book ->
-                var genre = item.categories[0]
-                val words = genre.split("/")
-                    .map { it.trim() } // split the string by "/" and remove extra whitespace
-                val smallestWord =
-                    words.minByOrNull { it.length } // find the smallest word based on length
-                genre = smallestWord ?: "" // if there are no words, return Unavailable
-                if(genre == ""){
-                    genre = "Unavailable"
-                }
-                item.imageLinks.thumbnail?.let {
-                    Reading(
-                        genre = genre,
-                        bookAuthor = item.authors[0],
-                        bookTitle = item.title,
-                        imageUrl = it.replace("http", "https"),
-                        rating = item.averageRating.toString(),
-                        onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
-                    )
+        if (readingList.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(bottom = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.emptyshelf),
+                    contentDescription = "Empty Shelf",
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+                Text(
+                    "Oh no, it's empty here!",
+                    fontFamily = poppinsFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    "Add a book to Reading Now shelf to see it here",
+                    fontFamily = poppinsFamily,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 56.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                itemsIndexed(items = readingList) { index: Int, item: Book ->
+                    var genre = item.categories[0]
+                    val words = genre.split("/")
+                        .map { it.trim() } // split the string by "/" and remove extra whitespace
+                    val smallestWord =
+                        words.minByOrNull { it.length } // find the smallest word based on length
+                    genre = smallestWord ?: "" // if there are no words, return Unavailable
+                    if (genre == "") {
+                        genre = "Unavailable"
+                    }
+                    item.imageLinks.thumbnail?.let {
+                        Reading(
+                            genre = genre,
+                            bookAuthor = item.authors[0],
+                            bookTitle = item.title,
+                            imageUrl = it.replace("http", "https"),
+                            rating = item.averageRating.toString(),
+                            onClick = { navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.bookID}") }
+                        )
+                    }
                 }
             }
         }

@@ -120,7 +120,7 @@ fun BookShelf(navController: NavController, shelves: List<Shelf>) {
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(items = shelves) { shelf ->
-            com.grayseal.bookshelf.screens.shelf.Shelf(
+            Shelf(
                 shelfName = shelf.name,
                 total = shelf.books.size
             ) {
@@ -153,16 +153,9 @@ fun Shelf(
             Card(
                 shape = CircleShape,
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                elevation = CardDefaults.cardElevation(2.dp)
             ) {
-                var image = R.drawable.shelfcover
-                if (shelfName == "Reading Now 📖") {
-                    image = R.drawable.readingcover
-                } else if (shelfName == "To Read 📌") {
-                    image = R.drawable.readcover
-                }
                 Image(
-                    painter = painterResource(id = image),
+                    painter = painterResource(id = R.drawable.shelves),
                     contentDescription = "Shelf Cover",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
