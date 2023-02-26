@@ -705,9 +705,9 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
 fun Categories(navController: NavController) {
     Text(
         "Categories",
-        fontFamily = loraFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)
     )
@@ -746,9 +746,9 @@ fun Categories(navController: NavController) {
 fun ReadingList(navController: NavController, loading: Boolean, readingList: List<Book>) {
     Text(
         "My Reading List",
-        fontFamily = loraFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
@@ -768,7 +768,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(bottom = 20.dp),
+                    .padding(bottom = 5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -790,6 +790,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
+                Spacer(modifier = Modifier.height(56.dp))
             }
         } else {
             LazyColumn(
