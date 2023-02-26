@@ -793,12 +793,12 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                 Image(
                     painter = painterResource(id = R.drawable.emptyshelf),
                     contentDescription = "Empty Shelf",
-                    modifier = Modifier.padding(bottom = 10.dp)
+                    modifier = Modifier.weight(1f).padding(bottom = 10.dp)
                 )
                 Text(
                     "Oh no, it's empty here!",
                     fontFamily = poppinsFamily,
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -814,7 +814,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
             LazyColumn(
                 modifier = Modifier
                     .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 56.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 itemsIndexed(items = readingList) { index: Int, item: Book ->
                     var genre = item.categories[0]
