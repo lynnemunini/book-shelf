@@ -155,7 +155,7 @@ fun Shelf(
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.shelves),
+                    painter = painterResource(id = R.drawable.coverimage),
                     contentDescription = "Shelf Cover",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier

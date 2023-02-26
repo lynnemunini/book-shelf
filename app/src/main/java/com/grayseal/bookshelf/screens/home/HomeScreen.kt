@@ -622,14 +622,32 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
                             androidx.compose.material3.CircularProgressIndicator(color = Color.White)
                         }
                         else if(readingList.isEmpty()){
+                            Surface(
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .background(color = Color.Transparent, shape = CircleShape),
+                                shape = RectangleShape,
+                                border = BorderStroke(
+                                    width = 0.dp,
+                                    color = Pink200
+                                ),
+                                color = Pink200
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.coverimage),
+                                    contentDescription = "Image Cover",
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                )
+                            }
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 10.dp, end = 10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                    .padding(start = 10.dp, end = 10.dp)
                             ) {
                                 Text(
-                                    "You're not currently reading any book.",
+                                    "No current read!",
                                     fontFamily = poppinsFamily,
                                     fontSize = 13.sp,
                                     textAlign = TextAlign.Center,
