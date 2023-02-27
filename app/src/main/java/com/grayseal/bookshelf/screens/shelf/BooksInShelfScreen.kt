@@ -8,6 +8,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Comment
+import androidx.compose.material.icons.rounded.DeleteForever
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -101,7 +103,11 @@ fun BooksInShelfScreen(navController: NavController, shelfName: String?) {
                 modifier = Modifier.padding(start = 30.dp)
             )
         }
-        BooksInShelfItems(booksInShelf = booksInShelf, navController = navController, loading = loading)
+        BooksInShelfItems(
+            booksInShelf = booksInShelf,
+            navController = navController,
+            loading = loading
+        )
     }
 }
 
@@ -117,17 +123,18 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
         ) {
             LinearProgressIndicator(color = Yellow)
         }
-    }
-    else {
+    } else {
         Spacer(modifier = Modifier.height(30.dp))
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize().padding(),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
+                .fillMaxSize()
+                .padding(),
+            verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
             items(items = booksInShelf) { item ->
                 var title = "Title information unavailable"
                 var author = "Author names not on record"
+                var previewText = "Preview information not provided"
                 var imageUrl =
                     "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
                 if (item.imageLinks.toString().isNotEmpty()) {
@@ -140,10 +147,16 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
                 if (item.authors[0].isNotEmpty()) {
                     author = item.authors.joinToString(separator = ", ")
                 }
+                if (item.searchInfo.isNotEmpty()) {
+                    val cleanDescription =
+                        HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    previewText = cleanDescription.toString()
+                }
                 val bookId = item.bookID
                 BookCard(
                     bookTitle = title,
                     bookAuthor = author,
+                    previewText = previewText,
                     imageUrl = imageUrl,
                     onClick = {
                         navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
@@ -158,64 +171,80 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
 fun BookCard(
     bookTitle: String,
     bookAuthor: String,
+    previewText: String,
     imageUrl: String,
     onClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min),
+            .fillMaxWidth(),
         shape = RectangleShape
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
-                    .build(),
-                contentDescription = "Book Image",
-                contentScale = ContentScale.FillHeight
-            )
-            Column {
-                Text(
-                    bookTitle,
-                    overflow = TextOverflow.Ellipsis,
-                    fontFamily = poppinsFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp,
-                    maxLines = 1,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Text(
-                    bookAuthor,
-                    overflow = TextOverflow.Clip,
-                    fontFamily = poppinsFamily,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                )
-                Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .build(),
+                        contentDescription = "Book Image",
+                        contentScale = ContentScale.FillHeight
+                    )
+                    Column {
+                        Text(
+                            bookTitle,
+                            overflow = TextOverflow.Ellipsis,
+                            fontFamily = poppinsFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                        Text(
+                            bookAuthor,
+                            overflow = TextOverflow.Clip,
+                            fontFamily = poppinsFamily,
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        )
+                        Text(
+                            previewText,
+                            overflow = TextOverflow.Ellipsis,
+                            fontFamily = poppinsFamily,
+                            fontSize = 13.sp,
+                            maxLines = 2,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     androidx.compose.material.Icon(
-                        painter = painterResource(id = com.grayseal.bookshelf.R.drawable.reviews),
+                        Icons.Rounded.Comment,
                         contentDescription = "Review",
                         tint = Yellow,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    androidx.compose.material.Icon(
-                        painter = painterResource(id = com.grayseal.bookshelf.R.drawable.favourite),
-                        contentDescription = "Favourite",
-                        tint = Yellow,
-                        modifier = Modifier.size(15.dp)
+                        modifier = Modifier.size(20.dp)
                     )
 
+                    androidx.compose.material.Icon(
+                        Icons.Rounded.Favorite,
+                        contentDescription = "Favourite",
+                        tint = Yellow,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    androidx.compose.material.Icon(
+                        Icons.Rounded.DeleteForever,
+                        contentDescription = "Remove",
+                        tint = Yellow,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
         }
     }
-
 }

@@ -234,7 +234,7 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                 if (item.authors[0].isNotEmpty()) {
                     author = item.authors.joinToString(separator = ", ")
                 }
-                if (item.description.isNotEmpty()) {
+                if (item.searchInfo.isNotEmpty()) {
                     val cleanDescription =
                         HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
                     previewText = cleanDescription.toString()

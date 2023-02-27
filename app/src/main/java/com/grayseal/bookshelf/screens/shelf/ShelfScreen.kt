@@ -192,6 +192,7 @@ fun ShelfItem(
                         fontSize = 13.sp,
                         maxLines = 1,
                         color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(start = 5.dp)
                     )
                 }
                 Row {
