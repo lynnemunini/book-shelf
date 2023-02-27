@@ -19,7 +19,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
@@ -161,7 +163,8 @@ fun Search(
                 })
         )
         Text(
-            "Search", fontFamily = poppinsFamily, color = MaterialTheme.colorScheme.onBackground
+            "Search", fontSize = 16.sp,
+            fontWeight = FontWeight.Medium, fontFamily = poppinsFamily, color = MaterialTheme.colorScheme.onBackground
         )
 
     }

@@ -88,6 +88,8 @@ fun ShelfScreen(navController: NavController) {
             Text(
                 "Shelves",
                 fontFamily = poppinsFamily,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(start = 30.dp)
@@ -201,7 +203,7 @@ fun ShelfItem(
                         overflow = TextOverflow.Ellipsis,
                         fontFamily = poppinsFamily,
                         fontSize = 13.sp,
-                        maxLines = 1,
+                        maxLines = 2,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                 }

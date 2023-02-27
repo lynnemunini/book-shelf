@@ -1,16 +1,14 @@
 package com.grayseal.bookshelf.screens.shelf
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.DeleteForever
-import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +31,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.navigation.BookShelfScreens
@@ -92,11 +92,13 @@ fun BooksInShelfScreen(navController: NavController, shelfName: String?) {
                     .size(30.dp)
                     .clip(CircleShape)
                     .clickable(enabled = true, onClick = {
-                        navController.navigate(route = BookShelfScreens.HomeScreen.name)
+                        navController.popBackStack()
                     })
             )
-            androidx.compose.material.Text(
+            androidx.compose.material3.Text(
                 shelfName.toString(),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
                 fontFamily = poppinsFamily,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
@@ -124,43 +126,66 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
             LinearProgressIndicator(color = Yellow)
         }
     } else {
-        Spacer(modifier = Modifier.height(30.dp))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(),
-            verticalArrangement = Arrangement.spacedBy(30.dp)
-        ) {
-            items(items = booksInShelf) { item ->
-                var title = "Title information unavailable"
-                var author = "Author names not on record"
-                var previewText = "Preview information not provided"
-                var imageUrl =
-                    "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                if (item.imageLinks.toString().isNotEmpty()) {
-                    imageUrl = item.imageLinks.thumbnail.toString().trim()
-                    imageUrl = imageUrl.replace("http", "https")
-                }
-                if (item.title.isNotEmpty()) {
-                    title = item.title
-                }
-                if (item.authors[0].isNotEmpty()) {
-                    author = item.authors.joinToString(separator = ", ")
-                }
-                if (item.searchInfo.isNotEmpty()) {
-                    val cleanDescription =
-                        HtmlCompat.fromHtml(item.searchInfo, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                    previewText = cleanDescription.toString()
-                }
-                val bookId = item.bookID
-                BookCard(
-                    bookTitle = title,
-                    bookAuthor = author,
-                    previewText = previewText,
-                    imageUrl = imageUrl,
-                    onClick = {
-                        navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
+        if (booksInShelf.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(30.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(),
+                verticalArrangement = Arrangement.spacedBy(30.dp)
+            ) {
+                items(items = booksInShelf) { item ->
+                    var title = "Title information unavailable"
+                    var author = "Author names not on record"
+                    var previewText = "Preview information not provided"
+                    var imageUrl =
+                        "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                    if (item.imageLinks.toString().isNotEmpty()) {
+                        imageUrl = item.imageLinks.thumbnail.toString().trim()
+                        imageUrl = imageUrl.replace("http", "https")
                     }
+                    if (item.title.isNotEmpty()) {
+                        title = item.title
+                    }
+                    if (item.authors[0].isNotEmpty()) {
+                        author = item.authors.joinToString(separator = ", ")
+                    }
+                    if (item.description.isNotEmpty()) {
+                        val cleanDescription =
+                            HtmlCompat.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                        previewText = cleanDescription.toString()
+                    }
+                    val bookId = item.bookID
+                    BookCard(
+                        bookTitle = title,
+                        bookAuthor = author,
+                        previewText = previewText,
+                        imageUrl = imageUrl,
+                        onClick = {
+                            navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
+                        }
+                    )
+                }
+            }
+        }
+        else{
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.nobookinshelf),
+                    contentDescription = "Empty Shelf",
+                    modifier = Modifier.padding(bottom = 20.dp)
+                )
+                androidx.compose.material.Text(
+                    "Uh oh, no books in the shelf!",
+                    fontFamily = poppinsFamily,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
             }
         }
@@ -184,7 +209,9 @@ fun BookCard(
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
@@ -222,21 +249,23 @@ fun BookCard(
                     }
                 }
                 Row(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     androidx.compose.material.Icon(
-                        Icons.Rounded.Comment,
+                        Icons.Rounded.RateReview,
                         contentDescription = "Review",
                         tint = Yellow,
                         modifier = Modifier.size(20.dp)
                     )
-
+                    Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(
                         Icons.Rounded.Favorite,
                         contentDescription = "Favourite",
                         tint = Yellow,
                         modifier = Modifier.size(20.dp)
                     )
+                    Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(
                         Icons.Rounded.DeleteForever,
                         contentDescription = "Remove",

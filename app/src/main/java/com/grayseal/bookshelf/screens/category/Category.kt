@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.search.Results
@@ -55,6 +57,8 @@ fun CategoryScreen(
             Text(
                 category.toString(),
                 fontFamily = poppinsFamily,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(start = 30.dp)

@@ -565,7 +565,7 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
     var loading by remember {
         mutableStateOf(false)
     }
-    if(readingList.isEmpty()){
+    if (readingList.isEmpty()) {
         loading = false
     }
     Card(
@@ -620,8 +620,7 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
                     ) {
                         if (loading) {
                             androidx.compose.material3.CircularProgressIndicator(color = Color.White)
-                        }
-                        else if(readingList.isEmpty()){
+                        } else if (readingList.isEmpty()) {
                             Surface(
                                 modifier = Modifier
                                     .size(50.dp)
@@ -634,7 +633,7 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
                                 color = Pink200
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.coverimage),
+                                    painter = painterResource(id = R.drawable.emptyshelf),
                                     contentDescription = "Image Cover",
                                     contentScale = ContentScale.FillBounds,
                                     modifier = Modifier
@@ -793,17 +792,10 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                 Image(
                     painter = painterResource(id = R.drawable.emptyshelf),
                     contentDescription = "Empty Shelf",
-                    modifier = Modifier.weight(1f).padding(bottom = 10.dp)
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
                 Text(
-                    "Oh no, it's empty here!",
-                    fontFamily = poppinsFamily,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    "Add a book to Reading Now shelf to see it here",
+                    "Add a book to Reading now shelf to see it here",
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
