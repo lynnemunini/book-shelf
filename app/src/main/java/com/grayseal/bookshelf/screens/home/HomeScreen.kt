@@ -114,7 +114,7 @@ fun HomeScreen(
                     }
                 }
             } else {
-                Toast.makeText(context, "User does not exist", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
             }
             loading = false
         }.addOnFailureListener {

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -124,9 +125,11 @@ fun BookShelf(navController: NavController, shelves: List<Shelf>) {
             ShelfItem(
                 shelfName = shelf.name,
                 shelfBooks = shelf.books,
-                total = shelf.books.size
-            ) {
-            }
+                total = shelf.books.size,
+                onClick = {
+                    navController.navigate(route = BookShelfScreens.BooksInShelfScreen.name + "/${shelf.name}")
+                }
+            )
         }
     }
 }

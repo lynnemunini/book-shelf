@@ -11,7 +11,8 @@ enum class BookShelfScreens {
     SearchScreen,
     ShelfScreen,
     BookScreen,
-    CategoryScreen;
+    CategoryScreen,
+    BooksInShelfScreen;
 
     /**
     A companion object that provides a utility function to convert a route string to the corresponding screen.
@@ -27,6 +28,7 @@ enum class BookShelfScreens {
             ShelfScreen.name -> ShelfScreen
             BookScreen.name -> BookScreen
             CategoryScreen.name -> CategoryScreen
+            BooksInShelfScreen.name -> BooksInShelfScreen
             else -> throw IllegalArgumentException("Route $route is not recognized")
         }
     }

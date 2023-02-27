@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.screens.SplashScreen
 import com.grayseal.bookshelf.screens.book.BookScreen
 import com.grayseal.bookshelf.screens.book.BookViewModel
@@ -14,6 +15,7 @@ import com.grayseal.bookshelf.screens.category.CategoryScreen
 import com.grayseal.bookshelf.screens.home.HomeScreen
 import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.screens.search.SearchScreen
+import com.grayseal.bookshelf.screens.shelf.BooksInShelfScreen
 import com.grayseal.bookshelf.screens.shelf.ShelfScreen
 
 /**
@@ -57,6 +59,15 @@ fun BookShelfNavigation(){
             navBack.arguments?.getString("query").let { query ->
                 CategoryScreen(navController = navController, searchViewModel, category = query)
             }
+        }
+
+        val shelfRoute = BookShelfScreens.BooksInShelfScreen.name
+        composable("$shelfRoute/{shelfName}", arguments = listOf(navArgument(name = "shelfName"){
+            type = NavType.StringType
+        })){ navBackStackEntry ->
+           navBackStackEntry.arguments?.getString("shelfName").let { shelfName ->
+               BooksInShelfScreen(navController = navController, shelfName = shelfName)
+           }
         }
     }
 }
