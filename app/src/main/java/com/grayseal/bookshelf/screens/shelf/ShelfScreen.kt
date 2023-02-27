@@ -1,5 +1,6 @@
 package com.grayseal.bookshelf.screens.shelf
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,9 +29,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.model.Book
+import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Yellow
@@ -44,21 +48,18 @@ fun ShelfScreen(navController: NavController) {
     var loading by remember {
         mutableStateOf(true)
     }
+    val context = LocalContext.current
     // Get shelves from firestore
     if (userId != null) {
-        val db = FirebaseFirestore.getInstance().collection("users").document(userId).get()
-        db.addOnSuccessListener {
-            val userShelves = db.result.get("shelves")
-            val listOfShelves = mutableListOf<Shelf>()
-            for (shelfObj in userShelves as MutableList<*>) {
-                if (shelfObj is Map<*, *>) {
-                    val shelfName = shelfObj["name"] as String
-                    val shelfBooks = shelfObj["books"] as List<*>
-                    val shelf = Shelf(shelfName, shelfBooks as List<Book>)
-                    listOfShelves.add(shelf)
-                }
+        val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+        db.get().addOnSuccessListener { documentSnapShot ->
+            val userShelves = documentSnapShot.toObject<MyUser>()?.shelves
+            if (userShelves != null){
+                shelves = userShelves
+            }else{
+                Toast.makeText(context, "Error fetching Shelves", Toast.LENGTH_SHORT)
+                    .show()
             }
-            shelves = listOfShelves
             loading = false
         }
     }
@@ -120,8 +121,9 @@ fun BookShelf(navController: NavController, shelves: List<Shelf>) {
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(items = shelves) { shelf ->
-            Shelf(
+            ShelfItem(
                 shelfName = shelf.name,
+                shelfBooks = shelf.books,
                 total = shelf.books.size
             ) {
             }
@@ -130,11 +132,16 @@ fun BookShelf(navController: NavController, shelves: List<Shelf>) {
 }
 
 @Composable
-fun Shelf(
+fun ShelfItem(
     shelfName: String,
+    shelfBooks: List<Book>,
     total: Int,
     onClick: () -> Unit
 ) {
+    val booksTitles = mutableListOf<String>()
+    shelfBooks.forEach {
+        booksTitles.add(it.title)
+    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,24 +170,38 @@ fun Shelf(
                         .clip(CircleShape)
                 )
             }
-            androidx.compose.material3.Text(
-                shelfName,
-                overflow = TextOverflow.Ellipsis,
-                fontFamily = poppinsFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp,
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            androidx.compose.material3.Text(
-                "($total)",
-                overflow = TextOverflow.Ellipsis,
-                fontFamily = poppinsFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp,
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+            Column {
+                Row {
+                    androidx.compose.material3.Text(
+                        shelfName,
+                        overflow = TextOverflow.Ellipsis,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    androidx.compose.material3.Text(
+                        "($total)",
+                        overflow = TextOverflow.Ellipsis,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+                Row {
+                    androidx.compose.material3.Text(
+                        booksTitles.joinToString(separator = ", "),
+                        overflow = TextOverflow.Ellipsis,
+                        fontFamily = poppinsFamily,
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            }
         }
     }
 }
