@@ -51,6 +51,8 @@ import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -199,48 +201,19 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             openDialog = openDialog,
             title = "Add to Shelf",
             details = "The book is already in $otherShelfName shelf. Would you like to remove it and add to $shelfName",
-            onDismiss = { openDialog = false},
+            onDismiss = { openDialog = false },
             onClick = {
                 if (userId != null) {
-                    val db = FirebaseFirestore.getInstance().collection("users").document(userId)
-                    db.get().addOnSuccessListener { documentSnapshot ->
-                        if (documentSnapshot.exists()) {
-                            val shelves = documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
-                            val otherShelf: Shelf? = shelves.find { it.name == otherShelfName }
-                            val currentShelf: Shelf? = shelves.find { it.name == shelfName }
-                            if (otherShelf != null && currentShelf != null) {
-                                val otherBooks: MutableList<Book> = otherShelf.books as MutableList<Book>
-                                otherBooks.removeIf { it.bookID == book?.bookID }
-                                otherShelf.books = otherBooks
-                                val index1 = shelves.indexOfFirst { it.name == otherShelfName }
-                                shelves[index1] = otherShelf
-
-                                val currentBooks: MutableList<Book> = currentShelf.books as MutableList<Book>
-                                if (!currentBooks.any { it.bookID == book?.bookID }) {
-                                    currentBooks.add(book!!)
-                                }
-                                currentShelf.books = currentBooks
-                                val index2 = shelves.indexOfFirst { it.name == shelfName }
-                                shelves[index2] = currentShelf
-                                FirebaseFirestore.getInstance().collection("users")
-                                    .document(userId)
-                                    .update("shelves", shelves).addOnSuccessListener {
-                                        Toast.makeText(
-                                            context,
-                                            "Successfully moved book from $otherShelfName shelf to $shelfName shelf",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        openDialog = false
-                                    }.addOnFailureListener {
-                                        Toast.makeText(
-                                            context,
-                                            "Failed to move book from $otherShelfName shelf to $shelfName shelf",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                            }
-                        }
+                    bookViewModel.setBookToMove(book!!)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        bookViewModel.moveBookToShelf(userId, shelfName, otherShelfName)
                     }
+                    Toast.makeText(
+                        context,
+                        "Moving book from $otherShelfName shelf to $shelfName shelf...",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    openDialog = false
                 }
             }
         )
