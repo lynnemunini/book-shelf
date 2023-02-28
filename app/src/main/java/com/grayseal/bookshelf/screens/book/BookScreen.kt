@@ -41,7 +41,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.gson.GsonBuilder
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Book
@@ -133,35 +132,53 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                     val db = FirebaseFirestore.getInstance().collection("users").document(userId)
                     db.get().addOnSuccessListener { documentSnapshot ->
                         if (documentSnapshot.exists()) {
-                            val shelves = documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
-                            val shelf: Shelf? = shelves.find { it.name == shelfName }
+                            val shelves =
+                                documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
+                            val shelf: Shelf? = shelves.find { shelf ->
+                                shelf.name == shelfName
+                            }
                             if (shelf != null) {
                                 val books: MutableList<Book> = shelf.books as MutableList<Book>
                                 if (book != null) {
                                     if (!books.any { it.bookID == book.bookID }) { // Check if the book is already in the shelf using bookID
-                                        books.add(book)
-                                        shelf.books = books
-                                        // Update shelves
-                                        val index = shelves.indexOfFirst { it.name == shelfName }
-                                        shelves[index] = shelf
-                                        FirebaseFirestore.getInstance().collection("users").document(userId)
-                                            .update("shelves", shelves).addOnSuccessListener {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Successfully added book to $shelfName shelf",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }.addOnFailureListener {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Failed to add book to $shelfName shelf",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                        // Check if book is in another shelf
+                                        val otherShelf =
+                                            shelves.find { otherShelf ->
+                                                otherShelf.name != shelfName && otherShelf.books.any { it.bookID == book.bookID }
                                             }
+                                        if (otherShelf != null) {
+                                            Toast.makeText(
+                                                context,
+                                                "The book is already in ${otherShelf.name} shelf",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            books.add(book)
+                                            shelf.books = books
+                                            // Update shelves
+                                            val index =
+                                                shelves.indexOfFirst { it.name == shelfName }
+                                            shelves[index] = shelf
+                                            FirebaseFirestore.getInstance().collection("users")
+                                                .document(userId)
+                                                .update("shelves", shelves).addOnSuccessListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Successfully added book to $shelfName shelf",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }.addOnFailureListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Failed to add book to $shelfName shelf",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                        }
                                     } else {
                                         Toast.makeText(
                                             context,
-                                            "The book is already in $shelfName shelf",
+                                            "Book already in the shelf",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -170,7 +187,6 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                         }
                     }
                 }
-
             })
         }
     ) {
@@ -691,11 +707,12 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
         Divider(
             modifier = Modifier.padding(vertical = 20.dp)
         )
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = {
-                onSave("Reading Now 📖")
-            })
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = {
+                    onSave("Reading Now 📖")
+                })
         ) {
             Text(
                 "Reading Now 📖",
@@ -708,11 +725,12 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
         Divider(
             modifier = Modifier.padding(vertical = 10.dp)
         )
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = {
-                onSave("To Read 📌")
-            })
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = {
+                    onSave("To Read 📌")
+                })
         ) {
             Text(
                 "To Read 📌",
@@ -725,11 +743,12 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
         Divider(
             modifier = Modifier.padding(vertical = 10.dp)
         )
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = {
-                onSave("Have Read 📚")
-            })
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = {
+                    onSave("Have Read 📚")
+                })
         ) {
             Text(
                 "Have Read 📚",
