@@ -54,7 +54,7 @@ fun BookShelfNavigation() {
             SearchScreen(navController = navController, searchViewModel)
         }
         composable(BookShelfScreens.ShelfScreen.name) {
-            ShelfScreen(navController = navController)
+            ShelfScreen(navController = navController, shelfViewModel)
         }
 
         val route = BookShelfScreens.CategoryScreen.name

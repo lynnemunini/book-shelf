@@ -1,6 +1,5 @@
 package com.grayseal.bookshelf.screens.shelf
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,19 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.model.Book
-import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun ShelfScreen(navController: NavController) {
+fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
     val userId = Firebase.auth.currentUser?.uid
     var shelves: List<Shelf> by remember {
         mutableStateOf(mutableListOf())
@@ -50,20 +46,9 @@ fun ShelfScreen(navController: NavController) {
     }
     val context = LocalContext.current
     // Get shelves from firestore
-    if (userId != null) {
-        val db = FirebaseFirestore.getInstance().collection("users").document(userId)
-        db.get().addOnSuccessListener { documentSnapShot ->
-            val userShelves = documentSnapShot.toObject<MyUser>()?.shelves
-            if (userShelves != null) {
-                shelves = userShelves
-            } else {
-                Toast.makeText(context, "Error fetching Shelves", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            loading = false
-        }
-    }
-
+    shelves = shelfViewModel.getShelves(userId, context, onDone = {
+        loading = false
+    })
     Column(
         modifier = Modifier
             .fillMaxSize()
