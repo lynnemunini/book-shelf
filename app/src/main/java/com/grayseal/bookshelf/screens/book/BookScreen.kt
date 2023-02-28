@@ -134,55 +134,47 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                     db.get().addOnSuccessListener { documentSnapshot ->
                         if (documentSnapshot.exists()) {
                             val shelves = documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
-                            Log.d(
-                                "Updated SHELVES",
-                                GsonBuilder().setPrettyPrinting().create().toJson(shelves)
-                            )
                             val shelf: Shelf? = shelves.find { it.name == shelfName }
-                            // Index of the shelf in shelves
-                            val index = shelves.indexOfFirst { it.name == shelfName }
                             if (shelf != null) {
                                 val books: MutableList<Book> = shelf.books as MutableList<Book>
                                 if (book != null) {
-                                    books.add(book)
-                                }
-                                shelf.books = books
-                                // Update shelves
-                                shelves[index] = shelf
-                                FirebaseFirestore.getInstance().collection("users").document(userId)
-                                    .update("shelves", shelves).addOnSuccessListener {
+                                    if (!books.any { it.bookID == book.bookID }) { // Check if the book is already in the shelf using bookID
+                                        books.add(book)
+                                        shelf.books = books
+                                        // Update shelves
+                                        val index = shelves.indexOfFirst { it.name == shelfName }
+                                        shelves[index] = shelf
+                                        FirebaseFirestore.getInstance().collection("users").document(userId)
+                                            .update("shelves", shelves).addOnSuccessListener {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Successfully added book to $shelfName shelf",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }.addOnFailureListener {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Failed to add book to $shelfName shelf",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                    } else {
                                         Toast.makeText(
                                             context,
-                                            "Successfully added book to $shelfName shelf",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }.addOnFailureListener {
-                                        Toast.makeText(
-                                            context,
-                                            "Failed to add book to $shelfName shelf",
+                                            "The book is already in $shelfName shelf",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Failed to add book to $shelfName shelf",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                }
                             }
                         }
                     }
-                        .addOnFailureListener {
-                            Toast.makeText(context, "Failed to add book to $shelfName shelf", Toast.LENGTH_SHORT).show()
-                        }
                 }
-                else{
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                }
+
             })
         }
     ) {
-                Details(navController, book)
+        Details(navController, book)
     }
     LaunchedEffect(sheetState.isCollapsed) {
         if (sheetState.isCollapsed) {
@@ -673,7 +665,9 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top
         ) {
@@ -701,7 +695,8 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = {
                 onSave("Reading Now 📖")
-            })) {
+            })
+        ) {
             Text(
                 "Reading Now 📖",
                 fontFamily = poppinsFamily,
@@ -717,7 +712,8 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = {
                 onSave("To Read 📌")
-            })) {
+            })
+        ) {
             Text(
                 "To Read 📌",
                 fontFamily = poppinsFamily,
@@ -733,7 +729,8 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = {
                 onSave("Have Read 📚")
-            })) {
+            })
+        ) {
             Text(
                 "Have Read 📚",
                 fontFamily = poppinsFamily,
