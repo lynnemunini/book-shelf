@@ -172,7 +172,7 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             openDialog = openDialog,
             drawable = R.drawable.info,
             title = "Add to Shelf",
-            details = "The book is already in $otherShelfName shelf. Would you like to remove it and add to $shelfName",
+            details = "The book is already on the $otherShelfName shelf. Would you like to move it to the $shelfName shelf instead?",
             onDismiss = { openDialog = false },
             onClick = {
                 if (userId != null) {
@@ -218,9 +218,10 @@ fun Details(navController: NavController, book: Book?) {
     // Check if data is available
     if (book != null) {
         if (book.title.isNotEmpty()) {
-
+            bookTitle = book.title
         }
         if (book.authors[0].isNotEmpty()) {
+            bookAuthor = book.authors.joinToString(separator = ", ")
 
         }
         if (book.ratingsCount.toString().isNotEmpty()) {
