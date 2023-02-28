@@ -39,7 +39,7 @@ import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 @Composable
-fun BooksInShelfScreen(navController: NavController, shelfName: String?) {
+fun BooksInShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel, shelfName: String?) {
     /*Get books in this shelf*/
     val user by remember { mutableStateOf(Firebase.auth.currentUser) }
     var booksInShelf by remember {
@@ -51,30 +51,10 @@ fun BooksInShelfScreen(navController: NavController, shelfName: String?) {
     var loading by remember {
         mutableStateOf(true)
     }
-    if (userId != null) {
-        val db = FirebaseFirestore.getInstance().collection("users").document(userId)
-        db.get().addOnSuccessListener { documentSnapshot ->
-            if (documentSnapshot.exists()) {
-                val shelves = documentSnapshot.toObject<MyUser>()?.shelves
-                if (shelves != null) {
-                    val shelf = shelves.find { it.name == shelfName }
-                    if (shelf != null) {
-                        val books = shelf.books as MutableList<Book>
-                        booksInShelf = books
 
-                    } else {
-                        Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            } else {
-                Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
-            }
-            loading = false
-        }.addOnFailureListener {
-            Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
-        }
-    }
+    booksInShelf = shelfViewModel.getBooksInAShelf(userId, context, shelfName.toString(), onDone = {
+        loading = false
+    })
     Column(
         modifier = Modifier
             .fillMaxSize()

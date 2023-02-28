@@ -16,6 +16,7 @@ import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.screens.search.SearchScreen
 import com.grayseal.bookshelf.screens.shelf.BooksInShelfScreen
 import com.grayseal.bookshelf.screens.shelf.ShelfScreen
+import com.grayseal.bookshelf.screens.shelf.ShelfViewModel
 
 /**
 
@@ -28,6 +29,7 @@ fun BookShelfNavigation() {
     val navController = rememberNavController()
     val searchViewModel: SearchBookViewModel = hiltViewModel()
     val bookViewModel: BookViewModel = hiltViewModel()
+    val shelfViewModel: ShelfViewModel = hiltViewModel()
     NavHost(navController = navController, startDestination = BookShelfScreens.SplashScreen.name) {
         composable(BookShelfScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
@@ -69,7 +71,11 @@ fun BookShelfNavigation() {
             type = NavType.StringType
         })) { navBackStackEntry ->
             navBackStackEntry.arguments?.getString("shelfName").let { shelfName ->
-                BooksInShelfScreen(navController = navController, shelfName = shelfName)
+                BooksInShelfScreen(
+                    navController = navController,
+                    shelfViewModel = shelfViewModel,
+                    shelfName = shelfName
+                )
             }
         }
     }

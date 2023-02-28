@@ -1,4 +1,4 @@
-package com.grayseal.bookshelf.screens.home
+package com.grayseal.bookshelf.screens.shelf
 
 import android.content.Context
 import android.widget.Toast
@@ -10,13 +10,14 @@ import com.google.firebase.firestore.ktx.toObject
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.MyUser
 
-class HomeViewModel : ViewModel() {
-    var books: MutableState<MutableList<Book>> = mutableStateOf(mutableListOf())
+class ShelfViewModel : ViewModel() {
+    var booksInShelf: MutableState<MutableList<Book>> = mutableStateOf(mutableListOf())
 
-    // suspend function to get book in the reading list
-    fun getBooksInReadingList(
+    // Get books in a articular shelf
+    fun getBooksInAShelf(
         userId: String?,
         context: Context,
+        shelfName: String,
         onDone: () -> Unit
     ): MutableList<Book> {
         if (userId != null) {
@@ -25,13 +26,13 @@ class HomeViewModel : ViewModel() {
                 if (documentSnapshot.exists()) {
                     val shelves = documentSnapshot.toObject<MyUser>()?.shelves
                     if (shelves != null) {
-                        val shelf = shelves.find { it.name == "Reading Now 📖" }
+                        val shelf = shelves.find { it.name == shelfName }
                         if (shelf != null) {
-                            books.value = shelf.books as MutableList<Book>
+                            booksInShelf.value = shelf.books as MutableList<Book>
                         } else {
                             Toast.makeText(
                                 context,
-                                "Error fetching reading List",
+                                "Error fetching books",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -39,7 +40,7 @@ class HomeViewModel : ViewModel() {
                 } else {
                     Toast.makeText(
                         context,
-                        "Error fetching reading List",
+                        "Error fetching books",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -52,6 +53,6 @@ class HomeViewModel : ViewModel() {
                 ).show()
             }
         }
-        return books.value
+        return booksInShelf.value
     }
 }

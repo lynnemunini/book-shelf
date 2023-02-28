@@ -97,7 +97,7 @@ fun HomeScreen(
     }
 
     // Get books in the reading now shelf
-    readingList = homeScreenViewModel.getBookInReadingList(
+    readingList = homeScreenViewModel.getBooksInReadingList(
             userId = userId,
             context = context,
             onDone = { loading = false }
