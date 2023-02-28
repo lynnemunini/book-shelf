@@ -1,6 +1,7 @@
 package com.grayseal.bookshelf.screens.book
 
-import androidx.lifecycle.LiveData
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,7 +12,9 @@ import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.repository.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -23,7 +26,17 @@ ViewModel class that provides data related to a specific book.
 class BookViewModel @Inject constructor(private val repository: BookRepository) : ViewModel() {
     // A mutableLiveData to keep track of the book that is being moved
     private val _bookToMove = MutableLiveData<Book?>()
-    val bookToMove: MutableLiveData<Book?> = _bookToMove
+    private val bookToMove: MutableLiveData<Book?> = _bookToMove
+
+    // set the book that is being moved
+    fun setBookToMove(book: Book) {
+        _bookToMove.value = book
+    }
+
+    // clear the book that is being moved
+    fun clearBookToMove() {
+        _bookToMove.value = null
+    }
 
     /**
     Retrieves information related to a specific book identified by [bookId].
@@ -63,13 +76,55 @@ class BookViewModel @Inject constructor(private val repository: BookRepository) 
         }
     }
 
-    // set the book that is being moved
-    fun setBookToMove(book: Book) {
-        _bookToMove.value = book
-    }
-
-    // clear the book that is being moved
-    fun clearBookToMove() {
-        _bookToMove.value = null
+    // suspend function to add book to a shelf
+    suspend fun addBookToShelf(
+        userId: String?,
+        shelfName: String,
+        book: Book,
+        context: Context,
+        shelfExists: (String) -> Unit
+    ): Boolean = withContext(Dispatchers.IO) {
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val shelves = documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
+                    val shelf: Shelf? = shelves.find { shelf ->
+                        shelf.name == shelfName
+                    }
+                    if (shelf != null) {
+                        val books: MutableList<Book> = shelf.books as MutableList<Book>
+                        if (!books.any { it.bookID == book.bookID }) { // Check if the book is already in the shelf using bookID
+                            // Check if book is in another shelf
+                            val otherShelf = shelves.find { otherShelf ->
+                                otherShelf.name != shelfName && otherShelf.books.any { it.bookID == book.bookID }
+                            }
+                            if (otherShelf != null) {
+                                shelfExists(otherShelf.name)
+                            } else {
+                                books.add(book)
+                                shelf.books = books
+                                // Update shelves
+                                val index = shelves.indexOfFirst { it.name == shelfName }
+                                shelves[index] = shelf
+                                FirebaseFirestore.getInstance().collection("users")
+                                    .document(userId)
+                                    .update("shelves", shelves).await()
+                                return@withContext true
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Book already in the shelf",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return@withContext false
     }
 }

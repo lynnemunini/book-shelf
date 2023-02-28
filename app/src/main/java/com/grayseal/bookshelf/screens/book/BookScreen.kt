@@ -38,15 +38,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.ShelvesAlertDialog
 import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Book
-import com.grayseal.bookshelf.model.MyUser
-import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.ui.theme.Pink200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.loraFamily
@@ -54,6 +50,7 @@ import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
 This composable function represents a screen that displays details of a book.
@@ -138,58 +135,32 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             BottomSheetContent(onSave = { name ->
                 shelfName = name
                 // Add book to shelf
-                if (userId != null) {
-                    val db = FirebaseFirestore.getInstance().collection("users").document(userId)
-                    db.get().addOnSuccessListener { documentSnapshot ->
-                        if (documentSnapshot.exists()) {
-                            val shelves =
-                                documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
-                            val shelf: Shelf? = shelves.find { shelf ->
-                                shelf.name == shelfName
+                if (book != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val added = bookViewModel.addBookToShelf(
+                            userId,
+                            shelfName,
+                            book,
+                            context,
+                            shelfExists = { ShelfExistsName ->
+                                otherShelfName = ShelfExistsName
+                                openDialog = true
+                            })
+                        if (added) {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Successfully added book to $shelfName shelf",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                            if (shelf != null) {
-                                val books: MutableList<Book> = shelf.books as MutableList<Book>
-                                if (book != null) {
-                                    if (!books.any { it.bookID == book.bookID }) { // Check if the book is already in the shelf using bookID
-                                        // Check if book is in another shelf
-                                        val otherShelf =
-                                            shelves.find { otherShelf ->
-                                                otherShelf.name != shelfName && otherShelf.books.any { it.bookID == book.bookID }
-                                            }
-                                        if (otherShelf != null) {
-                                            otherShelfName = otherShelf.name
-                                            openDialog = true
-                                        } else {
-                                            books.add(book)
-                                            shelf.books = books
-                                            // Update shelves
-                                            val index =
-                                                shelves.indexOfFirst { it.name == shelfName }
-                                            shelves[index] = shelf
-                                            FirebaseFirestore.getInstance().collection("users")
-                                                .document(userId)
-                                                .update("shelves", shelves).addOnSuccessListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Successfully added book to $shelfName shelf",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }.addOnFailureListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Failed to add book to $shelfName shelf",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                        }
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Book already in the shelf",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                        } else if (otherShelfName == "") {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Failed to add book to $shelfName shelf",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     }
@@ -232,7 +203,6 @@ A composable function that displays the details of a book. If the book parameter
  * @param navController the navigation controller used to navigate to other screens
  * @param book the book to display, or null if data is not yet available
  */
-
 @Composable
 fun Details(navController: NavController, book: Book?) {
     var bookTitle: String = "Unavailable"
@@ -247,10 +217,10 @@ fun Details(navController: NavController, book: Book?) {
     // Check if data is available
     if (book != null) {
         if (book.title.isNotEmpty()) {
-            bookTitle = book.title
+
         }
         if (book.authors[0].isNotEmpty()) {
-            bookAuthor = book.authors.joinToString(separator = ", ")
+
         }
         if (book.ratingsCount.toString().isNotEmpty()) {
             rating = book.averageRating.toString()
@@ -790,44 +760,3 @@ fun BottomSheetContent(onSave: (String) -> Unit) {
         )
     }
 }
-
-/*
-// check if user wants the book removed from the shelf
-                                            if (removeFromShelf) {
-                                                // Remove book from current shelf and add to new shelf
-                                                val otherShelfBooks = otherShelf.books.toMutableList()
-                                                val bookIndex = otherShelfBooks.indexOfFirst { it.bookID == book.bookID }
-                                                otherShelfBooks.removeAt(bookIndex)
-                                                otherShelf.books = otherShelfBooks.toList()
-
-                                                books.add(book)
-                                                shelf.books = books
-
-                                                // Update shelves
-                                                val currentShelfIndex = shelves.indexOfFirst { it.name == shelfName }
-                                                Log.d("CURRENT SHELF", "$currentShelfIndex")
-                                                val otherShelfIndex = shelves.indexOfFirst { it.name == otherShelfName }
-                                                Log.d("OTHER SHELF", "$otherShelfIndex")
-                                                shelves[currentShelfIndex] = shelf
-                                                shelves[otherShelfIndex] = otherShelf
-                                                Log.d("BOOK SCREEN SHELVES", "$shelves")
-
-                                                FirebaseFirestore.getInstance().collection("users")
-                                                    .document(userId)
-                                                    .update("shelves", shelves)
-                                                    .addOnSuccessListener {
-                                                        Toast.makeText(
-                                                            context,
-                                                            "Successfully added book to $shelfName shelf",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }.addOnFailureListener {
-                                                        Toast.makeText(
-                                                            context,
-                                                            "Failed to add book to $shelfName shelf",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                openDialog = false
-                                            }
- */

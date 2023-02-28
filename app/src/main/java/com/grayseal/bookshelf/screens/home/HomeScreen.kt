@@ -51,8 +51,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
@@ -61,7 +59,6 @@ import com.grayseal.bookshelf.components.Reading
 import com.grayseal.bookshelf.components.ShelvesAlertDialog
 import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.model.Book
-import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.login.LoginScreen
 import com.grayseal.bookshelf.screens.login.LoginScreenViewModel
@@ -84,12 +81,14 @@ import java.util.*
 fun HomeScreen(
     navController: NavController,
     viewModel: LoginScreenViewModel = hiltViewModel(),
-    searchBookViewModel: SearchBookViewModel
+    searchBookViewModel: SearchBookViewModel,
+    homeScreenViewModel: HomeViewModel = hiltViewModel()
 ) {
     var user by remember { mutableStateOf(Firebase.auth.currentUser) }
     var readingList by remember {
         mutableStateOf(mutableListOf<Book>())
     }
+
     val context = LocalContext.current
     val userId = user?.uid
 
@@ -98,31 +97,11 @@ fun HomeScreen(
     }
 
     // Get books in the reading now shelf
-    if (userId != null) {
-        val db = FirebaseFirestore.getInstance().collection("users").document(userId)
-        db.get().addOnSuccessListener { documentSnapshot ->
-            if (documentSnapshot.exists()) {
-                val shelves = documentSnapshot.toObject<MyUser>()?.shelves
-                if (shelves != null) {
-                    val shelf = shelves.find { it.name == "Reading Now 📖" }
-                    if (shelf != null) {
-                        val books = shelf.books as MutableList<Book>
-                        readingList = books
-
-                    } else {
-                        Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            } else {
-                Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
-            }
-            loading = false
-        }.addOnFailureListener {
-            Toast.makeText(context, "Error fetching reading List", Toast.LENGTH_SHORT).show()
-        }
-    }
-
+    readingList = homeScreenViewModel.getBookInReadingList(
+            userId = userId,
+            context = context,
+            onDone = { loading = false }
+        )
     val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.profile)
 
     var avatar: Bitmap = bitmap
