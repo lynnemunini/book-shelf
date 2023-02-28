@@ -524,8 +524,10 @@ fun Reading(
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.Start) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.Start
+                    ) {
                         Row {
                             for (i in 0 until rating.toFloat().toInt()) {
                                 androidx.compose.material.Icon(
@@ -565,13 +567,18 @@ fun Reading(
                             }
                         }
                     }
-                    Column(modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.End) {
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.End)
-                            .clickable(onClick = onClick),
-                        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.End)
+                                .clickable(onClick = onClick),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
                                 "Read more",
                                 fontFamily = poppinsFamily,
@@ -817,5 +824,85 @@ fun HistoryCard(text: String, onClick: () -> Unit) {
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+/**
+ * A composable function that displays an alert dialog with a title, details, a confirm button,
+ * and a cancel button.
+ * @param openDialog A boolean that represents whether the alert dialog should be displayed.
+ * @param title A string representing the title of the alert dialog.
+ * @param details A string representing the details of the alert dialog.
+ * @param onDismiss A lambda function that is called when the user dismisses the alert dialog.
+ * @param onClick A lambda function that is called when the user confirms the alert dialog.
+ */
+@Composable
+fun ShelvesAlertDialog(
+    openDialog: Boolean,
+    title: String,
+    details: String,
+    onDismiss: () -> Unit,
+    onClick: () -> Unit
+) {
+    if (openDialog) {
+        androidx.compose.material.AlertDialog(
+            /* Dismiss the dialog when the user clicks outside the dialog or on the back
+                   button. */
+            onDismissRequest = onDismiss,
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                        contentDescription = "Info",
+                        modifier = Modifier.size(50.dp)
+                    )
+                    androidx.compose.material.Text(
+                        title,
+                        fontSize = 18.sp,
+                        fontFamily = poppinsFamily,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            text = {
+                androidx.compose.material.Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = details,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = onClick) {
+                    androidx.compose.material.Text(
+                        "Confirm",
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    androidx.compose.material.Text(
+                        "Cancel",
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        )
     }
 }

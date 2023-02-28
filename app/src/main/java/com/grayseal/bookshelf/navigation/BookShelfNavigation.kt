@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.screens.SplashScreen
 import com.grayseal.bookshelf.screens.book.BookScreen
 import com.grayseal.bookshelf.screens.book.BookViewModel
@@ -23,9 +22,9 @@ import com.grayseal.bookshelf.screens.shelf.ShelfScreen
 Composable function to handle navigation between screens in the BookShelf app.
 This function uses the rememberNavController() function to create a NavController and
 NavHost to handle navigation between different screens using the provided startDestination
-*/
+ */
 @Composable
-fun BookShelfNavigation(){
+fun BookShelfNavigation() {
     val navController = rememberNavController()
     val searchViewModel: SearchBookViewModel = hiltViewModel()
     val bookViewModel: BookViewModel = hiltViewModel()
@@ -33,7 +32,7 @@ fun BookShelfNavigation(){
         composable(BookShelfScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
-        composable(BookShelfScreens.HomeScreen.name,) {
+        composable(BookShelfScreens.HomeScreen.name) {
             HomeScreen(navController = navController, searchBookViewModel = searchViewModel)
         }
 
@@ -42,7 +41,11 @@ fun BookShelfNavigation(){
             type = NavType.StringType
         })) { navBack ->
             navBack.arguments?.getString("bookId").let { bookId ->
-                BookScreen(navController = navController, bookViewModel = bookViewModel, bookId = bookId)
+                BookScreen(
+                    navController = navController,
+                    bookViewModel = bookViewModel,
+                    bookId = bookId
+                )
             }
         }
         composable(BookShelfScreens.SearchScreen.name) {
@@ -62,12 +65,12 @@ fun BookShelfNavigation(){
         }
 
         val shelfRoute = BookShelfScreens.BooksInShelfScreen.name
-        composable("$shelfRoute/{shelfName}", arguments = listOf(navArgument(name = "shelfName"){
+        composable("$shelfRoute/{shelfName}", arguments = listOf(navArgument(name = "shelfName") {
             type = NavType.StringType
-        })){ navBackStackEntry ->
-           navBackStackEntry.arguments?.getString("shelfName").let { shelfName ->
-               BooksInShelfScreen(navController = navController, shelfName = shelfName)
-           }
+        })) { navBackStackEntry ->
+            navBackStackEntry.arguments?.getString("shelfName").let { shelfName ->
+                BooksInShelfScreen(navController = navController, shelfName = shelfName)
+            }
         }
     }
 }

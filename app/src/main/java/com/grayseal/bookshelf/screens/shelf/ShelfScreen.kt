@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -55,9 +54,9 @@ fun ShelfScreen(navController: NavController) {
         val db = FirebaseFirestore.getInstance().collection("users").document(userId)
         db.get().addOnSuccessListener { documentSnapShot ->
             val userShelves = documentSnapShot.toObject<MyUser>()?.shelves
-            if (userShelves != null){
+            if (userShelves != null) {
                 shelves = userShelves
-            }else{
+            } else {
                 Toast.makeText(context, "Error fetching Shelves", Toast.LENGTH_SHORT)
                     .show()
             }

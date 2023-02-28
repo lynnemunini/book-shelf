@@ -58,6 +58,7 @@ import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
 import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.components.Reading
+import com.grayseal.bookshelf.components.ShelvesAlertDialog
 import com.grayseal.bookshelf.data.categories
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.MyUser
@@ -388,7 +389,7 @@ fun HomeContent(
                     items.forEach { item ->
                         val selectedValue = selectedItem.value
                         val selectedKey = items.entries.find { it.value == selectedValue }?.key
-                        AlertDialog(
+                        ShelvesAlertDialog(
                             openDialog = openDialog,
                             title = if (selectedKey == "Log Out") {
                                 "Confirm Logout"
@@ -831,85 +832,5 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                 }
             }
         }
-    }
-}
-
-/**
- * A composable function that displays an alert dialog with a title, details, a confirm button,
- * and a cancel button.
- * @param openDialog A boolean that represents whether the alert dialog should be displayed.
- * @param title A string representing the title of the alert dialog.
- * @param details A string representing the details of the alert dialog.
- * @param onDismiss A lambda function that is called when the user dismisses the alert dialog.
- * @param onClick A lambda function that is called when the user confirms the alert dialog.
- */
-@Composable
-fun AlertDialog(
-    openDialog: Boolean,
-    title: String,
-    details: String,
-    onDismiss: () -> Unit,
-    onClick: () -> Unit
-) {
-    if (openDialog) {
-        AlertDialog(
-            /* Dismiss the dialog when the user clicks outside the dialog or on the back
-                   button. */
-            onDismissRequest = onDismiss,
-            title = {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-                        contentDescription = "Info",
-                        modifier = Modifier.size(50.dp)
-                    )
-                    Text(
-                        title,
-                        fontSize = 18.sp,
-                        fontFamily = poppinsFamily,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            },
-            text = {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = details,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 14.sp,
-                    fontFamily = poppinsFamily,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center
-                )
-            },
-            confirmButton = {
-                androidx.compose.material3.TextButton(onClick = onClick) {
-                    Text(
-                        "Confirm",
-                        fontSize = 15.sp,
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            },
-            dismissButton = {
-                androidx.compose.material3.TextButton(onClick = onDismiss) {
-                    Text(
-                        "Cancel",
-                        fontSize = 15.sp,
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        )
     }
 }

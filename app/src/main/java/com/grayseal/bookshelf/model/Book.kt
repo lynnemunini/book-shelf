@@ -5,7 +5,7 @@ package com.grayseal.bookshelf.model
  *
  * @author Lynne Munini
  */
-data class Book (
+data class Book(
     /** The unique identifier of the book */
     val bookID: String,
     /** A list of authors of the book */
@@ -36,7 +36,23 @@ data class Book (
     val title: String,
     /** Information related to a search query for the book */
     val searchInfo: String
-){
+) {
     // No-argument constructor required for Firestore deserialization
-    constructor() : this("", emptyList(), 0.0, emptyList(), "", ImageLinks("", ""), "", 0, emptyList(), "", "", 0, "", "", "")
+    constructor() : this(
+        "",
+        emptyList(),
+        0.0,
+        emptyList(),
+        "",
+        ImageLinks("", ""),
+        "",
+        0,
+        emptyList(),
+        "",
+        "",
+        0,
+        "",
+        "",
+        ""
+    )
 }
