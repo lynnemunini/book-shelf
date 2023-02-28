@@ -370,6 +370,9 @@ fun HomeContent(
                         val selectedKey = items.entries.find { it.value == selectedValue }?.key
                         ShelvesAlertDialog(
                             openDialog = openDialog,
+                            drawable = R.mipmap.ic_launcher_foreground,
+                            size = 50.dp,
+                            color = Pink500,
                             title = if (selectedKey == "Log Out") {
                                 "Confirm Logout"
                             } else {

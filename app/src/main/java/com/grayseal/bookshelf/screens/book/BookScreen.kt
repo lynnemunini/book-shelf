@@ -170,6 +170,7 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
     ) {
         ShelvesAlertDialog(
             openDialog = openDialog,
+            drawable = R.drawable.info,
             title = "Add to Shelf",
             details = "The book is already in $otherShelfName shelf. Would you like to remove it and add to $shelfName",
             onDismiss = { openDialog = false },

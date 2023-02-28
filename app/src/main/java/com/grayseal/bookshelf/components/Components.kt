@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -841,6 +842,9 @@ fun ShelvesAlertDialog(
     openDialog: Boolean,
     title: String,
     details: String,
+    drawable: Int,
+    color: Color = Yellow,
+    size: Dp = 30.dp,
     onDismiss: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -856,17 +860,18 @@ fun ShelvesAlertDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                        painter = painterResource(id = drawable),
                         contentDescription = "Info",
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(size).align(Alignment.CenterVertically),
+                        colorFilter = ColorFilter.tint(color)
                     )
                     androidx.compose.material.Text(
                         title,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontFamily = poppinsFamily,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Left
                     )
                 }
             },
@@ -875,17 +880,17 @@ fun ShelvesAlertDialog(
                     modifier = Modifier.fillMaxWidth(),
                     text = details,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Left
                 )
             },
             confirmButton = {
                 TextButton(onClick = onClick) {
                     androidx.compose.material.Text(
                         "Confirm",
-                        fontSize = 15.sp,
+                        fontSize = 14.sp,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
