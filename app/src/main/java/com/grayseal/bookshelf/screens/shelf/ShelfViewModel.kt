@@ -86,6 +86,31 @@ class ShelfViewModel : ViewModel() {
         return shelves.value
     }
 
+    // Delete a bok from a shelf
+    suspend fun deleteABookInShelf(userId: String?, book: Book, shelfName: String): Boolean = withContext(Dispatchers.IO){
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val userShelves =
+                        documentSnapshot.toObject<MyUser>()?.shelves as MutableList<Shelf>
+                    val shelf = userShelves.find { it.name == shelfName }
+                    if (shelf != null) {
+                        val books = shelf.books as MutableList<Book>
+                        books.remove(book)
+                        shelf.books = books
+                        // Update shelves
+                        val index = userShelves.indexOfFirst { it.name == shelfName }
+                        userShelves[index] = shelf
+                        db.update("shelves", userShelves).await()
+                        return@withContext true
+                    }
+                }
+            }
+        }
+        return@withContext false
+    }
+
     suspend fun addFavourite(
         userId: String?,
         book: Book,

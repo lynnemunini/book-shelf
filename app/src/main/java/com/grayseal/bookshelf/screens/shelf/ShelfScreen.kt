@@ -29,12 +29,14 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
     val userId = Firebase.auth.currentUser?.uid
@@ -49,54 +51,59 @@ fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
     shelves = shelfViewModel.getShelves(userId, context, onDone = {
         loading = false
     })
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            verticalAlignment = Alignment.CenterVertically
+    Scaffold(content = { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)
         ) {
-            Icon(
-                imageVector = Icons.Rounded.Close,
-                contentDescription = "Close Icon",
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(CircleShape)
-                    .clickable(enabled = true, onClick = {
-                        navController.navigate(route = BookShelfScreens.HomeScreen.name)
-                    })
-            )
-            Text(
-                "Shelves",
-                fontFamily = poppinsFamily,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(start = 30.dp)
-            )
-        }
-        if (!loading) {
-            if (shelves.isNotEmpty()) {
-                BookShelf(navController = navController, shelves = shelves)
-            } else {
-                Text("No shelves available")
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                androidx.compose.material.LinearProgressIndicator(color = Yellow)
+                Icon(
+                    imageVector = Icons.Rounded.Close,
+                    contentDescription = "Close Icon",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .clickable(enabled = true, onClick = {
+                            navController.navigate(route = BookShelfScreens.HomeScreen.name)
+                        })
+                )
+                Text(
+                    "Shelves",
+                    fontFamily = poppinsFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(start = 30.dp)
+                )
+            }
+            if (!loading) {
+                if (shelves.isNotEmpty()) {
+                    BookShelf(navController = navController, shelves = shelves)
+                } else {
+                    Text("No shelves available")
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    androidx.compose.material.LinearProgressIndicator(color = Yellow)
+                }
             }
         }
-    }
+    },
+    bottomBar = {
+        NavBar(navController = navController)
+    })
 }
 
 @Composable
