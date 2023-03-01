@@ -28,18 +28,23 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.model.Book
-import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun BooksInShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel, shelfName: String?) {
+fun BooksInShelfScreen(
+    navController: NavController,
+    shelfViewModel: ShelfViewModel,
+    shelfName: String?
+) {
     /*Get books in this shelf*/
     val user by remember { mutableStateOf(Firebase.auth.currentUser) }
     var booksInShelf by remember {
@@ -51,7 +56,15 @@ fun BooksInShelfScreen(navController: NavController, shelfViewModel: ShelfViewMo
     var loading by remember {
         mutableStateOf(true)
     }
-
+    var favouritesLoading by remember {
+        mutableStateOf(true)
+    }
+    var booksInFavourites: List<Book> by remember {
+        mutableStateOf(emptyList())
+    }
+    booksInFavourites = shelfViewModel.fetchFavourites(userId) {
+        favouritesLoading = false
+    }
     booksInShelf = shelfViewModel.getBooksInAShelf(userId, context, shelfName.toString(), onDone = {
         loading = false
     })
@@ -88,14 +101,26 @@ fun BooksInShelfScreen(navController: NavController, shelfViewModel: ShelfViewMo
         BooksInShelfItems(
             booksInShelf = booksInShelf,
             navController = navController,
-            loading = loading
+            shelfViewModel = shelfViewModel,
+            loading = loading,
+            favouritesLoading = favouritesLoading,
+            userId = userId,
+            favourites = booksInFavourites
         )
     }
 }
 
 @Composable
-fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, loading: Boolean) {
-    if (loading) {
+fun BooksInShelfItems(
+    booksInShelf: List<Book>,
+    navController: NavController,
+    shelfViewModel: ShelfViewModel,
+    loading: Boolean,
+    favouritesLoading: Boolean,
+    userId: String?,
+    favourites: List<Book>
+) {
+    if (loading && favouritesLoading) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,6 +162,10 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
                     }
                     val bookId = item.bookID
                     BookCard(
+                        shelfViewModel,
+                        userId = userId,
+                        book = item,
+                        favourites = favourites,
                         bookTitle = title,
                         bookAuthor = author,
                         previewText = previewText,
@@ -147,8 +176,7 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
                     )
                 }
             }
-        }
-        else{
+        } else {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,12 +202,31 @@ fun BooksInShelfItems(booksInShelf: List<Book>, navController: NavController, lo
 
 @Composable
 fun BookCard(
+    shelfViewModel: ShelfViewModel,
+    userId: String?,
+    book: Book,
+    favourites: List<Book>,
     bookTitle: String,
     bookAuthor: String,
     previewText: String,
     imageUrl: String,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    var favourited by remember {
+        mutableStateOf(false)
+    }
+    var favouritesThatUpdates by remember {
+        mutableStateOf(favourites)
+    }
+    if(favouritesThatUpdates.contains(book)){
+        favourited = true
+    }
+    val favIcon = if (favourited) {
+        Icons.Rounded.Favorite
+    } else {
+        Icons.Rounded.FavoriteBorder
+    }
     Surface(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -240,10 +287,76 @@ fun BookCard(
                     )
                     Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(
-                        Icons.Rounded.Favorite,
+                        favIcon,
                         contentDescription = "Favourite",
                         tint = Yellow,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable(
+                                onClick = {
+                                    if (!favourited) {
+                                        favourited = true
+                                        favouritesThatUpdates = shelfViewModel.fetchFavourites(userId){}
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val success = shelfViewModel.addFavourite(
+                                                userId = userId,
+                                                book = book
+                                            )
+                                            if (success) {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Added to favourites",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            } else {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Something went wrong!",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        favourited = false
+                                        favouritesThatUpdates = shelfViewModel.fetchFavourites(userId){}
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val success = shelfViewModel.removeFavourite(
+                                                userId = userId,
+                                                book = book
+                                            )
+                                            if (success) {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Removed from favourites",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            } else {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Something went wrong!",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            )
                     )
                     Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(

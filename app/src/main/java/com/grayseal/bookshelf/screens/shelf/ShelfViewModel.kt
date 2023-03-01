@@ -10,10 +10,14 @@ import com.google.firebase.firestore.ktx.toObject
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.MyUser
 import com.grayseal.bookshelf.model.Shelf
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class ShelfViewModel : ViewModel() {
     var booksInShelf: MutableState<MutableList<Book>> = mutableStateOf(mutableListOf())
     var shelves: MutableState<List<Shelf>> = mutableStateOf(mutableListOf())
+    var favourites: MutableState<List<Book>> = mutableStateOf(mutableListOf())
 
     // Get books in a particular shelf
     fun getBooksInAShelf(
@@ -80,5 +84,62 @@ class ShelfViewModel : ViewModel() {
             }
         }
         return shelves.value
+    }
+
+    suspend fun addFavourite(
+        userId: String?,
+        book: Book,
+    ): Boolean = withContext(Dispatchers.IO){
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val favourites =
+                        documentSnapshot.toObject<MyUser>()?.favourites as MutableList<Book>
+                    favourites.add(book)
+                    db.update("favourites", favourites).await()
+                    return@withContext true
+                }
+            }
+        }
+        return@withContext false
+    }
+
+    // Remove book from favourites
+    suspend fun removeFavourite(
+        userId: String?,
+        book: Book,
+    ): Boolean = withContext(Dispatchers.IO){
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val favourites =
+                        documentSnapshot.toObject<MyUser>()?.favourites as MutableList<Book>
+                    favourites.remove(book)
+                    db.update("favourites", favourites).await()
+                    return@withContext true
+                }
+            }
+        }
+        return@withContext false
+    }
+
+    // Fetch favourites
+    fun fetchFavourites(
+        userId: String?,
+        onDone: () -> Unit
+    ): List<Book> {
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    favourites.value =
+                        documentSnapshot.toObject<MyUser>()?.favourites as MutableList<Book>
+                    onDone()
+                }
+            }
+        }
+        return favourites.value
     }
 }

@@ -107,9 +107,7 @@ class BookViewModel @Inject constructor(private val repository: BookRepository) 
                                 // Update shelves
                                 val index = shelves.indexOfFirst { it.name == shelfName }
                                 shelves[index] = shelf
-                                FirebaseFirestore.getInstance().collection("users")
-                                    .document(userId)
-                                    .update("shelves", shelves).await()
+                               db.update("shelves", shelves).await()
                                 return@withContext true
                             }
                         } else {
