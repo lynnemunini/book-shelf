@@ -161,11 +161,12 @@ fun BooksInShelfItems(
                         previewText = cleanDescription.toString()
                     }
                     val bookId = item.bookID
+                    val favourite = favourites.contains(item)
                     BookCard(
                         shelfViewModel,
                         userId = userId,
                         book = item,
-                        favourites = favourites,
+                        favourite = favourite,
                         bookTitle = title,
                         bookAuthor = author,
                         previewText = previewText,
@@ -205,7 +206,7 @@ fun BookCard(
     shelfViewModel: ShelfViewModel,
     userId: String?,
     book: Book,
-    favourites: List<Book>,
+    favourite: Boolean,
     bookTitle: String,
     bookAuthor: String,
     previewText: String,
@@ -214,13 +215,7 @@ fun BookCard(
 ) {
     val context = LocalContext.current
     var favourited by remember {
-        mutableStateOf(false)
-    }
-    var favouritesThatUpdates by remember {
-        mutableStateOf(favourites)
-    }
-    if(favouritesThatUpdates.contains(book)){
-        favourited = true
+        mutableStateOf(favourite)
     }
     val favIcon = if (favourited) {
         Icons.Rounded.Favorite
@@ -296,7 +291,6 @@ fun BookCard(
                                 onClick = {
                                     if (!favourited) {
                                         favourited = true
-                                        favouritesThatUpdates = shelfViewModel.fetchFavourites(userId){}
                                         CoroutineScope(Dispatchers.IO).launch {
                                             val success = shelfViewModel.addFavourite(
                                                 userId = userId,
@@ -326,7 +320,6 @@ fun BookCard(
                                         }
                                     } else {
                                         favourited = false
-                                        favouritesThatUpdates = shelfViewModel.fetchFavourites(userId){}
                                         CoroutineScope(Dispatchers.IO).launch {
                                             val success = shelfViewModel.removeFavourite(
                                                 userId = userId,
