@@ -7,25 +7,26 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.DeleteForever
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.key.Key.Companion.Delete
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
@@ -40,7 +41,6 @@ import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.shelf.ShelfViewModel
 import com.grayseal.bookshelf.ui.theme.Gray200
-import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
@@ -87,7 +87,7 @@ fun FavouriteScreen(
                         })
                 )
                 androidx.compose.material3.Text(
-                    "My favourites",
+                    "My Favourite",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFamily,
@@ -95,7 +95,11 @@ fun FavouriteScreen(
                     textAlign = TextAlign.Center
                 )
             }
-            Divider(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), color = Gray200)
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp), color = Gray200
+            )
             Favourites(
                 navController = navController,
                 userId = userId,
@@ -135,12 +139,12 @@ fun Favourites(
         }
     } else {
         if (favourites.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(15.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 items(items = favourites) { item ->
                     var title = "Title information unavailable"
@@ -169,6 +173,7 @@ fun Favourites(
                         userId = userId,
                         book = item,
                         bookTitle = title,
+                        rating = item.averageRating.toString(),
                         bookAuthor = author,
                         previewText = previewText,
                         imageUrl = imageUrl,
@@ -177,7 +182,6 @@ fun Favourites(
                             navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
                         }
                     )
-                    Divider(modifier = Modifier.fillMaxWidth().padding(top = 10.dp), color = Gray200)
                 }
             }
         } else {
@@ -197,7 +201,16 @@ fun Favourites(
                     "Uh oh, you have no favourites!",
                     fontFamily = poppinsFamily,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+                androidx.compose.material.Text(
+                    "Explore books and add them to favourites to show them here",
+                    fontFamily = poppinsFamily,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -211,6 +224,7 @@ fun FavCard(
     book: Book,
     bookTitle: String,
     bookAuthor: String,
+    rating: String,
     previewText: String,
     imageUrl: String,
     onFavouritesChanged: () -> Unit,
@@ -222,9 +236,10 @@ fun FavCard(
         modifier = Modifier
             .clickable(onClick = onClick)
             .fillMaxWidth(),
-        shape = RectangleShape
+        shape = RoundedCornerShape(5.dp),
+        color = Color(0xFFfbf2f0)
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 5.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -270,40 +285,105 @@ fun FavCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    Box {
-                        Icon(
-                            Icons.Outlined.Delete,
-                            contentDescription = "Remove",
-                            tint = Yellow,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clickable(onClick = {
-                                    isDeleting = true // set the deletion state to true
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        val done = shelfViewModel.removeFavourite(userId, book)
-                                        if (done) {
-                                            withContext(Dispatchers.Main) {
-                                                Toast
-                                                    .makeText(
-                                                        context,
-                                                        "Book deleted from favourites",
-                                                        Toast.LENGTH_SHORT
-                                                    )
-                                                    .show()
-                                                onFavouritesChanged()
-                                            }
-                                        }
-                                        isDeleting = false // set the deletion state to false
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Row {
+                            for (i in 0 until rating.toFloat().toInt()) {
+                                androidx.compose.material.Icon(
+                                    Icons.Rounded.Star,
+                                    contentDescription = "star",
+                                    tint = Yellow,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                            if ((5 - rating.toFloat()) > 0) {
+                                val unrated = 5 - rating.toFloat().toInt()
+                                if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
+                                    androidx.compose.material.Icon(
+                                        Icons.Rounded.StarHalf,
+                                        contentDescription = "star",
+                                        tint = Yellow,
+                                        modifier = Modifier.size(15.dp)
+                                    )
+                                    for (i in 0 until unrated - 1) {
+                                        androidx.compose.material.Icon(
+                                            Icons.Rounded.Star,
+                                            contentDescription = "star",
+                                            tint = Color.LightGray,
+                                            modifier = Modifier.size(15.dp)
+                                        )
                                     }
-                                })
-                        )
-                        if (isDeleting) {
-                            CircularProgressIndicator(
+                                } else {
+                                    for (i in 0 until unrated) {
+                                        androidx.compose.material.Icon(
+                                            Icons.Rounded.Star,
+                                            contentDescription = "star",
+                                            tint = Color.LightGray,
+                                            modifier = Modifier.size(15.dp)
+                                        )
+                                    }
+                                }
+                            }
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontFamily = poppinsFamily,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = MaterialTheme.colorScheme.onBackground.copy(
+                                                alpha = 0.4f
+                                            )
+                                        )
+                                    ) {
+                                        append(rating.toFloat().toString())
+                                    }
+                                },
+                                modifier = Modifier.padding(start = 5.dp)
+                            )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Box {
+                            Icon(
+                                Icons.Outlined.Delete,
+                                contentDescription = "Remove",
+                                tint = Yellow,
                                 modifier = Modifier
                                     .size(20.dp)
-                                    .align(Alignment.Center),
-                                color = Yellow
+                                    .clickable(onClick = {
+                                        isDeleting = true // set the deletion state to true
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val done = shelfViewModel.removeFavourite(userId, book)
+                                            if (done) {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Book deleted from favourites",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                    onFavouritesChanged()
+                                                }
+                                            }
+                                            isDeleting = false // set the deletion state to false
+                                        }
+                                    })
                             )
+                            if (isDeleting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .align(Alignment.Center),
+                                    color = Yellow
+                                )
+                            }
                         }
                     }
                 }

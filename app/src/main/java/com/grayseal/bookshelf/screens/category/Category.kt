@@ -71,7 +71,7 @@ fun CategoryScreen(
             viewModel.loading.value = true
             viewModel.searchBooks(category)
         }
-        Divider(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), color = Gray200)
+        Divider(modifier = Modifier.fillMaxWidth().padding(top = 10.dp), color = Gray200)
         Results(viewModel = viewModel, navController = navController)
     }
 }

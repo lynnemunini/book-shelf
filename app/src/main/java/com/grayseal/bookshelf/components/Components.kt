@@ -767,11 +767,13 @@ fun SearchCard(
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
-        shape = RectangleShape
+        shape = RoundedCornerShape(5.dp),
+        color = Color(0xFFfbf2f0)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 5.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

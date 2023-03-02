@@ -7,17 +7,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.RateReview
-import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -101,7 +104,9 @@ fun BooksInShelfScreen(
                 textAlign = TextAlign.Center
             )
         }
-        Divider(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), color = Gray200)
+        Divider(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp), color = Gray200)
         BooksInShelfItems(
             booksInShelf = booksInShelf,
             navController = navController,
@@ -144,12 +149,12 @@ fun BooksInShelfItems(
         }
     } else {
         if (booksInShelf.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(15.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(),
-                verticalArrangement = Arrangement.spacedBy(30.dp)
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 items(items = booksInShelf) { item ->
                     var title = "Title information unavailable"
@@ -189,7 +194,6 @@ fun BooksInShelfItems(
                         },
                         onShelfChanged = onShelfChanged,
                     )
-                    Divider(modifier = Modifier.fillMaxWidth().padding(top = 10.dp), color = Gray200)
                 }
             }
         } else {
@@ -206,10 +210,19 @@ fun BooksInShelfItems(
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
                 androidx.compose.material.Text(
-                    "Uh oh, no books in the shelf!",
+                    "Uh oh, you have no books in the shelf",
                     fontFamily = poppinsFamily,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+                androidx.compose.material.Text(
+                    "Explore books and add them to the shelf to show them here",
+                    fontFamily = poppinsFamily,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -244,9 +257,12 @@ fun BookCard(
         modifier = Modifier
             .clickable(onClick = onClick)
             .fillMaxWidth(),
-        shape = RectangleShape
+        shape = RoundedCornerShape(5.dp),
+        color = Color(0xFFfbf2f0)
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp, horizontal = 5.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

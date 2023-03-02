@@ -218,7 +218,7 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
     }
 
     if (!loading && searchResults.e == null && searchResults.data != null) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
@@ -255,9 +255,6 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                         navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
                     }
                 )
-                Divider(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp), color = Gray200)
             }
         }
     }

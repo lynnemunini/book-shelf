@@ -777,11 +777,20 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                     contentDescription = "Empty Shelf",
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
-                Text(
-                    "Add a book to Reading now shelf to see it here",
+                androidx.compose.material.Text(
+                    "Uh oh, you have no current reads!",
+                    fontFamily = poppinsFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+                androidx.compose.material.Text(
+                    "Explore books and add them to reading now shelf to show them here",
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(56.dp))
             }
