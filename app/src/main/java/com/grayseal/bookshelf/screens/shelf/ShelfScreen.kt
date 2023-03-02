@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -59,26 +57,21 @@ fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.Close,
-                    contentDescription = "Close Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .clickable(enabled = true, onClick = {
-                            navController.navigate(route = BookShelfScreens.HomeScreen.name)
-                        })
-                )
                 Text(
                     "Shelves",
                     fontFamily = poppinsFamily,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.shelves),
+                    contentDescription = "Shelves",
+                    Modifier.size(35.dp)
                 )
             }
             if (!loading) {
@@ -100,9 +93,9 @@ fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
             }
         }
     },
-    bottomBar = {
-        NavBar(navController = navController)
-    })
+        bottomBar = {
+            NavBar(navController = navController)
+        })
 }
 
 @Composable

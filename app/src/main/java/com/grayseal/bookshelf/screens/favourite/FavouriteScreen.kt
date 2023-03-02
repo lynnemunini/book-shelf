@@ -73,33 +73,18 @@ fun FavouriteScreen(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                androidx.compose.material3.Icon(
-                    imageVector = Icons.Rounded.Close,
-                    contentDescription = "Close Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .clickable(enabled = true, onClick = {
-                            navController.popBackStack()
-                        })
-                )
-                androidx.compose.material3.Text(
-                    "My Favourite",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                androidx.compose.material.Text(
+                    "Favourite Books",
                     fontFamily = poppinsFamily,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )
             }
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp), color = Gray200
-            )
             Favourites(
                 navController = navController,
                 userId = userId,
@@ -139,7 +124,7 @@ fun Favourites(
         }
     } else {
         if (favourites.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
