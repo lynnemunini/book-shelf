@@ -101,7 +101,7 @@ fun BooksInShelfScreen(
                 textAlign = TextAlign.Center
             )
         }
-        Divider(modifier = Modifier.fillMaxWidth().padding(top = 30.dp), color = Gray200)
+        Divider(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), color = Gray200)
         BooksInShelfItems(
             booksInShelf = booksInShelf,
             navController = navController,
