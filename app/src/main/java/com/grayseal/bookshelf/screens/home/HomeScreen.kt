@@ -623,7 +623,7 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
                                         .clip(CircleShape)
                                 )
                             }
-                            Column(
+                            /*Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 10.dp, end = 10.dp)
@@ -635,7 +635,7 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.tertiary
                                 )
-                            }
+                            }*/
                         }
                         Surface(
                             modifier = Modifier

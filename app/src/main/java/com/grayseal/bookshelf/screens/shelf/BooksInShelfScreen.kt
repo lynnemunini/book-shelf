@@ -102,11 +102,17 @@ fun BooksInShelfScreen(
             booksInShelf = booksInShelf,
             navController = navController,
             shelfViewModel = shelfViewModel,
+            shelfName = shelfName,
             loading = loading,
             favouritesLoading = favouritesLoading,
             userId = userId,
             favourites = booksInFavourites
-        )
+        ) {
+            booksInShelf =
+                shelfViewModel.getBooksInAShelf(userId, context, shelfName.toString(), onDone = {
+                    loading = false
+                })
+        }
     }
 }
 
@@ -115,10 +121,12 @@ fun BooksInShelfItems(
     booksInShelf: List<Book>,
     navController: NavController,
     shelfViewModel: ShelfViewModel,
+    shelfName: String?,
     loading: Boolean,
     favouritesLoading: Boolean,
     userId: String?,
-    favourites: List<Book>
+    favourites: List<Book>,
+    onShelfChanged: () -> Unit,
 ) {
     if (loading && favouritesLoading) {
         Column(
@@ -166,6 +174,7 @@ fun BooksInShelfItems(
                         shelfViewModel,
                         userId = userId,
                         book = item,
+                        shelfName = shelfName,
                         favourite = favourite,
                         bookTitle = title,
                         bookAuthor = author,
@@ -173,7 +182,8 @@ fun BooksInShelfItems(
                         imageUrl = imageUrl,
                         onClick = {
                             navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
-                        }
+                        },
+                        onShelfChanged = onShelfChanged,
                     )
                 }
             }
@@ -206,11 +216,13 @@ fun BookCard(
     shelfViewModel: ShelfViewModel,
     userId: String?,
     book: Book,
+    shelfName: String?,
     favourite: Boolean,
     bookTitle: String,
     bookAuthor: String,
     previewText: String,
     imageUrl: String,
+    onShelfChanged: () -> Unit,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -222,6 +234,7 @@ fun BookCard(
     } else {
         Icons.Rounded.FavoriteBorder
     }
+    var isDeleting by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -352,12 +365,45 @@ fun BookCard(
                             )
                     )
                     Spacer(modifier = Modifier.width(70.dp))
-                    androidx.compose.material.Icon(
-                        Icons.Rounded.DeleteForever,
-                        contentDescription = "Remove",
-                        tint = Yellow,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Box {
+                        androidx.compose.material.Icon(
+                            Icons.Rounded.DeleteForever,
+                            contentDescription = "Remove",
+                            tint = Yellow,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable(onClick = {
+                                    isDeleting = true // set the deletion state to true
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        val done = shelfViewModel.deleteABookInShelf(
+                                            userId, book,
+                                            shelfName
+                                        )
+                                        if (done) {
+                                            withContext(Dispatchers.Main) {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Book deleted from shelf",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+                                                onShelfChanged()
+                                            }
+                                        }
+                                        isDeleting = false // set the deletion state to false
+                                    }
+                                })
+                        )
+                        if (isDeleting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .align(Alignment.Center),
+                                color = Yellow
+                            )
+                        }
+                    }
                 }
             }
         }

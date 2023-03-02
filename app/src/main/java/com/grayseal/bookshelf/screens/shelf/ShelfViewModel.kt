@@ -86,8 +86,8 @@ class ShelfViewModel : ViewModel() {
         return shelves.value
     }
 
-    // Delete a bok from a shelf
-    suspend fun deleteABookInShelf(userId: String?, book: Book, shelfName: String): Boolean = withContext(Dispatchers.IO){
+    // Delete a book from a shelf
+    suspend fun deleteABookInShelf(userId: String?, book: Book, shelfName: String?): Boolean = withContext(Dispatchers.IO){
         if (userId != null) {
             val db = FirebaseFirestore.getInstance().collection("users").document(userId)
             db.get().await().let { documentSnapshot ->
