@@ -59,7 +59,7 @@ fun BookShelfNavigation() {
             ShelfScreen(navController = navController, shelfViewModel)
         }
         composable(BookShelfScreens.FavouriteScreen.name) {
-            FavouriteScreen(navController = navController, searchViewModel)
+            FavouriteScreen(navController = navController, shelfViewModel)
         }
         composable(BookShelfScreens.ReviewScreen.name) {
             ReviewScreen(navController = navController)

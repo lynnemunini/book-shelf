@@ -663,7 +663,7 @@ fun NavBar(navController: NavController) {
                     when (item.name) {
                         "Home" -> navController.navigate(route = BookShelfScreens.HomeScreen.name)
                         "Shelves" -> navController.navigate(route = BookShelfScreens.ShelfScreen.name)
-                        "Favorites" -> navController.navigate(route = BookShelfScreens.FavouriteScreen.name)
+                        "Favourites" -> navController.navigate(route = BookShelfScreens.FavouriteScreen.name)
                         "Reviews" -> navController.navigate(route = BookShelfScreens.ReviewScreen.name)
                     }
                 },
