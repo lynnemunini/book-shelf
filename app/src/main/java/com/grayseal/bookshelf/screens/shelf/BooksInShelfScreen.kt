@@ -8,6 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.RateReview
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,6 +35,7 @@ import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
+import com.grayseal.bookshelf.ui.theme.Gray200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
@@ -94,10 +98,10 @@ fun BooksInShelfScreen(
                 fontWeight = FontWeight.Medium,
                 fontFamily = poppinsFamily,
                 color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(start = 30.dp)
+                textAlign = TextAlign.Center
             )
         }
+        Divider(modifier = Modifier.fillMaxWidth().padding(top = 30.dp), color = Gray200)
         BooksInShelfItems(
             booksInShelf = booksInShelf,
             navController = navController,
@@ -140,7 +144,7 @@ fun BooksInShelfItems(
         }
     } else {
         if (booksInShelf.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -185,6 +189,7 @@ fun BooksInShelfItems(
                         },
                         onShelfChanged = onShelfChanged,
                     )
+                    Divider(modifier = Modifier.fillMaxWidth().padding(top = 10.dp), color = Gray200)
                 }
             }
         } else {
@@ -288,7 +293,7 @@ fun BookCard(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     androidx.compose.material.Icon(
-                        Icons.Rounded.RateReview,
+                        Icons.Outlined.RateReview,
                         contentDescription = "Review",
                         tint = Yellow,
                         modifier = Modifier.size(20.dp)
@@ -367,7 +372,7 @@ fun BookCard(
                     Spacer(modifier = Modifier.width(70.dp))
                     Box {
                         androidx.compose.material.Icon(
-                            Icons.Rounded.DeleteForever,
+                            Icons.Outlined.Delete,
                             contentDescription = "Remove",
                             tint = Yellow,
                             modifier = Modifier
@@ -403,6 +408,29 @@ fun BookCard(
                                 color = Yellow
                             )
                         }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onClick),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Read more",
+                            fontFamily = poppinsFamily,
+                            fontSize = 12.sp,
+                            color = Yellow,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        androidx.compose.material.Icon(
+                            Icons.Rounded.ArrowForward,
+                            contentDescription = "Arrow",
+                            tint = Yellow,
+                            modifier = Modifier.size(15.dp)
+                        )
                     }
                 }
             }

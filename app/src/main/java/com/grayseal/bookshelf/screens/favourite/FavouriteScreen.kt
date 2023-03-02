@@ -9,7 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.key.Key.Companion.Delete
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,6 +39,8 @@ import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.shelf.ShelfViewModel
+import com.grayseal.bookshelf.ui.theme.Gray200
+import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
@@ -87,10 +92,10 @@ fun FavouriteScreen(
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFamily,
                     color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 30.dp)
+                    textAlign = TextAlign.Center
                 )
             }
+            Divider(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), color = Gray200)
             Favourites(
                 navController = navController,
                 userId = userId,
@@ -130,12 +135,12 @@ fun Favourites(
         }
     } else {
         if (favourites.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(),
-                verticalArrangement = Arrangement.spacedBy(30.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(items = favourites) { item ->
                     var title = "Title information unavailable"
@@ -172,6 +177,7 @@ fun Favourites(
                             navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
                         }
                     )
+                    Divider(modifier = Modifier.fillMaxWidth().padding(top = 10.dp), color = Gray200)
                 }
             }
         } else {
@@ -266,7 +272,7 @@ fun FavCard(
                 ) {
                     Box {
                         Icon(
-                            Icons.Rounded.DeleteForever,
+                            Icons.Outlined.Delete,
                             contentDescription = "Remove",
                             tint = Yellow,
                             modifier = Modifier

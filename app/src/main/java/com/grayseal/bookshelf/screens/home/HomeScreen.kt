@@ -207,11 +207,11 @@ fun HomeContent(
     val readingBooksTotal = reading.size
     val scope = rememberCoroutineScope()
     val items = mapOf(
-        "Settings" to R.drawable.settings,
+        // "Settings" to R.drawable.settings,
         "Log Out" to R.drawable.logout,
         "Delete Account" to R.drawable.delete
     )
-    val selectedItem = remember { mutableStateOf(items["Settings"]) }
+    val selectedItem = remember { mutableStateOf(items["Log Out"]) }
     var openDialog by remember {
         mutableStateOf(false)
     }
@@ -311,7 +311,7 @@ fun HomeContent(
                                     .clickable(onClick = {
                                         launcher.launch(arrayOf("image/*"))
                                     }),
-                                contentScale = ContentScale.FillBounds
+                                contentScale = ContentScale.Crop
                             )
                         }
                         Surface(
@@ -503,7 +503,7 @@ fun TopHeader(
                             onProfileClick()
                         },
                     ),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {

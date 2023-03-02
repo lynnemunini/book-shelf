@@ -78,8 +78,7 @@ fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 30.dp)
+                    textAlign = TextAlign.Center
                 )
             }
             if (!loading) {
@@ -111,7 +110,7 @@ fun BookShelf(navController: NavController, shelves: List<Shelf>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 30.dp),
+            .padding(top = 20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(items = shelves) { shelf ->

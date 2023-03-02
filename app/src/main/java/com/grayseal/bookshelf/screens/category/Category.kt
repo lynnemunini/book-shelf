@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.navigation.NavController
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.search.Results
 import com.grayseal.bookshelf.screens.search.SearchBookViewModel
+import com.grayseal.bookshelf.ui.theme.Gray200
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 
 /**
@@ -61,15 +63,15 @@ fun CategoryScreen(
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(start = 30.dp)
+                modifier = Modifier
             )
 
         }
-        Spacer(modifier = Modifier.height(30.dp))
         if (category != null) {
             viewModel.loading.value = true
             viewModel.searchBooks(category)
         }
+        Divider(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), color = Gray200)
         Results(viewModel = viewModel, navController = navController)
     }
 }

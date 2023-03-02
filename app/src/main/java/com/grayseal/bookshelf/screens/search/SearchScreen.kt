@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import com.grayseal.bookshelf.components.HistoryCard
 import com.grayseal.bookshelf.components.SearchCard
 import com.grayseal.bookshelf.components.SearchInputField
 import com.grayseal.bookshelf.navigation.BookShelfScreens
+import com.grayseal.bookshelf.ui.theme.Gray200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import com.grayseal.bookshelf.utils.convertToMutableList
@@ -216,6 +218,7 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
     }
 
     if (!loading && searchResults.e == null && searchResults.data != null) {
+        Spacer(modifier = Modifier.height(10.dp))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
@@ -252,6 +255,9 @@ fun Results(viewModel: SearchBookViewModel, navController: NavController) {
                         navController.navigate(route = BookShelfScreens.BookScreen.name + "/$bookId")
                     }
                 )
+                Divider(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp), color = Gray200)
             }
         }
     }
