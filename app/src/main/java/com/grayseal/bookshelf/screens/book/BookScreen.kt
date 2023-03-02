@@ -74,6 +74,8 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
     // Book Data
     val book = bookInfo.data
 
+
+
     // Get current user
     val userId = Firebase.auth.currentUser?.uid
     val context = LocalContext.current
@@ -189,7 +191,13 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                 }
             }
         )
-        Details(navController, book)
+        Box {
+            Details(navController, book)
+            // transparent overlay on top of content, shown if sheet is expanded
+            if (sheetState.isExpanded) {
+                Box(modifier = Modifier.background(Color.Black.copy(alpha = 0.5f)).fillMaxSize()) {}
+            }
+        }
     }
     LaunchedEffect(sheetState.isCollapsed) {
         if (sheetState.isCollapsed) {

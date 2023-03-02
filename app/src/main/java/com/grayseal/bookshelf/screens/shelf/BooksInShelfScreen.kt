@@ -196,7 +196,7 @@ fun BooksInShelfItems(
                 verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.nobookinshelf),
+                    painter = painterResource(id = R.drawable.emptyshelf),
                     contentDescription = "Empty Shelf",
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
