@@ -12,6 +12,8 @@ enum class BookShelfScreens {
     ShelfScreen,
     BookScreen,
     CategoryScreen,
+    FavouriteScreen,
+    ReviewScreen,
     BooksInShelfScreen;
 
     /**
@@ -27,6 +29,8 @@ enum class BookShelfScreens {
             HomeScreen.name -> HomeScreen
             ShelfScreen.name -> ShelfScreen
             BookScreen.name -> BookScreen
+            FavouriteScreen.name -> FavouriteScreen
+            ReviewScreen.name -> ReviewScreen
             CategoryScreen.name -> CategoryScreen
             BooksInShelfScreen.name -> BooksInShelfScreen
             else -> throw IllegalArgumentException("Route $route is not recognized")

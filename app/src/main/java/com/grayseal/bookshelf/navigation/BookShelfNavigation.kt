@@ -11,7 +11,9 @@ import com.grayseal.bookshelf.screens.SplashScreen
 import com.grayseal.bookshelf.screens.book.BookScreen
 import com.grayseal.bookshelf.screens.book.BookViewModel
 import com.grayseal.bookshelf.screens.category.CategoryScreen
+import com.grayseal.bookshelf.screens.favourite.FavouriteScreen
 import com.grayseal.bookshelf.screens.home.HomeScreen
+import com.grayseal.bookshelf.screens.review.ReviewScreen
 import com.grayseal.bookshelf.screens.search.SearchBookViewModel
 import com.grayseal.bookshelf.screens.search.SearchScreen
 import com.grayseal.bookshelf.screens.shelf.BooksInShelfScreen
@@ -56,7 +58,12 @@ fun BookShelfNavigation() {
         composable(BookShelfScreens.ShelfScreen.name) {
             ShelfScreen(navController = navController, shelfViewModel)
         }
-
+        composable(BookShelfScreens.FavouriteScreen.name) {
+            FavouriteScreen(navController = navController, searchViewModel)
+        }
+        composable(BookShelfScreens.ReviewScreen.name) {
+            ReviewScreen(navController = navController)
+        }
         val route = BookShelfScreens.CategoryScreen.name
         composable("$route/{query}", arguments = listOf(navArgument(name = "query") {
             type = NavType.StringType

@@ -35,9 +35,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.grayseal.bookshelf.R
+import com.grayseal.bookshelf.data.BottomNavItem
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.*
 import com.grayseal.bookshelf.utils.isValidEmail
@@ -612,47 +614,64 @@ selectedItem variable is updated to reflect the new selection.
  */
 @Composable
 fun NavBar(navController: NavController) {
-    var selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("Home", "Shelves", "Favourites", "Reviews")
-    val navBarItems = mapOf(
-        items[0] to R.drawable.home,
-        items[1] to R.drawable.shelves,
-        items[2] to R.drawable.favourite,
-        items[3] to R.drawable.reviews
+    val items = listOf(
+        BottomNavItem(
+            name = "Home",
+            route = BookShelfScreens.HomeScreen.name,
+            icon = R.drawable.home,
+        ),
+        BottomNavItem(
+            name = "Shelves",
+            route = BookShelfScreens.ShelfScreen.name,
+            icon = R.drawable.shelves,
+        ),
+        BottomNavItem(
+            name = "Favourites",
+            route = BookShelfScreens.FavouriteScreen.name,
+            icon = R.drawable.favourite,
+        ),
+        BottomNavItem(
+            name = "Reviews",
+            route = BookShelfScreens.ReviewScreen.name,
+            icon = R.drawable.reviews,
+        ),
     )
 
+    val backStackEntry = navController.currentBackStackEntryAsState()
+
     NavigationBar(containerColor = Color.Transparent, tonalElevation = 0.dp) {
-        items.forEachIndexed { index, item ->
+        items.forEach { item ->
+            val selected = item.route == backStackEntry.value?.destination?.route
             NavigationBarItem(
                 icon = {
-                    navBarItems[item]?.let {
-                        Icon(
-                            painter = painterResource(id = it),
-                            contentDescription = item,
-                            modifier = Modifier
-                                .size(30.dp)
-                                .background(color = Color.Transparent)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(id = item.icon),
+                        contentDescription = item.name,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(color = Color.Transparent)
+                    )
                 },
                 label = {
                     Text(
-                        item, fontFamily = poppinsFamily,
+                        item.name, fontFamily = poppinsFamily,
                         fontSize = 12.sp,
                     )
                 },
-                selected = selectedItem == index,
+                selected = selected,
                 onClick = {
-                    selectedItem = index
-                    if (item == "Shelves") {
-                        navController.navigate(route = BookShelfScreens.ShelfScreen.name)
+                    when (item.name) {
+                        "Home" -> navController.navigate(route = BookShelfScreens.HomeScreen.name)
+                        "Shelves" -> navController.navigate(route = BookShelfScreens.ShelfScreen.name)
+                        "Favorites" -> navController.navigate(route = BookShelfScreens.FavouriteScreen.name)
+                        "Reviews" -> navController.navigate(route = BookShelfScreens.ReviewScreen.name)
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedTextColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    unselectedIconColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)
                 ),
                 interactionSource = MutableInteractionSource()
@@ -862,7 +881,9 @@ fun ShelvesAlertDialog(
                     Image(
                         painter = painterResource(id = drawable),
                         contentDescription = "Info",
-                        modifier = Modifier.size(size).align(Alignment.CenterVertically),
+                        modifier = Modifier
+                            .size(size)
+                            .align(Alignment.CenterVertically),
                         colorFilter = ColorFilter.tint(color)
                     )
                     androidx.compose.material.Text(
