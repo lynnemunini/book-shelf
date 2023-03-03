@@ -392,7 +392,7 @@ fun BookCard(
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     if (!isReviewed) {
                         androidx.compose.material.Icon(
@@ -635,6 +635,7 @@ fun ReviewDialog(
                             }
                         }
                     }
+                    onDismiss()
                 }) {
                     Text(
                         "Review",
