@@ -123,7 +123,7 @@ fun Favourites(
         }
     } else {
         if (favourites.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

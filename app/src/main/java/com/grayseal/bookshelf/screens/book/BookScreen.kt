@@ -43,10 +43,7 @@ import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.ShelvesAlertDialog
 import com.grayseal.bookshelf.data.DataOrException
 import com.grayseal.bookshelf.model.Book
-import com.grayseal.bookshelf.ui.theme.Pink200
-import com.grayseal.bookshelf.ui.theme.Yellow
-import com.grayseal.bookshelf.ui.theme.loraFamily
-import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import com.grayseal.bookshelf.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,6 +62,7 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
     var openDialog by remember {
         mutableStateOf(false)
     }
+
     val bookInfo = produceState<DataOrException<Book, Boolean, Exception>>(
         initialValue = DataOrException(loading = (true))
     ) {
@@ -73,7 +71,6 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
 
     // Book Data
     val book = bookInfo.data
-
 
 
     // Get current user
@@ -117,7 +114,8 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                             color = Color.White
                         )
                     },
-                    modifier = Modifier.padding(bottom = 90.dp),
+                    modifier = Modifier
+                        .padding(bottom = 90.dp),
                     onClick = {
                         isFabVisible = false
                         scope.launch {
@@ -126,9 +124,9 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
                             }
                         }
                     },
+                    shape = RoundedCornerShape(topStart = 30.dp, bottomEnd = 30.dp),
                     backgroundColor = Pink200,
-                    shape = RoundedCornerShape(15.dp),
-                    elevation = FloatingActionButtonDefaults.elevation(4.dp)
+                    elevation = FloatingActionButtonDefaults.elevation(0.dp)
                 )
             }
         },
@@ -195,7 +193,11 @@ fun BookScreen(navController: NavController, bookViewModel: BookViewModel, bookI
             Details(navController, book)
             // transparent overlay on top of content, shown if sheet is expanded
             if (sheetState.isExpanded) {
-                Box(modifier = Modifier.background(Color.Black.copy(alpha = 0.5f)).fillMaxSize()) {}
+                Box(
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .fillMaxSize()
+                ) {}
             }
         }
     }

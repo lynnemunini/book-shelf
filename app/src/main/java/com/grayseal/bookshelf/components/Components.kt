@@ -18,7 +18,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -639,7 +638,11 @@ fun NavBar(navController: NavController) {
 
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    NavigationBar(containerColor = Color.Transparent, tonalElevation = 0.dp) {
+    NavigationBar(
+        containerColor = Color.White,
+        tonalElevation = 0.dp,
+        modifier = Modifier.height(IntrinsicSize.Min)
+    ) {
         items.forEach { item ->
             val selected = item.route == backStackEntry.value?.destination?.route
             NavigationBarItem(
@@ -826,11 +829,10 @@ fun HistoryCard(text: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .height(30.dp)
-            .padding(end = 10.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Yellow),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(
             modifier = Modifier

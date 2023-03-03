@@ -104,7 +104,8 @@ fun SearchScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp)
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     val lastThree = if (previousSearches.size >= 4) {
                         previousSearches.subList(previousSearches.size - 3, previousSearches.size)
