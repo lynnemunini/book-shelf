@@ -75,14 +75,28 @@ fun FavouriteScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                androidx.compose.material.Text(
-                    "Favourite Books",
-                    fontFamily = poppinsFamily,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    androidx.compose.material.Text(
+                        "Favourites",
+                        fontFamily = poppinsFamily,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        "Your Favourites: A curated collection of all the books you love and have" +
+                                " added to your personal favourites list.",
+                        fontFamily = poppinsFamily,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
             Favourites(
                 navController = navController,
@@ -181,7 +195,7 @@ fun Favourites(
                     contentDescription = "Empty Shelf",
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
-                androidx.compose.material.Text(
+                Text(
                     "Uh oh, you have no favourites!",
                     fontFamily = poppinsFamily,
                     fontSize = 16.sp,
@@ -189,7 +203,7 @@ fun Favourites(
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
                 )
-                androidx.compose.material.Text(
+                Text(
                     "Explore books and add them to favourites to show them here",
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
