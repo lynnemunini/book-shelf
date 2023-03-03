@@ -7,7 +7,7 @@ package com.grayseal.bookshelf.model
  */
 data class Book(
     /** The unique identifier of the book */
-    val bookID: String,
+    var bookID: String,
     /** A list of authors of the book */
     val authors: List<String>,
     /** The average rating of the book */

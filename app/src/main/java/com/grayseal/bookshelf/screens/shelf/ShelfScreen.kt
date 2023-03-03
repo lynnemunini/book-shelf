@@ -8,10 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.RateReview
-import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,6 +35,7 @@ import com.google.firebase.ktx.Firebase
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
+import com.grayseal.bookshelf.model.Review
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Pink500
@@ -136,12 +135,20 @@ fun ShelfBooks(
     var favouritesLoading by remember {
         mutableStateOf(true)
     }
-
     var booksInFavourites: List<Book> by remember {
+        mutableStateOf(emptyList())
+    }
+    var reviewsLoading by remember {
+        mutableStateOf(true)
+    }
+    var booksReviewed: List<Review> by remember {
         mutableStateOf(emptyList())
     }
     booksInFavourites = shelfViewModel.fetchFavourites(userId) {
         favouritesLoading = false
+    }
+    booksReviewed = shelfViewModel.fetchReviews(userId) {
+        reviewsLoading = false
     }
     val selectedShelf = if (selectedTab >= 0 && selectedTab < shelves.size) {
         shelves[selectedTab]
@@ -176,11 +183,14 @@ fun ShelfBooks(
                     selected = selectedTab == index,
                     onClick = {
                         setSelectedTab(index)
+                        favouritesLoading = true
+                        reviewsLoading = true
+                        booksLoading = true
                     }
                 )
             }
         }
-        if (booksLoading && favouritesLoading) {
+        if (booksLoading && favouritesLoading && reviewsLoading) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -225,12 +235,14 @@ fun ShelfBooks(
                         }
                         val bookId = item.bookID
                         val favourite = booksInFavourites.contains(item)
+                        val reviewed = booksReviewed.any { it.book.bookID == item.bookID }
                         BookCard(
                             shelfViewModel,
                             userId = userId,
                             book = item,
                             shelfName = selectedShelf.name,
                             favourite = favourite,
+                            reviewed = reviewed,
                             bookTitle = title,
                             bookAuthor = author,
                             previewText = previewText,
@@ -292,12 +304,13 @@ fun BookCard(
     book: Book,
     shelfName: String?,
     favourite: Boolean,
+    reviewed: Boolean,
     bookTitle: String,
     bookAuthor: String,
     previewText: String,
     imageUrl: String,
     onShelfChanged: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val context = LocalContext.current
     var favourited by remember {
@@ -307,6 +320,9 @@ fun BookCard(
         Icons.Rounded.Favorite
     } else {
         Icons.Rounded.FavoriteBorder
+    }
+    var isReviewed by remember {
+        mutableStateOf(reviewed)
     }
     var isDeleting by remember { mutableStateOf(false) }
     // State to hold the visibility of the review dialog
@@ -319,11 +335,14 @@ fun BookCard(
         color = Color(0xFFfbf2f0)
     ) {
         ReviewDialog(
+            shelfViewModel = shelfViewModel,
+            userId = userId,
+            book = book,
             showReviewDialog = showReviewDialog,
             title = "Review",
             drawable = R.drawable.book,
             onDismiss = { showReviewDialog = false }) {
-
+            isReviewed = true
         }
         Row(
             modifier = Modifier
@@ -375,17 +394,28 @@ fun BookCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    androidx.compose.material.Icon(
-                        Icons.Outlined.RateReview,
-                        contentDescription = "Review",
-                        tint = Pink500,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable(onClick = {
-                                // Show field to enter review
-                                showReviewDialog = true
-                            })
-                    )
+                    if (!isReviewed) {
+                        androidx.compose.material.Icon(
+                            Icons.Outlined.RateReview,
+                            contentDescription = "Review",
+                            tint = Pink500,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable(onClick = {
+                                    // Show field to enter review
+                                    showReviewDialog = true
+                                })
+                        )
+                    } else {
+                        androidx.compose.material3.Text(
+                            "Reviewed",
+                            fontFamily = poppinsFamily,
+                            fontSize = 12.sp,
+                            color = Pink500,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                     Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(
                         favIcon,
@@ -529,17 +559,21 @@ fun BookCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewDialog(
+    shelfViewModel: ShelfViewModel,
+    userId: String?,
+    book: Book,
     showReviewDialog: Boolean,
     title: String,
     drawable: Int,
     color: Color = Pink500,
     size: Dp = 30.dp,
     onDismiss: () -> Unit,
-    onClick: () -> Unit
+    onReviewed: () -> Unit
 ) {
     var reviewText by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf(0) }
     val maxRating = 5
+    val context = LocalContext.current
     if (showReviewDialog) {
         AlertDialog(
             /* Dismiss the dialog when the user clicks outside the dialog or on the back
@@ -572,7 +606,36 @@ fun ReviewDialog(
                 }
             },
             confirmButton = {
-                TextButton(onClick = onClick) {
+                TextButton(onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val done = shelfViewModel.addReview(
+                            userId,
+                            Review(book, rating.toDouble(), reviewText)
+                        )
+                        if (done) {
+                            onReviewed()
+                            withContext(Dispatchers.Main) {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Reviewed!",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Failed",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            }
+                        }
+                    }
+                }) {
                     Text(
                         "Review",
                         fontSize = 14.sp,
@@ -615,7 +678,9 @@ fun ReviewDialog(
                         )
                     )
                     Box(
-                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Row(
@@ -631,7 +696,8 @@ fun ReviewDialog(
                                     tint = if (rating >= ratingValue) Yellow else MaterialTheme.colorScheme.onBackground.copy(
                                         alpha = 0.6f
                                     ),
-                                    modifier = Modifier.size(25.dp)
+                                    modifier = Modifier
+                                        .size(25.dp)
                                         .clickable { rating = ratingValue }
                                 )
                             }
