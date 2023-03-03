@@ -2,15 +2,15 @@ package com.grayseal.bookshelf.screens.favourite
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -40,7 +40,6 @@ import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.shelf.ShelfViewModel
-import com.grayseal.bookshelf.ui.theme.Gray200
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
@@ -128,7 +127,7 @@ fun Favourites(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(),
+                    .padding(bottom = 56.dp),
                 verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 items(items = favourites) { item ->
@@ -224,152 +223,193 @@ fun FavCard(
         shape = RoundedCornerShape(5.dp),
         color = Color(0xFFfbf2f0)
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 5.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageUrl)
-                            .build(),
-                        contentDescription = "Book Image",
-                        contentScale = ContentScale.FillHeight
-                    )
-                    Column {
-                        Text(
-                            bookTitle,
-                            overflow = TextOverflow.Ellipsis,
-                            fontFamily = poppinsFamily,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 13.sp,
-                            maxLines = 1,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                        Text(
-                            bookAuthor,
-                            overflow = TextOverflow.Clip,
-                            fontFamily = poppinsFamily,
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        )
-                        Text(
-                            previewText,
-                            overflow = TextOverflow.Ellipsis,
-                            fontFamily = poppinsFamily,
-                            fontSize = 13.sp,
-                            maxLines = 2,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.Start
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp, horizontal = 5.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row {
-                            for (i in 0 until rating.toFloat().toInt()) {
-                                androidx.compose.material.Icon(
-                                    Icons.Rounded.Star,
-                                    contentDescription = "star",
-                                    tint = Yellow,
-                                    modifier = Modifier.size(15.dp)
-                                )
-                            }
-                            if ((5 - rating.toFloat()) > 0) {
-                                val unrated = 5 - rating.toFloat().toInt()
-                                if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageUrl)
+                                .build(),
+                            contentDescription = "Book Image",
+                            contentScale = ContentScale.FillHeight
+                        )
+                        Column {
+                            Text(
+                                bookTitle,
+                                overflow = TextOverflow.Ellipsis,
+                                fontFamily = poppinsFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 13.sp,
+                                maxLines = 1,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                            Text(
+                                bookAuthor,
+                                overflow = TextOverflow.Clip,
+                                fontFamily = poppinsFamily,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                            )
+                            Text(
+                                previewText,
+                                overflow = TextOverflow.Ellipsis,
+                                fontFamily = poppinsFamily,
+                                fontSize = 13.sp,
+                                maxLines = 2,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Row {
+                                for (i in 0 until rating.toFloat().toInt()) {
                                     androidx.compose.material.Icon(
-                                        Icons.Rounded.StarHalf,
+                                        Icons.Rounded.Star,
                                         contentDescription = "star",
                                         tint = Yellow,
                                         modifier = Modifier.size(15.dp)
                                     )
-                                    for (i in 0 until unrated - 1) {
+                                }
+                                if ((5 - rating.toFloat()) > 0) {
+                                    val unrated = 5 - rating.toFloat().toInt()
+                                    if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
                                         androidx.compose.material.Icon(
-                                            Icons.Rounded.Star,
+                                            Icons.Rounded.StarHalf,
                                             contentDescription = "star",
-                                            tint = Color.LightGray,
+                                            tint = Yellow,
                                             modifier = Modifier.size(15.dp)
                                         )
-                                    }
-                                } else {
-                                    for (i in 0 until unrated) {
-                                        androidx.compose.material.Icon(
-                                            Icons.Rounded.Star,
-                                            contentDescription = "star",
-                                            tint = Color.LightGray,
-                                            modifier = Modifier.size(15.dp)
-                                        )
+                                        for (i in 0 until unrated - 1) {
+                                            androidx.compose.material.Icon(
+                                                Icons.Rounded.Star,
+                                                contentDescription = "star",
+                                                tint = Color.LightGray,
+                                                modifier = Modifier.size(15.dp)
+                                            )
+                                        }
+                                    } else {
+                                        for (i in 0 until unrated) {
+                                            androidx.compose.material.Icon(
+                                                Icons.Rounded.Star,
+                                                contentDescription = "star",
+                                                tint = Color.LightGray,
+                                                modifier = Modifier.size(15.dp)
+                                            )
+                                        }
                                     }
                                 }
-                            }
-                            Text(
-                                buildAnnotatedString {
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontFamily = poppinsFamily,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.onBackground.copy(
-                                                alpha = 0.4f
+                                Text(
+                                    buildAnnotatedString {
+                                        withStyle(
+                                            style = SpanStyle(
+                                                fontFamily = poppinsFamily,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = MaterialTheme.colorScheme.onBackground.copy(
+                                                    alpha = 0.4f
+                                                )
                                             )
-                                        )
-                                    ) {
-                                        append(rating.toFloat().toString())
-                                    }
-                                },
-                                modifier = Modifier.padding(start = 5.dp)
-                            )
-                        }
-                    }
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        Box {
-                            Icon(
-                                Icons.Outlined.Delete,
-                                contentDescription = "Remove",
-                                tint = Yellow,
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable(onClick = {
-                                        isDeleting = true // set the deletion state to true
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            val done = shelfViewModel.removeFavourite(userId, book)
-                                            if (done) {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast
-                                                        .makeText(
-                                                            context,
-                                                            "Book deleted from favourites",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
-                                                    onFavouritesChanged()
-                                                }
-                                            }
-                                            isDeleting = false // set the deletion state to false
+                                        ) {
+                                            append(rating.toFloat().toString())
                                         }
-                                    })
-                            )
-                            if (isDeleting) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .align(Alignment.Center),
-                                    color = Yellow
+                                    },
+                                    modifier = Modifier.padding(start = 5.dp)
                                 )
                             }
                         }
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.End)
+                                    .clickable(onClick = onClick),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    "Read more",
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 12.sp,
+                                    color = Yellow,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                androidx.compose.material.Icon(
+                                    Icons.Rounded.ArrowForward,
+                                    contentDescription = "Arrow",
+                                    tint = Yellow,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(color = Yellow)
+                        .clip(RoundedCornerShape(topStart = 20.dp))
+                        .align(Alignment.Bottom)
+                ) {
+                    Icon(
+                        Icons.Outlined.Remove,
+                        contentDescription = "Remove",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable(onClick = {
+                                isDeleting = true // set the deletion state to true
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val done = shelfViewModel.removeFavourite(userId, book)
+                                    if (done) {
+                                        withContext(Dispatchers.Main) {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Book removed from favourites",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                            onFavouritesChanged()
+                                        }
+                                    }
+                                    isDeleting = false // set the deletion state to false
+                                }
+                            })
+                    )
+                    if (isDeleting) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .align(Alignment.Center),
+                            color = Yellow
+                        )
                     }
                 }
             }
