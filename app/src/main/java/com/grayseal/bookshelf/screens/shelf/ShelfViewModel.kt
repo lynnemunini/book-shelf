@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.MyUser
+import com.grayseal.bookshelf.model.Review
 import com.grayseal.bookshelf.model.Shelf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -18,6 +19,7 @@ class ShelfViewModel : ViewModel() {
     var booksInShelf: MutableState<MutableList<Book>> = mutableStateOf(mutableListOf())
     var shelves: MutableState<List<Shelf>> = mutableStateOf(mutableListOf())
     var favourites: MutableState<List<Book>> = mutableStateOf(mutableListOf())
+    var reviews: MutableState<List<Review>> = mutableStateOf(mutableListOf())
 
     // Get books in a particular shelf
     fun getBooksInAShelf(
@@ -166,5 +168,88 @@ class ShelfViewModel : ViewModel() {
             }
         }
         return favourites.value
+    }
+
+    // Reviews
+
+    // Add a review to firestore
+    suspend fun addReview(
+        userId: String?,
+        review: Review,
+    ): Boolean = withContext(Dispatchers.IO){
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val reviews =
+                        documentSnapshot.toObject<MyUser>()?.reviews as MutableList<Review>
+                    reviews.add(review)
+                    db.update("reviews", reviews).await()
+                    return@withContext true
+                }
+            }
+        }
+        return@withContext false
+    }
+
+    // Delete review from firestore
+    suspend fun removeReview(
+        userId: String?,
+        review: Review,
+    ): Boolean = withContext(Dispatchers.IO){
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val reviews =
+                        documentSnapshot.toObject<MyUser>()?.reviews as MutableList<Review>
+                    reviews.remove(review)
+                    db.update("reviews", reviews).await()
+                    return@withContext true
+                }
+            }
+        }
+        return@withContext false
+    }
+
+    // Fetch reviews
+    fun fetchReviews(
+        userId: String?,
+        onDone: () -> Unit
+    ): List<Review> {
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    reviews.value =
+                        documentSnapshot.toObject<MyUser>()?.reviews as MutableList<Review>
+                    onDone()
+                }
+            }
+        }
+        return reviews.value
+    }
+
+    // Update review
+    suspend fun updateReview(
+        userId: String?,
+        review: Review,
+        onDone: () -> Unit
+    ): Boolean = withContext(Dispatchers.IO){
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance().collection("users").document(userId)
+            db.get().await().let { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val reviews =
+                        documentSnapshot.toObject<MyUser>()?.reviews as MutableList<Review>
+                    val index = reviews.indexOfFirst { it.book.bookID == review.book.bookID }
+                    reviews[index] = review
+                    db.update("reviews", reviews).await()
+                    onDone()
+                    return@withContext true
+                }
+            }
+        }
+        return@withContext false
     }
 }

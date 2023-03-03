@@ -21,7 +21,15 @@ data class MyUser(
     val favourites: List<Book>
 ) {
     // Add a no-argument constructor
-    constructor() : this("", "", "", mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())
+    constructor() : this(
+        "",
+        "",
+        "",
+        mutableListOf(),
+        mutableListOf(),
+        mutableListOf(),
+        mutableListOf()
+    )
 }
 
 
@@ -32,20 +40,23 @@ data class MyUser(
  * @property rating the rating given to the book (0-5)
  * @property reviewText the text of the review
  */
-data class Review (
+data class Review(
     val book: Book,
     val rating: Double,
     val reviewText: String
-)
+) {
+    // Add a no-argument constructor
+    constructor() : this(Book(), 0.0, "")
+}
 
 /**
  * @property name the name of the shelf
  * @property books a list of books in the shelf
  */
-data class Shelf (
+data class Shelf(
     val name: String,
     var books: List<Book>
-){
+) {
     // No-argument constructor required for Firestore deserialization
     constructor() : this("", emptyList())
 }
