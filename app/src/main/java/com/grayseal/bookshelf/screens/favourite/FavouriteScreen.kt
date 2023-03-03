@@ -40,6 +40,7 @@ import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.screens.shelf.ShelfViewModel
+import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
@@ -80,7 +81,7 @@ fun FavouriteScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    androidx.compose.material.Text(
+                    Text(
                         "Favourites",
                         fontFamily = poppinsFamily,
                         fontSize = 20.sp,
@@ -364,7 +365,7 @@ fun FavCard(
                                     "Read more",
                                     fontFamily = poppinsFamily,
                                     fontSize = 12.sp,
-                                    color = Yellow,
+                                    color = Pink500,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )
@@ -372,7 +373,7 @@ fun FavCard(
                                 androidx.compose.material.Icon(
                                     Icons.Rounded.ArrowForward,
                                     contentDescription = "Arrow",
-                                    tint = Yellow,
+                                    tint = Pink500,
                                     modifier = Modifier.size(15.dp)
                                 )
                             }
@@ -387,7 +388,7 @@ fun FavCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .background(color = Yellow)
+                        .background(color = Pink500)
                         .clip(RoundedCornerShape(topStart = 20.dp))
                         .align(Alignment.Bottom)
                 ) {

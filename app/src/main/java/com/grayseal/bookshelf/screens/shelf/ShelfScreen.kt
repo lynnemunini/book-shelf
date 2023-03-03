@@ -7,24 +7,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.RateReview
-import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.outlined.StarBorder
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
@@ -38,6 +39,7 @@ import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
+import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
 import kotlinx.coroutines.CoroutineScope
@@ -104,7 +106,7 @@ fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    androidx.compose.material.LinearProgressIndicator(color = Yellow)
+                    LinearProgressIndicator(color = Yellow)
                 }
             }
         }
@@ -146,7 +148,7 @@ fun ShelfBooks(
     } else {
         Shelf("", emptyList())
     }
-    booksInShelf = shelfViewModel.getBooksInAShelf(userId, context, selectedShelf.name){
+    booksInShelf = shelfViewModel.getBooksInAShelf(userId, context, selectedShelf.name) {
         booksLoading = false
     }
     Column(
@@ -167,7 +169,8 @@ fun ShelfBooks(
                             fontWeight = FontWeight.Medium,
                             overflow = TextOverflow.Clip,
                             maxLines = 1,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                         )
                     },
                     selected = selectedTab == index,
@@ -261,7 +264,7 @@ fun ShelfBooks(
                         contentDescription = "Empty Shelf",
                         modifier = Modifier.padding(bottom = 20.dp)
                     )
-                    androidx.compose.material.Text(
+                    Text(
                         "Uh oh, you have no books in the shelf",
                         fontFamily = poppinsFamily,
                         fontSize = 16.sp,
@@ -269,7 +272,7 @@ fun ShelfBooks(
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
                     )
-                    androidx.compose.material.Text(
+                    Text(
                         "Explore books and add them to the shelf to show them here",
                         fontFamily = poppinsFamily,
                         fontSize = 13.sp,
@@ -306,6 +309,8 @@ fun BookCard(
         Icons.Rounded.FavoriteBorder
     }
     var isDeleting by remember { mutableStateOf(false) }
+    // State to hold the visibility of the review dialog
+    var showReviewDialog by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -313,6 +318,13 @@ fun BookCard(
         shape = RoundedCornerShape(5.dp),
         color = Color(0xFFfbf2f0)
     ) {
+        ReviewDialog(
+            showReviewDialog = showReviewDialog,
+            title = "Review",
+            drawable = R.drawable.book,
+            onDismiss = { showReviewDialog = false }) {
+
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -366,14 +378,19 @@ fun BookCard(
                     androidx.compose.material.Icon(
                         Icons.Outlined.RateReview,
                         contentDescription = "Review",
-                        tint = Yellow,
-                        modifier = Modifier.size(20.dp)
+                        tint = Pink500,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable(onClick = {
+                                // Show field to enter review
+                                showReviewDialog = true
+                            })
                     )
                     Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(
                         favIcon,
                         contentDescription = "Favourite",
-                        tint = Yellow,
+                        tint = Pink500,
                         modifier = Modifier
                             .size(20.dp)
                             .clickable(
@@ -445,7 +462,7 @@ fun BookCard(
                         androidx.compose.material.Icon(
                             Icons.Outlined.Delete,
                             contentDescription = "Remove",
-                            tint = Yellow,
+                            tint = Pink500,
                             modifier = Modifier
                                 .size(20.dp)
                                 .clickable(onClick = {
@@ -491,7 +508,7 @@ fun BookCard(
                             "Read more",
                             fontFamily = poppinsFamily,
                             fontSize = 12.sp,
-                            color = Yellow,
+                            color = Pink500,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -499,12 +516,129 @@ fun BookCard(
                         androidx.compose.material.Icon(
                             Icons.Rounded.ArrowForward,
                             contentDescription = "Arrow",
-                            tint = Yellow,
+                            tint = Pink500,
                             modifier = Modifier.size(15.dp)
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReviewDialog(
+    showReviewDialog: Boolean,
+    title: String,
+    drawable: Int,
+    color: Color = Pink500,
+    size: Dp = 30.dp,
+    onDismiss: () -> Unit,
+    onClick: () -> Unit
+) {
+    var reviewText by remember { mutableStateOf("") }
+    var rating by remember { mutableStateOf(0) }
+    val maxRating = 5
+    if (showReviewDialog) {
+        AlertDialog(
+            /* Dismiss the dialog when the user clicks outside the dialog or on the back
+                   button. */
+            onDismissRequest = onDismiss,
+            shape = RoundedCornerShape(5.dp),
+            containerColor = Color(0xFFfbf2f0),
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = drawable),
+                        contentDescription = "Info",
+                        modifier = Modifier
+                            .size(size)
+                            .align(Alignment.CenterVertically),
+                        colorFilter = ColorFilter.tint(color)
+                    )
+                    Text(
+                        title,
+                        fontSize = 16.sp,
+                        fontFamily = poppinsFamily,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Left
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = onClick) {
+                    Text(
+                        "Review",
+                        fontSize = 14.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    Text(
+                        "Cancel",
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    TextField(
+                        value = reviewText,
+                        onValueChange = { reviewText = it },
+                        placeholder = {
+                            Text(
+                                "Describe your experience",
+                                fontFamily = poppinsFamily,
+                                textAlign = TextAlign.Start
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(5.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            placeholderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                            cursorColor = Yellow,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        )
+                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            (1..maxRating).forEach { ratingValue ->
+                                val icon =
+                                    if (rating >= ratingValue) Icons.Rounded.Star else Icons.Rounded.StarBorder
+                                Icon(
+                                    icon,
+                                    contentDescription = "Rating $ratingValue",
+                                    tint = if (rating >= ratingValue) Yellow else MaterialTheme.colorScheme.onBackground.copy(
+                                        alpha = 0.6f
+                                    ),
+                                    modifier = Modifier.size(25.dp)
+                                        .clickable { rating = ratingValue }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 }

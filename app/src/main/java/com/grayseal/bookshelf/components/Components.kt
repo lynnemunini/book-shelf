@@ -585,7 +585,7 @@ fun Reading(
                                 "Read more",
                                 fontFamily = poppinsFamily,
                                 fontSize = 12.sp,
-                                color = Yellow,
+                                color = Pink500,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -593,7 +593,7 @@ fun Reading(
                             androidx.compose.material.Icon(
                                 Icons.Rounded.ArrowForward,
                                 contentDescription = "Arrow",
-                                tint = Yellow,
+                                tint = Pink500,
                                 modifier = Modifier.size(15.dp)
                             )
                         }
@@ -866,16 +866,18 @@ fun ShelvesAlertDialog(
     title: String,
     details: String,
     drawable: Int,
-    color: Color = Yellow,
+    color: Color = Pink500,
     size: Dp = 30.dp,
     onDismiss: () -> Unit,
     onClick: () -> Unit
 ) {
     if (openDialog) {
-        androidx.compose.material.AlertDialog(
+       AlertDialog(
             /* Dismiss the dialog when the user clicks outside the dialog or on the back
                    button. */
             onDismissRequest = onDismiss,
+            shape = RoundedCornerShape(5.dp),
+            containerColor = Color(0xFFfbf2f0),
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -890,7 +892,7 @@ fun ShelvesAlertDialog(
                             .align(Alignment.CenterVertically),
                         colorFilter = ColorFilter.tint(color)
                     )
-                    androidx.compose.material.Text(
+                    Text(
                         title,
                         fontSize = 16.sp,
                         fontFamily = poppinsFamily,
@@ -901,7 +903,7 @@ fun ShelvesAlertDialog(
                 }
             },
             text = {
-                androidx.compose.material.Text(
+                Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = details,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -913,7 +915,7 @@ fun ShelvesAlertDialog(
             },
             confirmButton = {
                 TextButton(onClick = onClick) {
-                    androidx.compose.material.Text(
+                    Text(
                         "Confirm",
                         fontSize = 14.sp,
                         fontFamily = poppinsFamily,
@@ -924,7 +926,7 @@ fun ShelvesAlertDialog(
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    androidx.compose.material.Text(
+                    Text(
                         "Cancel",
                         fontSize = 15.sp,
                         fontFamily = poppinsFamily,

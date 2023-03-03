@@ -21,12 +21,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.Text
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -98,10 +98,10 @@ fun HomeScreen(
 
     // Get books in the reading now shelf
     readingList = homeScreenViewModel.getBooksInReadingList(
-            userId = userId,
-            context = context,
-            onDone = { loading = false }
-        )
+        userId = userId,
+        context = context,
+        onDone = { loading = false }
+    )
     val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.profile)
 
     var avatar: Bitmap = bitmap
@@ -407,7 +407,7 @@ fun HomeContent(
                                 )
                             },
                             label = {
-                                androidx.compose.material3.Text(
+                                Text(
                                     item.key,
                                     fontFamily = poppinsFamily,
                                     fontWeight = FontWeight.Medium,
@@ -680,12 +680,12 @@ fun MainCard(currentRead: Book, navController: NavController, readingList: List<
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.tertiary
+                                    color = Color.White.copy(alpha = 0.8f)
                                 )
                                 Text(
                                     "Continue reading", fontFamily = poppinsFamily,
                                     fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.tertiary
+                                    color = Color.White.copy(alpha = 0.8f)
                                 )
                             }
                         }
@@ -777,7 +777,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                     contentDescription = "Empty Shelf",
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
-                androidx.compose.material.Text(
+                Text(
                     "Uh oh, you have no current reads!",
                     fontFamily = poppinsFamily,
                     fontSize = 16.sp,
@@ -785,7 +785,7 @@ fun ReadingList(navController: NavController, loading: Boolean, readingList: Lis
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
                 )
-                androidx.compose.material.Text(
+                Text(
                     "Explore books and add them to reading now shelf to show them here",
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
