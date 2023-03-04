@@ -1,5 +1,7 @@
 package com.grayseal.bookshelf.screens.review
 
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +31,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.NavBar
 import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.Review
@@ -37,6 +40,10 @@ import com.grayseal.bookshelf.screens.shelf.ShelfViewModel
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,14 +78,20 @@ fun ReviewScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        "Reviews",
-                        fontFamily = poppinsFamily,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Reviews",
+                            fontFamily = poppinsFamily,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                     Text(
                         "Your Reviews: A curated collection of all the books you have reviewed or rated.",
                         fontFamily = poppinsFamily,
@@ -94,9 +107,11 @@ fun ReviewScreen(
                 reviewsLoading = reviewsLoading,
                 reviews = booksReviewed,
                 shelfViewModel = shelfViewModel,
-                onReviewDeleted = { /*TODO*/ }) {
-
-            }
+                onReviewDeleted = {
+                    booksReviewed = shelfViewModel.fetchReviews(userId) {
+                        reviewsLoading = false
+                    }
+                })
         }
     },
         bottomBar = {
@@ -111,8 +126,7 @@ fun Reviews(
     reviewsLoading: Boolean,
     reviews: List<Review>,
     shelfViewModel: ShelfViewModel,
-    onReviewDeleted: () -> Unit,
-    onReviewEdited: () -> Unit
+    onReviewDeleted: () -> Unit
 ) {
     if (reviewsLoading) {
         Column(
@@ -138,19 +152,48 @@ fun Reviews(
                         ReviewCard(
                             shelfViewModel = shelfViewModel,
                             userId = userId,
-                            book = item.book,
                             bookTitle = item.book.title,
                             bookAuthor = item.book.authors.joinToString(separator = ", "),
                             rating = item.rating.toString(),
-                            review = item.reviewText,
+                            review = item,
+                            reviewText = item.reviewText,
                             imageUrl = it.replace("http", "https"),
                             onReviewDeleted = onReviewDeleted,
-                            onReviewEdited = onReviewEdited
                         ) {
                             navController.navigate(route = BookShelfScreens.BookScreen.name + "/${item.book.bookID}")
                         }
                     }
                 }
+            }
+        }
+        else{
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.emptyshelf),
+                    contentDescription = "Empty Shelf",
+                    modifier = Modifier.padding(bottom = 20.dp)
+                )
+                Text(
+                    "Uh oh, you have no reviews!",
+                    fontFamily = poppinsFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+                Text(
+                    "Explore books and review to show them here",
+                    fontFamily = poppinsFamily,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -160,14 +203,13 @@ fun Reviews(
 fun ReviewCard(
     shelfViewModel: ShelfViewModel,
     userId: String?,
-    book: Book,
     bookTitle: String,
     bookAuthor: String,
     rating: String,
-    review: String,
+    review: Review,
+    reviewText: String,
     imageUrl: String,
     onReviewDeleted: () -> Unit,
-    onReviewEdited: () -> Unit,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -276,53 +318,48 @@ fun ReviewCard(
                     }
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            review,
+                            reviewText,
                             fontFamily = poppinsFamily,
                             fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.Start
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        Box(
+                            modifier = Modifier
+                                .clickable(onClick = {
+                                    isDeleting = true // set the deletion state to true
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        val done =
+                                            shelfViewModel.removeReview(userId, review = review)
+                                        if (done) {
+                                            withContext(Dispatchers.Main) {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Book review deleted",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+                                                onReviewDeleted()
+                                            }
+                                        }
+                                        isDeleting = false // set the deletion state to false
+                                    }
+                                })
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.Start)
-                                    .clickable(onClick = onClick),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                androidx.compose.material3.Text(
-                                    "Edit review",
-                                    fontFamily = poppinsFamily,
-                                    fontSize = 12.sp,
-                                    color = Pink500,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                                Spacer(modifier = Modifier.width(5.dp))
-                            }
-                        }
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.End)
-                                    .clickable(onClick = onClick),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                androidx.compose.material.Icon(
-                                    Icons.Outlined.Delete,
-                                    contentDescription = "Delete",
-                                    tint = Pink500,
-                                    modifier = Modifier.size(20.dp)
+                            androidx.compose.material.Icon(
+                                Icons.Outlined.Delete,
+                                contentDescription = "Delete",
+                                tint = Pink500,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            if (isDeleting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .align(Alignment.Center),
+                                    color = Yellow
                                 )
                             }
                         }
@@ -331,5 +368,4 @@ fun ReviewCard(
             }
         }
     }
-
 }

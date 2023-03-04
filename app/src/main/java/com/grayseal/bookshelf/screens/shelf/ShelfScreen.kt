@@ -80,11 +80,6 @@ fun ShelfScreen(navController: NavController, shelfViewModel: ShelfViewModel) {
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )
-                Icon(
-                    painter = painterResource(id = R.drawable.shelves),
-                    contentDescription = "Shelves",
-                    Modifier.size(35.dp)
-                )
             }
             if (!loading) {
                 if (shelves.isNotEmpty()) {
@@ -670,6 +665,7 @@ fun ReviewDialog(
                     TextField(
                         value = reviewText,
                         onValueChange = { reviewText = it },
+                        maxLines = 2,
                         placeholder = {
                             Text(
                                 "Describe your experience",
@@ -689,7 +685,7 @@ fun ReviewDialog(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),
+                            .padding(top = 30.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Row(
