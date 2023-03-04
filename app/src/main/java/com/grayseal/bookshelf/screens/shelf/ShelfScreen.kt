@@ -349,7 +349,10 @@ fun BookCard(
                 .fillMaxWidth()
                 .padding(vertical = 10.dp, horizontal = 5.dp)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -392,160 +395,168 @@ fun BookCard(
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (!isReviewed) {
-                        androidx.compose.material.Icon(
-                            Icons.Outlined.RateReview,
-                            contentDescription = "Review",
-                            tint = Pink500,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clickable(onClick = {
-                                    // Show field to enter review
-                                    showReviewDialog = true
-                                })
-                        )
-                    } else {
-                        androidx.compose.material3.Text(
-                            "Reviewed",
-                            fontFamily = poppinsFamily,
-                            fontSize = 12.sp,
-                            color = Pink500,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    androidx.compose.material.Icon(
-                        favIcon,
-                        contentDescription = "Favourite",
-                        tint = Pink500,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable(
-                                onClick = {
-                                    if (!favourited) {
-                                        favourited = true
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            val success = shelfViewModel.addFavourite(
-                                                userId = userId,
-                                                book = book
-                                            )
-                                            if (success) {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast
-                                                        .makeText(
-                                                            context,
-                                                            "Added to favourites",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
-                                                }
-                                            } else {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast
-                                                        .makeText(
-                                                            context,
-                                                            "Something went wrong!",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        favourited = false
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            val success = shelfViewModel.removeFavourite(
-                                                userId = userId,
-                                                book = book
-                                            )
-                                            if (success) {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast
-                                                        .makeText(
-                                                            context,
-                                                            "Removed from favourites",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
-                                                }
-                                            } else {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast
-                                                        .makeText(
-                                                            context,
-                                                            "Something went wrong!",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            )
-                    )
-                    Box {
-                        androidx.compose.material.Icon(
-                            Icons.Outlined.Delete,
-                            contentDescription = "Remove",
-                            tint = Pink500,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clickable(onClick = {
-                                    isDeleting = true // set the deletion state to true
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        val done = shelfViewModel.deleteABookInShelf(
-                                            userId, book,
-                                            shelfName
-                                        )
-                                        if (done) {
-                                            withContext(Dispatchers.Main) {
-                                                Toast
-                                                    .makeText(
-                                                        context,
-                                                        "Book deleted from shelf",
-                                                        Toast.LENGTH_SHORT
-                                                    )
-                                                    .show()
-                                                onShelfChanged()
-                                            }
-                                        }
-                                        isDeleting = false // set the deletion state to false
-                                    }
-                                })
-                        )
-                        if (isDeleting) {
-                            CircularProgressIndicator(
+                    Column(Modifier.weight(1f)) {
+                        if (!isReviewed) {
+                            androidx.compose.material.Icon(
+                                Icons.Outlined.RateReview,
+                                contentDescription = "Review",
+                                tint = Pink500,
                                 modifier = Modifier
                                     .size(20.dp)
-                                    .align(Alignment.Center),
-                                color = Yellow
+                                    .clickable(onClick = {
+                                        // Show field to enter review
+                                        showReviewDialog = true
+                                    })
+                            )
+                        } else {
+                            androidx.compose.material3.Text(
+                                "Reviewed",
+                                fontFamily = poppinsFamily,
+                                fontSize = 12.sp,
+                                color = Pink500,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(onClick = onClick),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        androidx.compose.material3.Text(
-                            "Read more",
-                            fontFamily = poppinsFamily,
-                            fontSize = 12.sp,
-                            color = Pink500,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Spacer(modifier = Modifier.width(5.dp))
+                    Column(Modifier.weight(1f)) {
                         androidx.compose.material.Icon(
-                            Icons.Rounded.ArrowForward,
-                            contentDescription = "Arrow",
+                            favIcon,
+                            contentDescription = "Favourite",
                             tint = Pink500,
-                            modifier = Modifier.size(15.dp)
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable(
+                                    onClick = {
+                                        if (!favourited) {
+                                            favourited = true
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                val success = shelfViewModel.addFavourite(
+                                                    userId = userId,
+                                                    book = book
+                                                )
+                                                if (success) {
+                                                    withContext(Dispatchers.Main) {
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Added to favourites",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+                                                    }
+                                                } else {
+                                                    withContext(Dispatchers.Main) {
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Something went wrong!",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            favourited = false
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                val success = shelfViewModel.removeFavourite(
+                                                    userId = userId,
+                                                    book = book
+                                                )
+                                                if (success) {
+                                                    withContext(Dispatchers.Main) {
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Removed from favourites",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+                                                    }
+                                                } else {
+                                                    withContext(Dispatchers.Main) {
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Something went wrong!",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                )
                         )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Box {
+                            androidx.compose.material.Icon(
+                                Icons.Outlined.Delete,
+                                contentDescription = "Remove",
+                                tint = Pink500,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable(onClick = {
+                                        isDeleting = true // set the deletion state to true
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val done = shelfViewModel.deleteABookInShelf(
+                                                userId, book,
+                                                shelfName
+                                            )
+                                            if (done) {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Book deleted from shelf",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                    onShelfChanged()
+                                                }
+                                            }
+                                            isDeleting = false // set the deletion state to false
+                                        }
+                                    })
+                            )
+                            if (isDeleting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .align(Alignment.Center),
+                                    color = Yellow
+                                )
+                            }
+                        }
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = onClick),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            androidx.compose.material3.Text(
+                                "Read more",
+                                fontFamily = poppinsFamily,
+                                fontSize = 12.sp,
+                                color = Pink500,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            androidx.compose.material.Icon(
+                                Icons.Rounded.ArrowForward,
+                                contentDescription = "Arrow",
+                                tint = Pink500,
+                                modifier = Modifier.size(15.dp)
+                            )
+                        }
                     }
                 }
             }

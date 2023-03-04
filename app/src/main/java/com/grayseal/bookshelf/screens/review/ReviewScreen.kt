@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -214,6 +216,7 @@ fun ReviewCard(
                                 maxLines = 1,
                                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                             )
+                            Spacer(modifier = Modifier.height(10.dp))
                             Row {
                                 for (i in 0 until rating.toFloat().toInt()) {
                                     androidx.compose.material.Icon(
@@ -292,12 +295,15 @@ fun ReviewCard(
                                 horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                androidx.compose.material.Icon(
-                                    Icons.Rounded.Edit,
-                                    contentDescription = "Edit",
-                                    tint = Pink500,
-                                    modifier = Modifier.size(20.dp)
+                                androidx.compose.material3.Text(
+                                    "Edit review",
+                                    fontFamily = poppinsFamily,
+                                    fontSize = 12.sp,
+                                    color = Pink500,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                 )
+                                Spacer(modifier = Modifier.width(5.dp))
                             }
                         }
                         Column(
@@ -313,7 +319,7 @@ fun ReviewCard(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 androidx.compose.material.Icon(
-                                    Icons.Rounded.Delete,
+                                    Icons.Outlined.Delete,
                                     contentDescription = "Delete",
                                     tint = Pink500,
                                     modifier = Modifier.size(20.dp)
