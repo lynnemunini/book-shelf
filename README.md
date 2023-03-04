@@ -3,11 +3,12 @@
 BookShelf is an Android app that allows users to search for books, view book details, leave reviews,
 add books to favorites, and view example categories of books. The app uses Firestore, a No-SQL
 database service provided by Google, to store user and book data.
+The app uses the Google Books API to search for books and retrieve book data.
 
 ### Bugs and Issues
 
 Please note that the app is currently under development and bugs may be present. Bug reports and
-suggestions are welcome.
+suggestions are welcome. The app also requires active internet connection to function properly.
 
 ### Features
 * Search for books using the Google Books API
@@ -18,6 +19,18 @@ suggestions are welcome.
 * Authenticate using email/password or Google authentication
 * Upload a profile image from the device gallery
 
+### Future Features (not yet implemented):
+
+| Feature | Description | Status |
+| --- | --- | --- |
+| Dark Mode | 🌑 Add a dark mode theme to the app | Not Started |
+| Book Recommendations | 📚 Add a feature that recommends books based on user preferences | ⏳ Not Started |
+| Social Sharing | 🤝 Add a feature that allows users to share books with friends | ⏳ Not Started |
+| Bookshelf | 📖 Add a feature that allows users to create their own bookshelves | ⏳ Not Started |
+| Book Clubs | 📚👥 Add a feature that allows users to create book clubs | ⏳ Not Started |
+| Notifications | 🔔 Add a feature that notifies users of new books, reviews, and other events | ⏳ Not Started |
+| Multilingual Support | 🌐 Add support for multiple languages | ⏳ Not Started |
+| Offline Mode | 📴 Add support for offline mode | ⏳ Not Started |
 ### Database
 
 The app utilizes Firestore, a document-based database, which allows for more flexibility and
@@ -29,7 +42,8 @@ In order to help with understanding the data structure and organization of the a
 JSON data used in the app is provided below
 
 **JSON data structure**
-
+<details>
+<summary>Click to expand</summary>
 ```json
 {
   "users": [
@@ -144,6 +158,7 @@ JSON data used in the app is provided below
   ]
 }
 ```
+</details>
 
 **Diagram Representation of the JSON Data Structure**
 
@@ -172,20 +187,28 @@ Technologies Used:
 To install the app, clone the repository and open the project in Android Studio. The app can be run on an emulator or a physical device.
 
 ### Screenshots
-<img src="images/1.jpeg" alt="" width="50%"/>
-<img src="images/2.jpeg" alt="" width="50%">
-<img src="images/3.jpeg" alt="" width="50%">
-<img src="images/4.jpeg" alt="" width="50%">
-<img src="images/5.jpeg" alt="" width="50%">
-<img src="images/6.jpeg" alt="" width="50%">
-<img src="images/7.jpeg" alt="" width="50%">
-<img src="images/8.jpeg" alt="" width="50%">
-<img src="images/9.jpeg" alt="" width="50%">
-<img src="images/10.jpeg" alt="" width="50%">
-<img src="images/11.jpeg" alt="" width="50%">
-<img src="images/12.jpeg" alt="" width="50%">
-<img src="images/13.jpeg" alt="" width="50%">
-<img src="images/14.jpeg" alt="" width="50%">
-<img src="images/15.jpeg" alt="" width="50%">
-<img src="images/16.jpeg" alt="" width="50%">
-<img src="images/17.jpeg" alt="" width="50%">
+<img src="images/1.svg" alt=""/>
+<img src="images/2.svg" alt=""/>
+<img src="images/3.svg" alt=""/>
+<img src="images/4.svg" alt=""/>
+<img src="images/5.svg" alt=""/>
+<img src="images/6.svg" alt=""/>
+
+### License
+This project is licensed under the Apache License - see the LICENSE file for details.
+
+### Acknowledgements
+* [Google Books API](https://developers.google.com/books)
+* Dribbble - [E-Book Reader Design](https://dribbble.com/shots/18612908-E-Book-Reader-Mobile-App-Design)
+* Dribbble - [Book Reading App Design](https://dribbble.com/shots/15046796-Books-reading-app)
+
+### Contact
+If you have any questions or suggestions, feel free to contact me at [Twitter](https://twitter.com/LynneMunini)
+or [LinkedIn](https://www.linkedin.com/in/lynnemunini/).
+You can also raise an issue on the repository.
+
+### Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+### Support
+If you like the project, please consider supporting it by giving it a star ⭐️.
