@@ -23,7 +23,7 @@ suggestions are welcome. The app also requires active internet connection to fun
 
 | Feature | Description | Status |
 | --- | --- | --- |
-| Dark Mode | 🌑 Add a dark mode theme to the app | Not Started |
+| Dark Mode | 🌑 Add a dark mode theme to the app | ⏳ Not Started |
 | Book Recommendations | 📚 Add a feature that recommends books based on user preferences | ⏳ Not Started |
 | Social Sharing | 🤝 Add a feature that allows users to share books with friends | ⏳ Not Started |
 | Bookshelf | 📖 Add a feature that allows users to create their own bookshelves | ⏳ Not Started |
