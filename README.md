@@ -196,7 +196,7 @@ To install the app, clone the repository and open the project in Android Studio.
 <img src="images/6.svg" alt=""/>
 
 ### License
-This project is licensed under the Apache License - see the LICENSE file for details.
+This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the LICENSE file for details.
 
 ### Acknowledgements
 * [Google Books API](https://developers.google.com/books)
@@ -204,7 +204,7 @@ This project is licensed under the Apache License - see the LICENSE file for det
 * Dribbble - [Book Reading App Design](https://dribbble.com/shots/15046796-Books-reading-app)
 
 ### Contact
-If you have any questions or suggestions, feel free to contact me at [Twitter](https://twitter.com/LynneMunini)
+If you have any questions or suggestions, feel free to contact me on [Twitter](https://twitter.com/LynneMunini)
 or [LinkedIn](https://www.linkedin.com/in/lynnemunini/).
 You can also raise an issue on the repository.
 
