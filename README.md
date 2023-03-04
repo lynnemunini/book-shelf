@@ -3,7 +3,7 @@
 BookShelf is an Android app that allows users to search for books, view book details, leave reviews,
 add books to favorites, and view example categories of books. The app uses Firestore, a No-SQL
 database service provided by Google, to store user and book data.
-The app uses the Google Books API to search for books and retrieve book data.
+The app also uses the Google Books API to search for books and retrieve book data.
 
 ### Bugs and Issues
 
@@ -44,6 +44,7 @@ JSON data used in the app is provided below
 **JSON data structure**
 <details>
 <summary>Click to expand</summary>
+
 ```json
 {
   "users": [
