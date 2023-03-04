@@ -167,3 +167,25 @@ Technologies Used:
 * **Preferences Datastore:** The app uses Preferences Datastore, a data storage library, to store user preferences and settings in a persistent and organized way.
 * **LiveData:** The app uses LiveData, an Android Architecture Component, to handle data changes and updates in a lifecycle-aware way.
 * **Jetpack Compose:** The app uses Jetpack Compose, a modern UI toolkit, to build the UI of the app.
+
+### Installation
+To install the app, clone the repository and open the project in Android Studio. The app can be run on an emulator or a physical device.
+
+### Screenshots
+<img src="images/1.jpeg" alt="" width="50%"/>
+<img src="images/2.jpeg" alt="" width="50%">
+<img src="images/3.jpeg" alt="" width="50%">
+<img src="images/4.jpeg" alt="" width="50%">
+<img src="images/5.jpeg" alt="" width="50%">
+<img src="images/6.jpeg" alt="" width="50%">
+<img src="images/7.jpeg" alt="" width="50%">
+<img src="images/8.jpeg" alt="" width="50%">
+<img src="images/9.jpeg" alt="" width="50%">
+<img src="images/10.jpeg" alt="" width="50%">
+<img src="images/11.jpeg" alt="" width="50%">
+<img src="images/12.jpeg" alt="" width="50%">
+<img src="images/13.jpeg" alt="" width="50%">
+<img src="images/14.jpeg" alt="" width="50%">
+<img src="images/15.jpeg" alt="" width="50%">
+<img src="images/16.jpeg" alt="" width="50%">
+<img src="images/17.jpeg" alt="" width="50%">
