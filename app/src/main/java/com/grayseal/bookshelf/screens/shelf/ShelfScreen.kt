@@ -392,7 +392,7 @@ fun BookCard(
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     if (!isReviewed) {
                         androidx.compose.material.Icon(
@@ -416,7 +416,6 @@ fun BookCard(
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    Spacer(modifier = Modifier.width(70.dp))
                     androidx.compose.material.Icon(
                         favIcon,
                         contentDescription = "Favourite",
@@ -487,7 +486,6 @@ fun BookCard(
                                 }
                             )
                     )
-                    Spacer(modifier = Modifier.width(70.dp))
                     Box {
                         androidx.compose.material.Icon(
                             Icons.Outlined.Delete,
@@ -531,7 +529,6 @@ fun BookCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = onClick),
-                        horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         androidx.compose.material3.Text(

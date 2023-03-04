@@ -61,7 +61,7 @@ fun BookShelfNavigation() {
             FavouriteScreen(navController = navController, shelfViewModel)
         }
         composable(BookShelfScreens.ReviewScreen.name) {
-            ReviewScreen(navController = navController)
+            ReviewScreen(navController = navController, shelfViewModel)
         }
         val route = BookShelfScreens.CategoryScreen.name
         composable("$route/{query}", arguments = listOf(navArgument(name = "query") {
