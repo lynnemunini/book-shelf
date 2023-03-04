@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,6 +53,7 @@ import coil.request.ImageRequest
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.grayseal.bookshelf.BuildConfig
 import com.grayseal.bookshelf.R
 import com.grayseal.bookshelf.components.Category
 import com.grayseal.bookshelf.components.NavBar
@@ -260,7 +262,6 @@ fun HomeContent(
         // Update user profile image on dataStore and set firstSession to false
         scope.launch {
             val path = imageUri ?: return@launch
-            Log.d("PATH", "$path")
             imageDataStore.saveImagePath(path)
             session.setIsFirstTimeLaunch(false)
         }
@@ -431,6 +432,33 @@ fun HomeContent(
                                 unselectedTextColor = MaterialTheme.colorScheme.onBackground
                             )
                         )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        val version = "v${BuildConfig.VERSION_NAME}"
+                        val developer = "Developer: Lynne Munini"
+                        Text(
+                            text = AnnotatedString(developer),
+                            fontSize = 12.sp,
+                            fontFamily = poppinsFamily,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.align(Alignment.Bottom)
+                        )
+                        /* Spacer(modifier = Modifier.width(20.dp))
+                        Text(
+                            text = version,
+                            fontSize = 12.sp,
+                            fontFamily = poppinsFamily,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.align(Alignment.Bottom)
+                        )*/
                     }
                 }
             }

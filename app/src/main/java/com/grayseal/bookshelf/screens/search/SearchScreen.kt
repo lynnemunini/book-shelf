@@ -97,6 +97,7 @@ fun SearchScreen(
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     "Recent Searches",
+                    fontSize = 13.sp,
                     fontFamily = poppinsFamily,
                     color = MaterialTheme.colorScheme.onBackground
                 )

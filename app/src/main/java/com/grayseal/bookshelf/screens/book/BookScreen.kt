@@ -253,7 +253,6 @@ fun Details(navController: NavController, book: Book?) {
             val cleanDescription =
                 HtmlCompat.fromHtml(book.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
             description = cleanDescription.toString()
-            Log.d("DESCRIPTION", description)
         }
         if (book.imageLinks.toString().isNotEmpty()) {
             imageUrl = book.imageLinks.thumbnail.toString().trim()

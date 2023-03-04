@@ -29,10 +29,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.grayseal.bookshelf.R
-import com.grayseal.bookshelf.components.*
+import com.grayseal.bookshelf.components.EmailInput
+import com.grayseal.bookshelf.components.NameInput
+import com.grayseal.bookshelf.components.PasswordInput
+import com.grayseal.bookshelf.components.SubmitButton
 import com.grayseal.bookshelf.navigation.BookShelfScreens
 import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Yellow
@@ -282,7 +283,7 @@ fun UserForm(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                /*Text(
                     if (isCreateAccount) "Or sign up with..." else "Or, log in with...",
                     fontFamily = poppinsFamily,
                     fontSize = 13.sp,
@@ -299,9 +300,9 @@ fun UserForm(
                         val googleSignInClient = GoogleSignIn.getClient(context, gso)
                         launcher.launch(googleSignInClient.signInIntent)
                     }
-                }
+                }*/
                 Row(
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.padding(top = 8.dp, bottom = 50.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     val text = if (showLoginForm.value) "Sign Up" else "Log in"

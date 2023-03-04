@@ -301,7 +301,7 @@ fun FavCard(
                         ) {
                             Row {
                                 for (i in 0 until rating.toFloat().toInt()) {
-                                    androidx.compose.material.Icon(
+                                    Icon(
                                         Icons.Rounded.Star,
                                         contentDescription = "star",
                                         tint = Yellow,
@@ -311,14 +311,14 @@ fun FavCard(
                                 if ((5 - rating.toFloat()) > 0) {
                                     val unrated = 5 - rating.toFloat().toInt()
                                     if ((rating.toFloat() - rating.toFloat().toInt()) > 0) {
-                                        androidx.compose.material.Icon(
+                                        Icon(
                                             Icons.Rounded.StarHalf,
                                             contentDescription = "star",
                                             tint = Yellow,
                                             modifier = Modifier.size(15.dp)
                                         )
                                         for (i in 0 until unrated - 1) {
-                                            androidx.compose.material.Icon(
+                                            Icon(
                                                 Icons.Rounded.Star,
                                                 contentDescription = "star",
                                                 tint = Color.LightGray,
@@ -327,7 +327,7 @@ fun FavCard(
                                         }
                                     } else {
                                         for (i in 0 until unrated) {
-                                            androidx.compose.material.Icon(
+                                            Icon(
                                                 Icons.Rounded.Star,
                                                 contentDescription = "star",
                                                 tint = Color.LightGray,
@@ -376,7 +376,7 @@ fun FavCard(
                                     overflow = TextOverflow.Ellipsis,
                                 )
                                 Spacer(modifier = Modifier.width(5.dp))
-                                androidx.compose.material.Icon(
+                                Icon(
                                     Icons.Rounded.ArrowForward,
                                     contentDescription = "Arrow",
                                     tint = Pink500,

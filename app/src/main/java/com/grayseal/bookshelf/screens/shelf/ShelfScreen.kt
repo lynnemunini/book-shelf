@@ -361,7 +361,7 @@ fun BookCard(
                         contentScale = ContentScale.FillHeight
                     )
                     Column {
-                        androidx.compose.material3.Text(
+                        Text(
                             bookTitle,
                             overflow = TextOverflow.Ellipsis,
                             fontFamily = poppinsFamily,
@@ -370,7 +370,7 @@ fun BookCard(
                             maxLines = 1,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
-                        androidx.compose.material3.Text(
+                        Text(
                             bookAuthor,
                             overflow = TextOverflow.Clip,
                             fontFamily = poppinsFamily,
@@ -378,7 +378,7 @@ fun BookCard(
                             maxLines = 1,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                         )
-                        androidx.compose.material3.Text(
+                        Text(
                             previewText,
                             overflow = TextOverflow.Ellipsis,
                             fontFamily = poppinsFamily,
@@ -406,7 +406,7 @@ fun BookCard(
                                     })
                             )
                         } else {
-                            androidx.compose.material3.Text(
+                            Text(
                                 "Reviewed",
                                 fontFamily = poppinsFamily,
                                 fontSize = 12.sp,
@@ -536,7 +536,7 @@ fun BookCard(
                                 .clickable(onClick = onClick),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            androidx.compose.material3.Text(
+                            Text(
                                 "Read more",
                                 fontFamily = poppinsFamily,
                                 fontSize = 12.sp,

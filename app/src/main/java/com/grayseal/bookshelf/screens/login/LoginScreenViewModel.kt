@@ -94,7 +94,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
                         _loading.value = false
                     }
             } catch (e: Exception) {
-                Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
+                // Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
             }
         }
     }
@@ -185,7 +185,7 @@ class LoginScreenViewModel(application: Application) : AndroidViewModel(applicat
                         _loading.value = false
                     }
             } catch (e: Exception) {
-                Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
+                // Log.e("TAG", "signInWithEmailAndPassword: ${e.message}")
             }
         }
     }
