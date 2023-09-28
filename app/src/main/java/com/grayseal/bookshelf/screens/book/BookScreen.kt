@@ -686,7 +686,7 @@ Composable function that creates the content of the bottom sheet to display opti
 @Composable
 fun BottomSheetContent(onSave: (String) -> Unit) {
     Column(
-        modifier = Modifier.height(220.dp),
+        modifier = Modifier.height(220.dp).background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
