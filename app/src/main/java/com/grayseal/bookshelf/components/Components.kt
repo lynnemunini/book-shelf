@@ -128,10 +128,10 @@ fun NameInput(
             textColor = MaterialTheme.colorScheme.onBackground,
             cursorColor = Yellow,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = iconColor,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
             focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            unfocusedLeadingIconColor = iconColor,
-            placeholderColor = Gray700.copy(alpha = 0.4f),
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
+            placeholderColor = Gray500,
             selectionColors = TextSelectionColors(
                 handleColor = Yellow,
                 backgroundColor = Pink200
