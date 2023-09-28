@@ -771,7 +771,7 @@ fun SearchCard(
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
         shape = RoundedCornerShape(5.dp),
-        color = Color(0xFFfbf2f0)
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
             modifier = Modifier
