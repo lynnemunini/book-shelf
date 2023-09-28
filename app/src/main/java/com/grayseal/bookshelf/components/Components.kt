@@ -639,7 +639,7 @@ fun NavBar(navController: NavController) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         tonalElevation = 0.dp,
         modifier = Modifier.height(IntrinsicSize.Min)
     ) {
@@ -872,7 +872,7 @@ fun ShelvesAlertDialog(
     onClick: () -> Unit
 ) {
     if (openDialog) {
-       AlertDialog(
+        AlertDialog(
             /* Dismiss the dialog when the user clicks outside the dialog or on the back
                    button. */
             onDismissRequest = onDismiss,
