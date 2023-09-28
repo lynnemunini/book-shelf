@@ -20,7 +20,8 @@ fun BookShelfTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
             tertiary = DarkWhite,
             primaryContainer = Color.Black,
             onTertiaryContainer = Gray700.copy(alpha = 0.8f),
-            surfaceVariant = DarkWhite
+            surfaceVariant = DarkWhite,
+            outline = iconColorDarkMode
         )
     } else {
         lightColorScheme(
@@ -33,7 +34,8 @@ fun BookShelfTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
             tertiary = Pink700,
             primaryContainer = Pink500,
             onTertiaryContainer = Gray700.copy(alpha = 0.1f),
-            surfaceVariant = Color.White
+            surfaceVariant = Color.White,
+            outline = iconColor
         )
     }
 

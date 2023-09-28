@@ -19,4 +19,7 @@ val Gray = Color(0xFF2A2A2A)
 val Yellow = Color(0xFFf8a12d)
 val iconColor = Gray700.copy(alpha = 0.4f)
 
+// dark mode equivalent of iconColor
+val iconColorDarkMode = Color.Gray.copy(alpha = 0.7f)
+
 val DarkWhite = Color(0xFFE1D9D1)
