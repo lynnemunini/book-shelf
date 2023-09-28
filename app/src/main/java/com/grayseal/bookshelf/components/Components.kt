@@ -882,7 +882,7 @@ fun ShelvesAlertDialog(
                    button. */
             onDismissRequest = onDismiss,
             shape = RoundedCornerShape(5.dp),
-            containerColor = Color(0xFFfbf2f0),
+            containerColor = MaterialTheme.colorScheme.background,
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
