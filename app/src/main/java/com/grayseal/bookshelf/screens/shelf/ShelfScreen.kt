@@ -159,7 +159,7 @@ fun ShelfBooks(
         TabRow(
             modifier = Modifier.fillMaxWidth(),
             selectedTabIndex = selectedTab,
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
             shelfNames.forEachIndexed { index, name ->
                 Tab(
