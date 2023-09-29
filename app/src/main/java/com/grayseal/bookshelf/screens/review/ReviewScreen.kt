@@ -219,7 +219,7 @@ fun ReviewCard(
             .clickable(onClick = onClick)
             .fillMaxWidth(),
         shape = RoundedCornerShape(5.dp),
-        color = Color(0xFFfbf2f0)
+        color = MaterialTheme.colorScheme.background
     ) {
         Column {
             Row(

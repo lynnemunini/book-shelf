@@ -112,10 +112,12 @@ fun NameInput(
         singleLine = true,
         textStyle = TextStyle(
             fontSize = 14.sp,
-            fontFamily = poppinsFamily
+            fontFamily = poppinsFamily,
+            color = MaterialTheme.colorScheme.onBackground
         ),
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
@@ -123,13 +125,13 @@ fun NameInput(
         ),
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Color.Black,
+            textColor = MaterialTheme.colorScheme.onBackground,
             cursorColor = Yellow,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = iconColor,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
             focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            unfocusedLeadingIconColor = iconColor,
-            placeholderColor = Gray700.copy(alpha = 0.4f),
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
+            placeholderColor = Gray500,
             selectionColors = TextSelectionColors(
                 handleColor = Yellow,
                 backgroundColor = Pink200
@@ -190,10 +192,12 @@ fun PasswordInput(
         singleLine = true,
         textStyle = TextStyle(
             fontSize = 14.sp,
-            fontFamily = poppinsFamily
+            fontFamily = poppinsFamily,
+            color = MaterialTheme.colorScheme.onBackground
         ),
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
@@ -209,13 +213,13 @@ fun PasswordInput(
 
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Color.Black,
+            textColor = MaterialTheme.colorScheme.onBackground,
             cursorColor = Yellow,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            unfocusedLeadingIconColor = iconColor,
-            unfocusedBorderColor = iconColor,
-            placeholderColor = Gray700.copy(alpha = 0.4f),
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            placeholderColor = Gray500,
             selectionColors = TextSelectionColors(
                 handleColor = Yellow,
                 backgroundColor = Pink200
@@ -304,7 +308,8 @@ fun EmailInputField(
         singleLine = isSingleLine,
         textStyle = TextStyle(
             fontSize = 14.sp,
-            fontFamily = poppinsFamily
+            fontFamily = poppinsFamily,
+            color = MaterialTheme.colorScheme.onBackground
         ),
         modifier = Modifier
             .fillMaxWidth(),
@@ -314,13 +319,13 @@ fun EmailInputField(
         },
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Color.Black,
+            textColor = MaterialTheme.colorScheme.onBackground,
             cursorColor = Yellow,
             focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            unfocusedLeadingIconColor = iconColor,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = iconColor,
-            placeholderColor = Gray700.copy(alpha = 0.4f),
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            placeholderColor = Gray500,
             selectionColors = TextSelectionColors(
                 handleColor = Yellow,
                 backgroundColor = Pink200
@@ -459,7 +464,7 @@ fun Reading(
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
         shape = RoundedCornerShape(5.dp),
-        color = Color(0xFFfbf2f0)
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
             modifier = Modifier
@@ -639,7 +644,7 @@ fun NavBar(navController: NavController) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         tonalElevation = 0.dp,
         modifier = Modifier.height(IntrinsicSize.Min)
     ) {
@@ -771,7 +776,7 @@ fun SearchCard(
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
         shape = RoundedCornerShape(5.dp),
-        color = Color(0xFFfbf2f0)
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
             modifier = Modifier
@@ -872,12 +877,12 @@ fun ShelvesAlertDialog(
     onClick: () -> Unit
 ) {
     if (openDialog) {
-       AlertDialog(
+        AlertDialog(
             /* Dismiss the dialog when the user clicks outside the dialog or on the back
                    button. */
             onDismissRequest = onDismiss,
             shape = RoundedCornerShape(5.dp),
-            containerColor = Color(0xFFfbf2f0),
+            containerColor = MaterialTheme.colorScheme.background,
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

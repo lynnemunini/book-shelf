@@ -416,7 +416,8 @@ fun BookDescription(
                     topEnd = 30.dp
                 )
             ),
-        color = Color(0xFFfbf2f0)
+        color = MaterialTheme.colorScheme.background
+
     ) {
         Column(
             modifier = Modifier
@@ -520,7 +521,7 @@ fun BookDescription(
                     .height(IntrinsicSize.Min)
                     .padding(vertical = 10.dp)
                     .background(
-                        color = Color(0xFFf9f9f9),
+                        color = MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(10.dp)
                     ),
                 verticalAlignment = Alignment.CenterVertically,
@@ -685,7 +686,7 @@ Composable function that creates the content of the bottom sheet to display opti
 @Composable
 fun BottomSheetContent(onSave: (String) -> Unit) {
     Column(
-        modifier = Modifier.height(220.dp),
+        modifier = Modifier.height(220.dp).background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
