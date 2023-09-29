@@ -38,6 +38,7 @@ import com.grayseal.bookshelf.model.Book
 import com.grayseal.bookshelf.model.Review
 import com.grayseal.bookshelf.model.Shelf
 import com.grayseal.bookshelf.navigation.BookShelfScreens
+import com.grayseal.bookshelf.ui.theme.Gray500
 import com.grayseal.bookshelf.ui.theme.Pink500
 import com.grayseal.bookshelf.ui.theme.Yellow
 import com.grayseal.bookshelf.ui.theme.poppinsFamily
@@ -327,7 +328,7 @@ fun BookCard(
             .clickable(onClick = onClick)
             .fillMaxWidth(),
         shape = RoundedCornerShape(5.dp),
-        color = Color(0xFFfbf2f0)
+        color = MaterialTheme.colorScheme.background
     ) {
         ReviewDialog(
             shelfViewModel = shelfViewModel,
@@ -583,7 +584,7 @@ fun ReviewDialog(
                    button. */
             onDismissRequest = onDismiss,
             shape = RoundedCornerShape(5.dp),
-            containerColor = Color(0xFFfbf2f0),
+            containerColor = MaterialTheme.colorScheme.background,
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -676,7 +677,8 @@ fun ReviewDialog(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(5.dp),
                         colors = TextFieldDefaults.textFieldColors(
-                            placeholderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                            textColor = MaterialTheme.colorScheme.outline,
+                            placeholderColor = Gray500,
                             cursorColor = Yellow,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
